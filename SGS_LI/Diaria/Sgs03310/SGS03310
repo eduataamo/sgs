@@ -1,0 +1,584 @@
+0010 ************************************************************************
+0020 **
+0030 **  PROGRAMA .....  SGS03310
+0040 **
+0050 **  AUTOR ........  RICARDO
+0060 **  ESCRITO EM ...    /04/99    ALTERADO EM ...  09/02/00  (SFS)
+0070 **  OBJETIVOS ....  TARIFAR MOVIMENTO DE INTERRUPCAO DE LINHAS INDIVI-
+0080 **                  DUAIS E FORMATAR ARQUIVO DE SERVICOS ESPECIAIS
+0090 **  AMBIENTE .....  BATCH
+0100 **  CHAMADO POR ..  ETAPA SGS03-1
+0110 **
+0120 **  MODULOS CHAMADOS
+0130 **  VIA FETCH ....  NENHUM
+0140 **  VIA CALL .....  CPD10170, CPD10030, CPD10740, CPD50070
+0150 **  ARQUIVOS .....  ENTRADA: . MOVIMENTO INTERRUPCOES
+0160 **                           . TABELA DE ASSINATURAS
+0170 **                  SAIDA  : . MOVIMENTO DE INTERRUPCOES A TARIFAR
+0180 **                           . MOVIMENTO PARA SERVICOS ESPECIAIS
+0190 **  OBS.: BUG2000: UTILIZANDO EXPANSAO DE DATAS > 50 + 1900 ELSE + 2000
+0200 **
+0210 ************************************************************************
+0220 DEFINE DATA LOCAL
+0230 *
+0240 **       MOVIMENTO DE INTERRUPCOES                            -  CMFWK01
+0250 *
+0260 1 #REG-E1
+0270   2 #F01-NUM-REG                   (P011)
+0280   2 #F01-TP-REG-NUM                (N002)
+0290   2 #F01-TP-REG-ALFA               (A004)
+0300   2 #F01-ORGAO-EMITENTE            (A005)
+0310   2 #F01-RE-EMITENTE               (P007)
+0320   2 #F01-DT-INCLUSAO               (P007)
+0330   2 #F01-HH-INCLUSAO               (P005)
+0340   2 #F01-NUM-DOCTO                 (P011)
+0350   2 #F01-DT-COMPLETADA             (P007)
+0360   2 #F01-TEL-DEBITO                (P015)
+0370   2 #F01-QTDE                      (P005)
+0380   2 #F01-PERC-REPARTICAO           (P005)
+0390   2 #F01-PARCELAS
+0400     3 #F01-ULT-FAT                 (P003)
+0410     3 #F01-TOTAL                   (P003)
+0420   2 #F01-EQPTO                     (P003)
+0430   2 #F01-VALOR-UNITARIO            (P13,2)
+0440   2 #F01-VALOR-FATURADO            (P13,2)
+0450   2 #F01-TEXTO-COMPLEMENTAR        (A019)
+0460   2 REDEFINE #F01-TEXTO-COMPLEMENTAR
+0470     3 #F01-DIA-TEXTO               (N002)
+0480     3 #F01-TRACO1-TEXTO            (A001)
+0490     3 #F01-MES-TEXTO               (N002)
+0500     3 #F01-TRACO2-TEXTO            (A001)
+0510     3 #F01-ANO-TEXTO               (N004)
+0520     3 #F01-FILL1-TEXTO             (A001)
+0530     3 #F01-TXT-TEXTO               (A008)
+0540   2 #F01-ENTR/ROTA
+0550     3 #F01-E/R                     (A001)
+0560     3 #F01-LOC-INI                 (A004)
+0570     3 #F01-LOC-FINAL               (A004)
+0580     3 #F01-EMPR-IU                 (A004)
+0590   2 #F01-TP-LANCAMENTO             (A001)
+0600   2 #F01-NRC                       (P011)
+0610   2 #F01-CLA-ASS                   (N002)
+0620   2 #F01-CLA-ASS-ALFA              (A003)
+0630   2 #F01-CLA-SERV                  (A004)
+0640   2 #F01-TP-FUN                    (A003)
+0650   2 #F01-CPCC                      (N002)
+0660   2 #F01-ESCR-SERV                 (A002)
+0670   2 #F01-NOME-ASSINANTE            (A064)
+0680   2 #F01-DEB-CRED                  (A001)
+0690   2 #F01-COD-FAT                   (P005)
+0700   2 #F01-COD-CONTAB                (P011)
+0710   2 #F01-TAXAS
+0720     3 #F01-TX1                     (P003)
+0730     3 #F01-TX2                     (P003)
+0740     3 #F01-TX3                     (P003)
+0750   2 #F01-IND-FAT                   (A001)
+0760   2 #F01-IND-LIST                  (A001)
+0770   2 #F01-IND-CAD                   (A001)
+0780   2 #F01-ULT-FATURAMENTO
+0790     3 #F01-CONTA                   (P005)
+0800     3 #F01-PERIODO                 (N002)
+0810     3 #F01-ZONA                    (P003)
+0820     3 #F01-TEL-LANCAMENTO          (P015)
+0830     3 #F01-DT-FECHAMENTO           (P007)
+0840   2 #F01-ALTERACAO-REG
+0850     3 #F01-RE-ALTERACAO            (P007)
+0860     3 #F01-DT-ALTERACAO            (P007)
+0870   2 #F01-INTERRUPCAO
+0880     3 #F01-RESPONSABILIDADE        (A004)
+0890     3 #F01-CD-REPARO               (A006)
+0900     3 #F01-DT-HM-INT-INI           (P011)
+0910     3 #F01-DT-HM-INT-FIM           (P011)
+0920     3 #F01-QT-MINUTOS              (P005)
+0930     3 #F01-DT-HM-EOT-INI           (P011)
+0940     3 #F01-DT-HM-EOT-FIM           (P011)
+0950     3 #F01-QT-MIN-EOT              (P005)
+0960   2 #F01-CD-TERM-RENPAC            (A011)
+0970   2 #F01-CONTRATO                  (A014)
+0980   2 #F01-CD-ERRO-TARIFACAO         (P003)
+0990   2 #F01-ID-BIDIREC                (A001)
+1000   2 #F01-NRO-NRF                   (P015)
+1010   2 #F01-CD-SOLICITACAO            (A005)
+1020   2 #F01-FILL1                     (A010)
+1030   2 #F01-CD-EQPTO                  (A003)
+1040   2 REDEFINE #F01-CD-EQPTO
+1050     3 #F01-CD-EQPTO-12             (A002)
+1060     3 #F01-CD-EQPTO-FIL            (A001)
+1070   2 #F01-NUMGA                     (P005)
+1080   2 #F01-FILL2                     (A014)
+1090 *
+1100 **       MOVIMENTO DE INTERRUPCOES P/SERVICOS ESPECIAIS       -  CMFWK03
+1110 *
+1120 1 #REG-S2
+1130   2 #F03-SERVICO                   (A005)
+1140   2 #F03-NUMERO-REG
+1150     3 #F03-NUM-REG                 (P011)
+1160     3 #F03-NUM-REGX                (A003)
+1170   2 #F03-ZONA                      (N003)
+1180   2 #F03-TEL-DEB                   (N015)
+1190   2 #F03-TEL-ANT                   (N015)    /* ZEROS
+1200   2 #F03-COD-FAT                   (P007)
+1210   2 #F03-TEXTO-COMPLEMENTAR        (A019)
+1220   2 #F03-NUM-CONTRATO              (N007)    /* ZEROS
+1230   2 #F03-QTDE                      (N004)    /* DIAS
+1240   2 #F03-VALOR                     (P9,2)
+1250   2 #F03-ICMS                      (P005)
+1260   2 #F03-COD-LISTA                 (A006)    /* BR
+1270   2 #F03-DT-SERVICO                (N006)    /* DMA
+1280   2 #F03-STATUS                    (N001)    /* ZEROS
+1290   2 #F03-COD-SERVICO               (N003)
+1300   2 #F03-COD-LINHA                 (N003)    /* 1
+1310   2 #F03-PERIODO                   (N002)
+1320   2 #F03-COD-CONTABIL              (N009)    /* 1
+1330   2 #F03-DT-VAL-EDITORA            (N006)    /* ZEROS
+1340   2 #F03-DT-INCL                   (N008)    /* ZEROS
+1350   2 #F03-NRC                       (P011)
+1360   2 #F03-SEQ-AFO-FCT               (N005)    /* ZEROS
+1370   2 #F03-RESERVA                   (A004)
+1380   2 #F03-COD-MOVIMENTO             (A001)    /* I
+1390 *
+1400 **       TABELA DE ASSINATURAS                               -  FILE 037
+1410 *
+1420 1 #FILE37 VIEW OF ASSINATURA
+1430   2 CLASSE-SERVICO-LINHA
+1440   2 CLASSE-SERVICO-PRINCIPAL
+1450   2 TIPO-EQUIP
+1460   2 COR-EQUIP
+1470   2 PROPRIEDADE-EQUIP
+1480   2 MODELO-EQUIP
+1490   2 CODIGO-CONTABIL
+1500   2 CPCC
+1510   2 DEBITO-FAT
+1520   2 CREDITO-FAT
+1530   2 FNT
+1540   2 VALORES (1:12)
+1550   2 SUPERS1
+1560 *
+1570 **       REDE DE CONTROLE                            ==>> 157 + (N * 53)
+1580 *
+1590 1 #REDE
+1600   2 #FILLER1                       (P009)  INIT <634>
+1610   2 #JOB                           (A008)
+1620   2 #FILLER2                       (A018)
+1630     INIT     <'SGS03310SGS0331-R'>
+1640   2 #DATA                          (A008)
+1650   2 #HORA                          (A008)
+1660   2 #FILLER5                       (A007)  INIT <'*******'>
+1670   2 #ENTRADAS
+1680     3 #CODIE1                      (A024)  INIT <' '>
+1690     3 #FILLER6                     (A022)
+1700       INIT   <'REGISTROS LIDOS   '>
+1710     3 #VALORE1                     (P013)  INIT <0>
+1720     3 #CODIE2                      (A024)  INIT <' '>
+1730     3 #FILLER7                     (A022)
+1740       INIT   <'EXCL POR PRAZO RET'>
+1750     3 #VALORE2                     (P013)  INIT <0>
+1760     3 #CODIE3                      (A024)  INIT <' '>
+1770     3 #FILLER9                     (A022)
+1780       INIT   <'EXCL POR SELECAO  '>
+1790     3 #VALORE3                     (P013)  INIT <0>
+1800     3 #CODIE4                      (A024)  INIT <' '>
+1810     3 #FILLER11                    (A022)
+1820       INIT   <'EXCL POR TARIFACAO'>
+1830     3 #VALORE4                     (P013)  INIT <0>
+1840     3 #CODIE5                      (A024)  INIT <' '>
+1850     3 #FILLER12                    (A022)
+1860       INIT   <'NAO TRATAD (LT/LP)'>
+1870     3 #VALORE5                     (P013)  INIT <0>
+1880     3 #CODIE6                      (A024)  INIT <' '>
+1890     3 #FILLER13                    (A022)
+1900       INIT   <'CAD ASS LIDOS     '>
+1910     3 #VALORE6                     (P013)  INIT <0>
+1920     3 #FILLER14                    (A001)  INIT <H'00'>
+1930   2 #SAIDAS
+1940     3 #CODIS1                      (A024)  INIT <' '>
+1950     3 #FILLER16                    (A022)
+1960       INIT   <'REGISTROS GRAVADOS'>
+1970     3 #VALORS1                     (P013)  INIT <0>
+1980     3 #CODIS2                      (A024)  INIT <' '>
+1990     3 #FILLER17                    (A022)
+2000       INIT   <'REGISTROS GRAVADOS'>
+2010     3 #VALORS2                     (P013)  INIT <0>
+2020     3 #CODIS3                      (A024)  INIT <' '>
+2030     3 #FILLER18                    (A019)
+2040       INIT   <'VALOR GRAVADO     '>
+2050     3 #FILLER19                    (A002)  INIT <'$$'>
+2060     3 #VALORS3                     (P13,2) INIT <0>
+2070     3 #FILLER20                    (A001)  INIT <H'00'>
+2080   2 #MENSAGEM                      (A100)  INIT <'FIM NORMAL'>
+2090   2 #FILLER21                      (A001)  INIT <H'FF'>
+2100 *
+2110 **       AREA PARA A PESQUISA DE DSNAME
+2120 *
+2130 1 #TAB
+2140   2 #DDSDSN                        (1:20)
+2150     3 #DDN                         (A008)
+2160     3 #DSN                         (A044)
+2170 *
+2180 **       AREA P/ TRATAMENTO DE DATAS
+2190 *
+2200 1 #DATA8                           (N008)  /*  DT PROCESSAMENTO AAAAMMDD
+2210 1 REDEFINE  #DATA8
+2220   2 #DATA8-AAAA                    (N004)
+2230   2 #DATA8-MMDD                    (N004)
+2240 1 REDEFINE  #DATA8
+2250   2 #FILL01                        (N002)
+2260   2 #DATA6                         (N006)
+2270   2 REDEFINE #DATA6
+2280     3 #DATA6-AA                    (N002)
+2290     3 #DATA6-MM                    (N002)
+2300     3 #DATA6-DD                    (N002)
+2310 *
+2320 **       ASSINATURAS
+2330 *
+2340 1 #SUPERS1                         (A018)     /*   CA + CB + CD
+2350 1 REDEFINE #SUPERS1
+2360   2 #SUPERS1-CA                    (A012)
+2370   2 #SUPERS1-CB                    (A003)
+2380   2 #SUPERS1-CD                    (A003)
+2390 1 #TAB-ASS
+2400   2 #TAB-ASS-OCO                   (1:2)
+2410     3 #TAB-ASS-XV
+2420       4 #TAB-ASS-CA                (A004) /* CLASSE SERVICO
+2430       4 #TAB-ASS-CB                (A003) /* CLASSE ADICIONAL
+2440       4 #TAB-ASS-CD                (A003) /* TIPO EQUIPAMENTO
+2450       4 #TAB-ASS-CE                (A002) /* COR EQUIPAMENTO
+2460       4 #TAB-ASS-CF                (A001) /* PROPRIEDADE EQPTO
+2470       4 #TAB-ASS-CG                (A006) /* MODELO EQPTO
+2480       4 #TAB-ASS-CP                (A002) /* CPCC
+2490     3 #TAB-ASS-CK                  (N009) /* COD CONTABIL
+2500     3 #TAB-ASS-CS                  (N005) /* COD CREDITO FAT
+2510     3 #TAB-ASS-CV                  (N003) /* ICMS
+2520     3 #TAB-ASS-CX                  (P9,2) /* VALOR
+2530 *
+2540 **       OBTER VALOR DA TABELA
+2550 *
+2560 1 #TAB-VAL                         (A179)
+2570 1 REDEFINE #TAB-VAL
+2580   2 #TAB-PR                        (A017/1:10)
+2590   2 #DTI                           (P007)
+2600   2 #DTF                           (P007)
+2610   2 #STA                           (A001)
+2620 *
+2630 1 #TAB-PR-R                        (A017)
+2640 1 REDEFINE #TAB-PR-R
+2650   2 #MULTIPLICADOR                 (P013)
+2660   2 #FATOR                         (A004)
+2670   2 #VALOR                         (P9,2)
+2680 *
+2690 **       AREAS AUXILIARES
+2700 *
+2710 1 #NOK                             (N001)
+2720 1 #IND                             (P003)
+2730 1 #INDICE                          (N005)
+2740 1 #AUX-N                           (P005)
+2750 1 #AUX-DIAS                        (N003)
+2760 1 #AUX-ICMS                        (A003)
+2770 1 REDEFINE #AUX-ICMS
+2780   2 #AUX-ICMS-N                    (N003)
+2790 END-DEFINE
+2800 *
+2810 ***
+2820 *
+2830 **                                                PROCEDIMENTOS INICIAIS
+2840 *
+2850 MOVE  *DATE                        TO   #DATA
+2860 MOVE  *TIME                        TO   #HORA
+2870 MOVE  *DATN                        TO   #DATA8
+2880 *
+2890 *                                  CARREGA TABELAS DE DSNAMES E NOME JOB
+2900 SET CONTROL 'P=S'
+2910 CALL  'CPD10170'   USING     #JOB
+2920 *
+2930 SET CONTROL 'P=S'
+2940 CALL  'CPD10030'   USING     #TAB
+2950 FOR #IND 1 TO 20
+2960   IF   #DDN(#IND)        EQ 'CMWKF01'
+2970        MOVE  #DSN(#IND)  TO  #CODIE1
+2980   ELSE
+2990    IF  #DDN(#IND)        EQ 'CMWKF02'
+3000        MOVE  #DSN(#IND)  TO  #CODIS1
+3010    ELSE
+3020     IF #DDN(#IND)        EQ 'CMWKF03'
+3030        MOVE  #DSN(#IND)  TO  #CODIS2
+3040     END-IF
+3050    END-IF
+3060   END-IF
+3070 END-FOR
+3080 *
+3090 **                                                  SELECAO DO MOVIMENTO
+3100 *
+3110 READ WORK FILE 1 RECORD #REG-E1
+3120   ADD   1                          TO  #VALORE1
+3130 *
+3140 **                               TRATAMENTO SOMENTE PARA REGISTROS DE LI
+3150 *
+3160   IF #F01-CLA-SERV                 NE  MASK ('LI'..)  OR
+3170      #F01-CLA-SERV                 EQ  'LIDG'
+3180      ADD  1                        TO  #VALORE5
+3190      WRITE WORK FILE 2                 #REG-E1
+3200      ADD  1                        TO  #VALORS1
+3210      ESCAPE TOP
+3220   END-IF
+3230 *
+3240 **        REG TARIFADO FICA NO ARQUIVO PELO PRAZO DE RETENCAO (SGS40070)
+3250 *
+3260   IF #F01-IND-FAT                  NE  ' '
+3270      WRITE WORK FILE 2                 #REG-E1
+3280      ADD  1                        TO  #VALORS1
+3290      ESCAPE TOP
+3300   END-IF
+3310 *
+3320 *                                      RECUSA REGISTROS DO CONVENIO ECT
+3330 *
+3340   IF #F01-CPCC                      GE  50 AND
+3350      #F01-CPCC                      LE  59
+3360      ADD  1                         TO  #VALORE3
+3370      ESCAPE TOP
+3380   END-IF
+3390 *
+3400 **                                     RECUSA REGISTROS POR TEMPO MINIMO
+3410 **                                PGM SGS30110 TEM CONTROLE TEMPO MAXIMO
+3420 *
+3430   IF #F01-QT-MINUTOS                LT  1440        /* 1 DIA
+3440      ADD  1                         TO  #VALORE4
+3450      IF #F01-CD-EQPTO-12 NE 'VL'    /*  EQPTO NE VLA/VLB/VLC/VLD/VLE/VLF
+3460         ESCAPE TOP
+3470      END-IF
+3480   END-IF
+3490 *
+3500 **                            CARGA DA TABELA DE ASSINATURAS A VALORIZAR
+3510 *
+3520   RESET #TAB-ASS
+3530   PERFORM #06-OBTEM-ASSINATURAS
+3540 *
+3550 **                             VALORIZACAO DO MOVIMENTO DE INTERRUPCAO E
+3560 **                            GERACAO DO MOVIMENTO DE SERVICOS ESPECIAIS
+3570 *
+3580   PERFORM #12-VALORIZA
+3590 *
+3600   MOVE  #DATA6                     TO  #F01-DT-FECHAMENTO
+3610   MOVE  'T'                        TO  #F01-IND-FAT
+3620 *
+3630   RESET #REG-S2
+3640   MOVE  'INTPC'                    TO  #F03-SERVICO
+3650   MOVE  #F01-NUM-REG               TO  #F03-NUM-REG
+3660   MOVE  ' '                        TO  #F03-NUM-REGX
+3670   MOVE  #F01-ZONA                  TO  #F03-ZONA
+3680   MOVE  #F01-TEL-DEBITO            TO  #F03-TEL-DEB
+3690   MOVE  0                          TO  #F03-TEL-ANT
+3700   MOVE  #F01-COD-FAT               TO  #F03-COD-FAT
+3710   MOVE  #F01-TEXTO-COMPLEMENTAR    TO  #F03-TEXTO-COMPLEMENTAR
+3720   MOVE  0                          TO  #F03-NUM-CONTRATO
+3730   MOVE  #F01-QTDE                  TO  #F03-QTDE
+3740   MOVE  #F01-VALOR-FATURADO        TO  #F03-VALOR
+3750   MOVE  #F01-TX1                   TO  #F03-ICMS
+3760   MOVE  ' '                        TO  #F03-COD-LISTA
+3770   MOVE  #F01-DT-COMPLETADA         TO  #DATA6
+3780   COMPUTE #F03-DT-SERVICO =           (#DATA6-DD * 10000) +
+3790                                       (#DATA6-MM * 100)   +
+3800                                        #DATA6-AA
+3810   MOVE  0                          TO  #F03-STATUS
+3820   MOVE  064                        TO  #F03-COD-SERVICO
+3830   MOVE  #F01-COD-CONTAB            TO  #F03-COD-LINHA
+3840   MOVE  #F01-PERIODO               TO  #F03-PERIODO
+3850   MOVE  #F01-COD-CONTAB            TO  #F03-COD-CONTABIL
+3860   MOVE  0                          TO  #F03-DT-VAL-EDITORA
+3870   MOVE  0                          TO  #F03-DT-INCL
+3880   MOVE  #F01-NRC                   TO  #F03-NRC
+3890   MOVE  0                          TO  #F03-SEQ-AFO-FCT
+3900   MOVE  ' '                        TO  #F03-RESERVA
+3910   MOVE  'I'                        TO  #F03-COD-MOVIMENTO
+3920 *
+3930   ADD   #F03-VALOR                 TO  #VALORS3
+3940   WRITE WORK FILE 3                    #REG-S2
+3950   ADD   1                          TO  #VALORS2
+3960 *
+3970   WRITE WORK FILE 2                    #REG-E1
+3980   ADD   1                          TO  #VALORS1
+3990 *
+4000 END-WORK
+4010 *
+4020 **                                              TERMINO DE PROCESSAMENTO
+4030 *
+4040 PERFORM #03-FINALIZA
+4050 *
+4060 **----------------------- FIM DO PROGRAMA ----------------------------**
+4070 *
+4080 *
+4090 **--------------------------------------------------------------------**
+4100 DEFINE SUBROUTINE #03-FINALIZA
+4110 **--------------------------------------------------------------------**
+4120 *
+4130 SET CONTROL 'P=S'
+4140 CALL 'CPD10740' USING #REDE
+4150 *
+4160 IF  #NOK EQ 1
+4170   TERMINATE  12
+4180 END-IF
+4190 IF  *ERROR-NR  EQ  0
+4200   TERMINATE
+4210 END-IF
+4220 *
+4230 END-SUBROUTINE
+4240 *
+4250 **       CARGA DA TABELA DE ASSINATURAS A VALORIZAR
+4260 **--------------------------------------------------------------------**
+4270 **  CONSIDERANDO A SITUACAO INICIAL DE TRATAR SOMENTE LINA/LIRA  NORMAL
+4280 **  O PROCEDIMENTO ESTA REDUZIDO A PESQUISA DO VALOR DESTAS DUAS LINHAS
+4290 **  A PARTIR DE 17/02/2000 TAMBEM PARA SERVICO SPEED
+4300 *
+4310 **--------------------------------------------------------------------**
+4320 DEFINE SUBROUTINE #06-OBTEM-ASSINATURAS
+4330 **--------------------------------------------------------------------**
+4340 *
+4350 MOVE  #F01-CLA-SERV           TO  #SUPERS1-CA
+4360 IF    #F01-CD-EQPTO-12        EQ  'VL'
+4370       MOVE  'DSL'             TO  #SUPERS1-CB
+4380       MOVE  #F01-CD-EQPTO     TO  #SUPERS1-CD
+4390 ELSE
+4400       MOVE  'PRI'             TO  #SUPERS1-CB
+4410       MOVE  'MMA'             TO  #SUPERS1-CD
+4420 END-IF
+4430 *
+4440 IF    #F01-CLA-SERV     EQ  'LIRA'
+4450       MOVE   1          TO  #INDICE
+4460 ELSE
+4470       MOVE   2          TO  #INDICE
+4480 END-IF
+4490 *
+4500 F37A.
+4510 FIND  #FILE37  WITH  SUPERS1 EQ  #SUPERS1
+4520   IF  NO RECORDS FOUND
+4530       MOVE  1                      TO  #NOK
+4540       MOVE 'ERRO ACESSO INICIAL CAD ASSINATURAS' TO #MENSAGEM
+4550       PERFORM #03-FINALIZA
+4560   END-NOREC
+4570   ADD   1                 TO  #VALORE6
+4580   IF  (COR-EQUIP                 EQ  '99'     AND
+4590        MODELO-EQUIP              EQ  '999999' AND
+4600        CPCC                      EQ  '  '     AND
+4610        PROPRIEDADE-EQUIP         EQ  'T'      AND
+4620        CLASSE-SERVICO-PRINCIPAL  EQ  'PRI')       OR
+4630      ((COR-EQUIP                 EQ  'VD'  OR  EQ '99') AND
+4640        PROPRIEDADE-EQUIP         EQ  '9'      AND
+4650        CLASSE-SERVICO-PRINCIPAL  EQ  'DSL')
+4660        PERFORM #09-PESQUISA-VALOR
+4670        IF #TAB-ASS-CX (#INDICE)     NE  0
+4680           ESCAPE BOTTOM(F37A.)
+4690        END-IF
+4700   END-IF
+4710 END-FIND
+4720 *
+4730 IF #TAB-ASS-CX (#INDICE)           EQ  0
+4740    MOVE  1                         TO  #NOK
+4750    IF  #INDICE = 1
+4760        MOVE 'PESQUISA DE VALOR (A) DE ASSINATURAS'  TO #MENSAGEM
+4770    ELSE
+4780        MOVE 'PESQUISA DE VALOR (B) DE ASSINATURAS'  TO #MENSAGEM
+4790    END-IF
+4800    PERFORM #03-FINALIZA
+4810 END-IF
+4820 MOVE  CLASSE-SERVICO-LINHA         TO  #TAB-ASS-CA (#INDICE)
+4830 MOVE  CLASSE-SERVICO-PRINCIPAL     TO  #TAB-ASS-CB (#INDICE)
+4840 MOVE  TIPO-EQUIP                   TO  #TAB-ASS-CD (#INDICE)
+4850 MOVE  COR-EQUIP                    TO  #TAB-ASS-CE (#INDICE)
+4860 MOVE  PROPRIEDADE-EQUIP            TO  #TAB-ASS-CF (#INDICE)
+4870 MOVE  MODELO-EQUIP                 TO  #TAB-ASS-CG (#INDICE)
+4880 MOVE  CODIGO-CONTABIL              TO  #TAB-ASS-CK (#INDICE)
+4890 MOVE  CREDITO-FAT                  TO  #TAB-ASS-CS (#INDICE)
+4900 IF    FNT                          NE  MASK (NNN)
+4910       MOVE 0                       TO  #TAB-ASS-CV (#INDICE)
+4920 ELSE
+4930       MOVE  FNT                    TO  #AUX-ICMS
+4940       MOVE  #AUX-ICMS-N            TO  #TAB-ASS-CV (#INDICE)
+4950 END-IF
+4960 *
+4970 END-SUBROUTINE
+4980 *
+4990 **       OBTEM ULTIMA TARIFA DO REGISTRO DE ASSINATURAS
+5000 *
+5010 **--------------------------------------------------------------------**
+5020 DEFINE SUBROUTINE #09-PESQUISA-VALOR
+5030 **--------------------------------------------------------------------**
+5040 *
+5050 MOVE 0                          TO #IND
+5060 REPEAT UNTIL #IND EQ 12
+5070   ADD 1                         TO #IND
+5080   MOVE VALORES (#IND)           TO #TAB-VAL
+5090   IF #DTF                       EQ 301299 OR
+5100      #DTF                       EQ 311299 OR
+5110      #DTF                       EQ 301249 OR
+5120      #DTF                       EQ 311249
+5130      MOVE #TAB-PR (1)           TO #TAB-PR-R
+5140      MOVE #VALOR                TO #TAB-ASS-CX (#INDICE)
+5150      ESCAPE  ROUTINE
+5160   END-IF
+5170 END-REPEAT
+5180 *
+5190 END-SUBROUTINE
+5200 *
+5210 **       VALORIZA REGISTRO DE INTERRUPCAO SELECIONADO
+5220 **--------------------------------------------------------------------**
+5230 **  . POR FALTA DE DEFINICAO EXPECIFICA (ROTINA PROVISORIA)
+5240 **  . SO' ESTA VALORIZANDO LINA E LIRA E COM VALORES ESCOLHIDOS
+5250 **  . ITEM 1 DA TABELA CONTEM VALOR PARA LIRA;
+5260 **         2 DA TABELA CONTEM VALOR PARA LINA
+5270 **  . TAMBEM ESTA' FORCANDO CODIGO CCM CONFORME SOLICITACAO DO
+5280 **      SR JOSE' MANOEL (SSF)
+5290 **  . PRECISA CORRIGIR OU TABELA E/OU PROCEDIMENTO DE PESQUISA DE
+5300 **      VALOR PARA TARIFACAO
+5310 *
+5320 **--------------------------------------------------------------------**
+5330 DEFINE SUBROUTINE #12-VALORIZA
+5340 **--------------------------------------------------------------------**
+5350 *
+5360 IF #F01-CLA-SERV                EQ 'LIRA'
+5370    MOVE 1                       TO #IND
+5380 ELSE
+5390    MOVE 2                       TO #IND
+5400 END-IF
+5410 MOVE  #TAB-ASS-CX (#IND)        TO #F01-VALOR-UNITARIO
+5420 **MOVE #TAB-ASS-CS (#IND)       TO #F01-COD-FAT
+5430 MOVE  57600                     TO #F01-COD-FAT
+5440 MOVE  1                         TO #F01-COD-CONTAB
+5450 MOVE  #TAB-ASS-CV (#IND)        TO #F01-TX1
+5460 *
+5470 IF  #SUPERS1-CD        EQ  'MMA'
+5480     COMPUTE  #AUX-DIAS =               #F01-QT-MINUTOS / 1440
+5490     MOVE     #AUX-DIAS              TO #F01-QTDE
+5500     COMPUTE  #F01-VALOR-FATURADO =   ((#F01-VALOR-UNITARIO / 30) *
+5510                                        #AUX-DIAS) * -1
+5520     IF #AUX-DIAS GT 1
+5530        COMPRESS #AUX-DIAS 'DIAS' INTO #F01-TXT-TEXTO
+5540     ELSE
+5550        COMPRESS #AUX-DIAS 'DIA'  INTO #F01-TXT-TEXTO
+5560     END-IF
+5570 ELSE                                                /*  SE VLA/B/C/D/E/F
+5580     COMPUTE  #AUX-N    =               #F01-QT-MINUTOS / 30
+5590     MOVE     #AUX-N                 TO #F01-QTDE
+5600     COMPUTE  #F01-VALOR-FATURADO =   ((#F01-VALOR-UNITARIO / 1440) *
+5610                                        #AUX-N)    * -1
+5620     COMPRESS #AUX-N 'X 30"'       INTO #F01-TXT-TEXTO
+5630 END-IF
+5640 *
+5650 END-SUBROUTINE
+5660 *
+5670 **--------------------------------------------------------------------**
+5680 **  ROTINA PARA TRATAMENTO DE ERRO
+5690 **--------------------------------------------------------------------**
+5700 *
+5710 ON ERROR
+5720   IF *ERROR-NR EQ 3148
+5730      COMPRESS 'ACESSO CAD ADABAS INDISPONIVEL - COD. RET = '
+5740               *ERROR-NR ' -  EFETUAR RESTART' INTO #MENSAGEM
+5750      MOVE  1   TO  #NOK
+5760      PERFORM  #03-FINALIZA
+5770   ELSE
+5780      COMPRESS 'ERRO PROGRAMA - RET = ' *ERROR-NR ' LINHA ' *ERROR-LINE
+5790               ' ABRIR REGISTRO OCORRENCIA' INTO #MENSAGEM
+5800      MOVE  1   TO  #NOK
+5810      PERFORM  #03-FINALIZA
+5820   END-IF
+5830 END-ERROR
+5840 END

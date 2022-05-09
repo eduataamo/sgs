@@ -1,0 +1,92 @@
+//SGS03310 PROC MMDD=ESQUECEU,TRK1=60,TRK2=600,TRK3=1500                00000000
+//*                                                                     00000010
+//* *-----------------------------------------------------------------* 00000020
+//* * SGS03-3 - TRATA MOVIMENTO DE INTERRUPCOES DE LINHAS INDIVIDUAIS * 00000030
+//* *-----------------------------------------------------------------* 00000040
+//*                                                                     00000050
+//* ******************************************************** SGS03310 * 00000060
+//SGS03310 EXEC PGM=NAT2D,REGION=6M,PARM='SL=72,SYS=D'                  00000070
+//* * --------------------------------------------------------------- * 00000060
+//* *    TARIFAR MOVIMENTO DE INTERRUPCAO DE LINHAS INDIVIDUAIS E     * 00000060
+//* *             FORMATAR ARQUIVO DE SERVI?OS ESPECIAIS              * 00000060
+//* * --------------------------------------------------------------- * 00000060
+//STEPLIB  DD DSN=NATURAL.BATCH.PRODUCAO,DISP=SHR                       00000080
+//         DD DSN=ADABAS.TELE.ADALOAD,DISP=SHR                          00000090
+//         DD DSN=CTB.LOADLIB,DISP=SHR                                  00000100
+//DDCARD   DD DSN=ADABAS.TELE.INSTALL(RUND),DISP=SHR                    00000110
+//SYSABOUT DD SYSOUT=*                                                  00000120
+//SYSUDUMP DD SYSOUT=U                                                  00000130
+//DDPRINT  DD SYSOUT=*                                                  00000140
+//CMPRINT  DD SYSOUT=*                                                  00000150
+//CMPRT01  DD SYSOUT=*                                                  00000160
+//CMWKF01  DD DSN=D.SGS306(0),DISP=OLD                                  00000170
+//CMWKF02  DD DSN=D.SGS306(+1),DISP=(,CATLG,DELETE),UNIT=PROD,          00000180
+//            DCB=(GDGCTB,RECFM=FB,LRECL=350),                          00000190
+//            SPACE=(TRK,(&TRK3,&TRK2),RLSE)                            00000200
+//CMWKF03  DD DSN=D.SGS03.A311&MMDD,DISP=(,CATLG,DELETE),UNIT=SYSDA,    00000210
+//            DCB=(LRECL=150,RECFM=FB),                                 00000220
+//            SPACE=(TRK,(&TRK2,&TRK1),RLSE)                            00000230
+//CMSYNIN  DD DSN=SYS4.NATURAL(SGS0300N),DISP=SHR                       00000240
+//         DD DSN=SYS4.DADOS(SGS0331P),DISP=SHR                         00000250
+//DDREDE   DD SYSOUT=P                                                  00000260
+//* ******************************************************** SGS0331I * 00000270
+//SGS0331I EXEC PGM=IEFBR14,COND=(0,EQ,SGS03310)                        00000280
+//DD1      DD DSN=D.SGS306(+1),DISP=(OLD,DELETE)                        00000290
+//DD2      DD DSN=D.SGS03.A311&MMDD,DISP=(OLD,DELETE)                   00000300
+//* ******************************************************** SGS0332S * 00000310
+//SGS0332S EXEC PGM=SORT,COND=(0,NE)                                    00000320
+//SORTLIB  DD DSN=CTB.SORTLIB,DISP=SHR                                  00000330
+//SYSOUT   DD SYSOUT=*                                                  00000340
+//SORTMSG  DD SYSOUT=*                                                  00000350
+//SORTIN   DD DSN=D.SGS03.A311&MMDD,DISP=OLD                            00000360
+//SORTOUT  DD DSN=D.SGS03.A312&MMDD,DISP=(,CATLG,DELETE),UNIT=SYSDA,    00000370
+//            DCB=(LRECL=150,RECFM=FB),                                 00000380
+//            SPACE=(TRK,(&TRK2,&TRK1),RLSE)                            00000390
+//SYSIN    DD DSN=SYS4.DADOS(SGS0332S),DISP=SHR                         00000400
+//* ********************************************************* SGS03320 *00000410
+//SGS03320 EXEC PGM=NAT2D,REGION=6M,PARM='SL=72,SYS=D'                  00000420
+//* * ---------------------------------------------------------------- *00000410
+//* *  LISTAR MOVIMENTO DE INTERRUPCAO DE LINHAS INDIVIDUAIS INCLUIDO  *00000410
+//* *           NO ARQUIVO DE SERVICOS ESPECIAIS                       *00000410
+//* * ---------------------------------------------------------------- *00000410
+//STEPLIB  DD DSN=NATURAL.BATCH.PRODUCAO,DISP=SHR                       00000430
+//         DD DSN=ADABAS.TELE.ADALOAD,DISP=SHR                          00000440
+//         DD DSN=CTB.LOADLIB,DISP=SHR                                  00000450
+//DDCARD   DD DSN=ADABAS.TELE.INSTALL(RUND),DISP=SHR                    00000460
+//SYSABOUT DD SYSOUT=*                                                  00000470
+//SYSUDUMP DD SYSOUT=U                                                  00000480
+//DDPRINT  DD SYSOUT=*                                                  00000490
+//CMPRINT  DD SYSOUT=*                                                  00000500
+//CMPRT01  DD SUBSYS=(CDAM,'SYSOUT=(C,,0001)')                          00000510
+//CMWKF01  DD DSN=D.SGS03.A312&MMDD,DISP=(OLD,DELETE,KEEP)              00000520
+//CMSYNIN  DD DSN=SYS4.NATURAL(SGS0300N),DISP=SHR                       00000530
+//         DD DSN=SYS4.DADOS(SGS0332P),DISP=SHR                         00000540
+//DDREDE   DD SYSOUT=P                                                  00000550
+//* ******************************************************** SGS0334S * 00000560
+//SGS0334S EXEC PGM=SORT,COND=(0,NE)                                    00000570
+//SORTLIB  DD DSN=CTB.SORTLIB,DISP=SHR                                  00000580
+//SYSOUT   DD SYSOUT=*                                                  00000590
+//SORTMSG  DD SYSOUT=*                                                  00000600
+//SORTIN   DD DSN=D.SGS03.A311&MMDD,DISP=(OLD,DELETE,KEEP)              00000610
+//SORTOUT  DD DSN=D.SGS03.A313&MMDD,DISP=(,CATLG,DELETE),UNIT=SYSDA,    00000620
+//            DCB=(LRECL=150,RECFM=FB),                                 00000630
+//            SPACE=(TRK,(&TRK2,&TRK1),RLSE)                            00000640
+//SYSIN    DD DSN=SYS4.DADOS(SGS0334S),DISP=SHR                         00000650
+//* ******************************************************** SGS07380 * 00000660
+//SGS07380 EXEC PGM=SGS07380,PARM='PINTPC'                              00000670
+//* *-----------------------------------------------------------------* 00000680
+//* * ESTE PGM INCLUI REGS DE INTERRUPCAO NO ARQUIVO DE SERVICOS      * 00000690
+//* * ESPECIAIS                                                       * 00000700
+//* *-----------------------------------------------------------------* 00000710
+//SYSUDUMP DD SYSOUT=U                                                  00000720
+//SYSABOUT DD SYSOUT=*                                                  00000730
+//SYSOUT   DD SYSOUT=*                                                  00000740
+//SEQENT01 DD DSN=D.SGS03.A313&MMDD,DISP=(OLD,DELETE,KEEP)              00000750
+//SEQSAI01 DD DSN=D.SGS07.A381&MMDD..INTPC,DISP=(,CATLG,DELETE),        00000760
+//            UNIT=PROD,DCB=(LRECL=150,RECFM=FB),                       00000770
+//            SPACE=(TRK,(&TRK2,&TRK1),RLSE)                            00000780
+//INDUPD01 DD DSN=VPPRD009.SGS070.KCCONTRL,DISP=OLD                     00000790
+//INDUPD02 DD DSN=VPPRD100.SGS071.KCSERESP,DISP=OLD,                    00000800
+//            AMP=('BUFND=20','BUFNI=10','BUFSP=245760')                00000810
+//RELATO01 DD SUBSYS=(CDAM,'SYSOUT=(C,,0001)'),DCB=BLKSIZE=133          00000820
+//DDREDE   DD SYSOUT=P,DCB=BLKSIZE=133                                  00000830

@@ -1,0 +1,18 @@
+****** PROCEDIMENTOS PARA IMPRIMIR UM PROGRAMA FONTE DA BASELINE *******
+*      CMNRT130                                                        *
+*----------------------------------------------------------------------*
+  1.  SUBMISSAO DO JOB PARA GERAR LISTAGEM
+ 
+  1.1 Entrar na Opcao 1 - Build
+ 
+  1.2 Entrar na Opcao B - Browse
+ 
+      - Informar aplicacao XXXX no campo Aplication (Ex. GMU*),
+      - Informar o Type desejado (Ex. SRC, SRB, CPY),
+      - Informar o nome do modulo desejado,
+      - Digitar  P (Opcao Print) no campo Option,
+      - Enter,
+      - Teclar PF3,
+      - Aparecera o cartao JOB :
+      - Alterar MSGCLASS para 9.
+      - Alterar /*ROUTE para /*ROUTE PRINT nome.da.impressora

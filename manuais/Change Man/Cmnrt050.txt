@@ -1,0 +1,22 @@
+      050. TRANSFERIR DA LIBRARY.USER PARA O DESENVOLVIMENTO :
+ 
+        . no painel 'PRIMARY OPTION MENU', digite opcao 5 e <enter>.
+        . no painel 'PACKAGE LIST PARAMETERS' :
+          . no campo 'PACKAGE ID', digite o numero do pacote e <enter>.
+        . no painel 'CHANGE PACKAGE LIST' :
+          . no campo antes do 'PACKAGE ID', digite S1 e <enter>.
+        . retorna o painel 'STAGE: FROM DEVELOPMENT' :
+          . Por exemplo a library user c015002.library.user :
+          . no campo 'PROJECT', digite C015002.
+          . no campo 'GROUP', digite LIBRARY.
+          . no campo 'TYPE', digite USER.
+          . no campo 'MEMBER', digite o nome do componente.
+          . no campo 'LIBRARY TYPE', digite o tipo da biblioteca ou
+            deixe em branco para apresentar a lista.
+          . no campo 'LANGUAGE', deixe em branco.
+          . no campo 'STAGE NAME', deixe em branco ou digite o nome
+            que o componente deve ter no Change Man.
+          . tecle <enter>.
+        . retorna o painel 'STAGE: FROM DEVELOPMENT' com a informacao
+          'component staged', no canto direito superior, o que indica
+          a transferencia efetuada com sucesso.

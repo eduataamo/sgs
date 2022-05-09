@@ -1,0 +1,524 @@
+      *----------------------------------------------------------------*00000001
+       ID DIVISION.                                                     00000002
+      *----------------------------------------------------------------*00000003
+                                                                        00000004
+       PROGRAM-ID.         SGS07490.                                    00000007
+       AUTHOR.             SILVIA - SFS.                                00000009
+       DATE-WRITTEN.       JUL/2000.                                    00000013
+                                                                        00000014
+      *----------------------------------------------------------------*00000015
+      *  . GRAVAR OS ARQS DE SERVICOS ESPECIAIS NO ARQ  'SERESP'  POR  *00000016
+      *     SISTEMA, TENDO COMO CHAVE O SERVICO INFORMADO NO PARM.     *00000017
+      *  . GERAR MOVIMENTOS DE EXCLUSAO PARA SEREM LIDOS PELO PROGRA-  *FAT00017
+      *     MA SGS07380 E DAR BAIXA DO ARQUIVO VSAM, ANTES DE SUA  A-  *FAT00018
+      *     TUALIZACAO.                                                *FAT00019
+      *                                                                *FAT00017
+      *  . OBS.: EM CASO DE REPROCESSAMENTO:                           *FAT00017
+      *          1) O SISTEMA ESTA' PREPARADO PARA GERAR EXCLUSAO DOS  *FAT00017
+      *             INCLUIDOS EM PROCESSAMENTO;                        *FAT00017
+      *          2) E' ACUSADO O REPROCESSAMENTO ATRAVES DE  MENSAGEM  *FAT00017
+      *             DIFERENCIADA NA REDE DE CONTROLE;                  *FAT00017
+      *          3) NAO OCORRENDO ERRO DE VSAM, TERMINA COM COND=000.  *FAT00017
+      *----------------------------------------------------------------*00000019
+      /----------------------------------------------------------------*00000028
+       ENVIRONMENT DIVISION.                                            00000032
+      *----------------------------------------------------------------*00000019
+                                                                        00000031
+       CONFIGURATION SECTION.                                           00000034
+       SPECIAL-NAMES.      DECIMAL-POINT   IS      COMMA.               00000036
+       INPUT-OUTPUT SECTION.                                            00000038
+       FILE-CONTROL.                                                    00000040
+           SELECT  SEQENT01 ASSIGN TO      UT-S-SEQENT01.               00000042
+           SELECT  INDENT01 ASSIGN         INDENT01                     FAT00033
+                            ORGANIZATION   INDEXED                      FAT00034
+                            ACCESS         DYNAMIC                      FAT00035
+                            RECORD KEY     I01-IDENT                    FAT00036
+                            FILE   STATUS  WRK-FSTATUS.                 FAT00037
+           SELECT  SEQSAI01 ASSIGN TO      UT-S-SEQSAI01.               00000043
+                                                                        00000044
+      /----------------------------------------------------------------*00000019
+       DATA DIVISION.                                                   00000049
+      *----------------------------------------------------------------*00000019
+                                                                        00000048
+       FILE SECTION.                                                    00000051
+                                                                        00000052
+      *----------------------------------------------------------------*00000019
+      *       I  N  D  E  N  T  0  1     -  ( S E R E S P )             00000054
+      *----------------------------------------------------------------*00000019
+       FD  INDENT01
+           RECORD  150.
+                                                                        00000063
+       01  I01-REG.                                                     00000064
+           05  I01-IDENT.                                               FAT00113
+               10  I01-GENKEY.                                          FAT00114
+                   15  I01-SERVICO     PIC  X(005).                     FAT00115
+                   15  I01-MMPP        PIC  X(004).                     FAT00116
+               10  I01-SEQUENCIA       PIC  X(005).                     FAT00117
+           05  I01-ZONA                PIC  X(003).                     FAT00118
+           05  I01-ASSICONT.                                            FAT00119
+               10  I01-LOCAL1          PIC  9(005).                     FAT00120
+               10  I01-TELEFONE1.                                       FAT00121
+                   15  I01-CENTRAL1    PIC  X(004).                     FAT00122
+                   15  I01-MILHAR1     PIC  9(004).                     FAT00123
+                   15  I01-CJ1         PIC  9(001).                     FAT00124
+                   15  I01-DV1         PIC  9(001).                     FAT00125
+           05  I01-ASSINANTE.                                           FAT00126
+               10  I01-LOCAL2          PIC  9(005).                     FAT00127
+               10  I01-TELEFONE2.                                       FAT00128
+                   15  I01-CENTRAL2    PIC  X(004).                     FAT00129
+                   15  I01-MILHAR2     PIC  9(004).                     FAT00130
+                   15  I01-CJ2         PIC  9(001).                     FAT00131
+                   15  I01-DV2         PIC  9(001).                     FAT00132
+           05  I01-CODFAT              PIC S9(007)   COMP-3.            FAT00133
+           05  I01-TXTCOMPL            PIC  X(019).                     FAT00134
+           05  I01-CONTRATO.                                            FAT00135
+               10  I01-NUMERO          PIC  9(006).                     FAT00136
+               10  I01-DV              PIC  9(001).                     FAT00137
+           05  I01-QUANT               PIC  9(004).                     FAT00138
+           05  I01-VALUNIT             PIC S9(009)V99 COMP-3.           FAT00139
+           05  I01-ALIQ-ICMS           PIC S9(003)V99 COMP-3.           FAT00140
+           05  I01-CODLIST             PIC  X(006).                     FAT00141
+           05  I01-DTSERV.                                              FAT00142
+               10  I01-DD              PIC  9(002).                     FAT00143
+               10  I01-MM              PIC  9(002).                     FAT00144
+               10  I01-AA              PIC  9(002).                     FAT00145
+           05  I01-DTSERVSTAT          PIC  9(001).                     FAT00146
+           05  I01-SERVICO.                                             FAT00147
+               10  I01-CODIGO          PIC  9(002).                     FAT00148
+               10  I01-SUBCOD          PIC  9(001).                     FAT00149
+           05  I01-CODLIN              PIC  9(003).                     FAT00150
+           05  I01-PERIODO             PIC  9(002).                     FAT00151
+           05  I01-CODCONTAB           PIC  9(009).                     FAT00152
+           05  I01-VALEDIT             PIC S9(009)V99 COMP-3.           FAT00153
+           05  FILLER                  PIC  X(023).                     FAT00154
+           05  I01-CODMOV              PIC  X(001).                     FAT00155
+      /----------------------------------------------------------------*00000019
+      *       S  E  Q  E  N  T  0  1  -  LI/LT                          00000074
+      *----------------------------------------------------------------*00000019
+       FD  SEQENT01
+           RECORD  170
+           BLOCK   0
+           RECORDING       F
+           LABEL   RECORD  STANDARD.
+                                                                        00000083
+       01  E01-REG.                                                     00000084
+           05  E01-TELEFONE            PIC  9(015)  COMP-3.             00000130
+           05  FILLER                  PIC  X(006).
+           05  E01-DTCOMPL             PIC  9(007)  COMP-3.
+      *    ABAIXO: (X22) TIPO(X3) PROP(X1) MOD(X6) CPCC(N2) EQPTO(X2)
+           05  FILLER                  PIC  X(036).
+           05  E01-FAT                 PIC  9(005)  COMP-3.
+           05  E01-QTD                 PIC  X(003).
+           05  E01-VALOR               PIC S9(009)V99  COMP-3.
+           05  E01-MUL                 PIC  X(007).
+           05  E01-FILL                PIC  X(008).
+           05  E01-DTREAJ              PIC  9(007)  COMP-3.
+           05  E01-FNT                 PIC  9(003)  COMP-3.
+           05  E01-CON                 PIC  9(013)  COMP-3.
+           05  E01-TEXTO               PIC  X(019).
+           05  FILLER                  PIC  X(025).
+           05  E01-COR                 PIC  X(002).
+           05  FILLER                  PIC  X(021).
+           05  E01-NRC                 PIC  9(011)  COMP-3.
+           05  FILLER                  PIC  X(003).
+      /----------------------------------------------------------------*00000019
+      *       S  E  Q  S  A  I  0  1                                    00000093
+      *----------------------------------------------------------------*00000019
+       FD  SEQSAI01
+           RECORD  150
+           BLOCK   0
+           RECORDING       F
+           LABEL   RECORD  STANDARD.
+                                                                        00000102
+       01  S01-REG.                                                     00000103
+           05  S01-IDENT.
+               10  S01-GENKEY.
+                   15  S01-SERVICO     PIC  X(005).
+                   15  S01-MMPP        PIC  X(004).                     00000105
+               10  S01-SEQUENCIA       PIC  X(005).
+           05  S01-SEREPSIS.                                            00000180
+               10  S01-SERESPINI.                                       00000150
+                   15  S01-ZONA        PIC  X(003).                     00000160
+                   15  S01-TELEFONE    PIC  9(015).                     00000170
+                   15  S01-TELEFONE2   PIC  9(015).                     00000220
+                   15  S01-CODFAT      PIC S9(007)     COMP-3.          00000270
+                   15  S01-TXTCOMP     PIC  X(019).                     00000280
+                   15  S01-CONTNU      PIC  9(006).                     00000290
+                   15  S01-CONTDV      PIC  9(001).                     00000300
+                   15  S01-QTDADE      PIC  9(004).                     00000310
+                   15  S01-VLUNIT      PIC S9(009)V99      COMP-3.      00000320
+               10  S01-ICMS            PIC S9(003)V99      COMP-3.      00000330
+               10  S01-SERESPFIM.                                       00000340
+                   15  S01-CDLISTA     PIC  X(006).                     00000350
+                   15  S01-DTSERV      PIC  9(006).                     00000360
+                   15  S01-DTSTAT      PIC  9(001).                     00000370
+                   15  S01-CODSERV     PIC  9(003).                     00000380
+                   15  S01-CODLIN      PIC  9(003).                     00000400
+                   15  S01-PERIODO     PIC  9(002).                     00000410
+                   15  S01-CDCONT      PIC  9(009).                     00000420
+                   15  S01-VLEDIT      PIC S9(009)V99      COMP-3.      00000430
+           05  FILLER                  PIC  X(008).                     00000139
+           05  S01-NRC                 PIC S9(011)         COMP-3.      00000430
+           05  FILLER                  PIC  X(009).                     00000139
+           05  S01-CODMOV              PIC  X(001).                     00000140
+                                                                        00000141
+      /----------------------------------------------------------------*00000019
+       WORKING-STORAGE SECTION.                                         00000146
+      *----------------------------------------------------------------*00000019
+                                                                        00000147
+       01          WRK-AREA.                                            00000148
+           05      FILLER          PIC  X(046)             VALUE        00000149
+                   '***  SGS07490 - INICIO DA WORKING-STORAGE  ***'.    00000150
+                                                                        00000147
+      *----------------------------------------------------------------*00000019
+      *       C H A V E S                                              *00000153
+      *----------------------------------------------------------------*00000019
+                                                                        00000155
+           05      WCH-FAE01       PIC  X(001)     VALUE   LOW-VALUES.  FAT00244
+           05      WCH-FAI01       PIC  X(001)     VALUE   ZEROS.       FAT00246
+                                                                        00000164
+           05      WRK-FSTATUS     PIC  X(002)     VALUE   ZEROS.       FAT00229
+                                                                        00000151
+      *----------------------------------------------------------------*00000019
+      *       C O N T A D O R E S                                       00000153
+      *----------------------------------------------------------------*00000019
+                                                                        00000155
+           05      WCT-SEQUENCIA   PIC  9(005)     VALUE   ZEROS.       00000175
+                                                                        00000159
+      *----------------------------------------------------------------*00000019
+      *       A U X I L I A R E S                                       00000162
+      *----------------------------------------------------------------*00000019
+                                                                        00000159
+           05      WAX-TIME.                                            00000165
+            10     WAX-HHMMSS      PIC  9(006).                         00000166
+            10     FILLER          PIC  9(002).                         00000167
+                                                                        00000168
+           05      WAX-DATA        PIC  9(007).                         00000169
+           05      FILLER   REDEFINES   WAX-DATA.                       00000170
+            10     FILLER          PIC  9(001).                         00000170
+            10     WAX-DTPROC      PIC  9(006).                         00000170
+            10     FILLER   REDEFINES   WAX-DTPROC.                     00000170
+             15    WAX-AA          PIC  9(002).                         00000171
+             15    WAX-MM          PIC  9(002).                         00000172
+             15    WAX-DD          PIC  9(002).                         00000173
+                                                                        00000174
+           05      WAX-DATA-INV    PIC  9(006).
+           05      FILLER   REDEFINES   WAX-DATA-INV.
+            10     WAX-DIA-INV     PIC  9(002).
+            10     WAX-MES-INV     PIC  9(002).
+            10     WAX-ANO-INV     PIC  9(002).
+ 
+           05      WAX-CON         PIC  9(013).
+                                                                        00000178
+      /----------------------------------------------------------------*FAT00249
+      *       A R E A   DE   M E N S A G E M                            FAT00250
+      *----------------------------------------------------------------*FAT00251
+                                                                        00000178
+           05      WMS-MSG01.                                           FAT00252
+            10     FILLER          PIC  X(040)            VALUE         FAT00253
+                   'ERRO NO VSAM - FSTATUS'.                            FAT00254
+            10     WMS-STATUS      PIC  X(010).                         FAT00255
+                                                                        FAT00256
+           05      WMS-MSG-P       PIC  X(040)            VALUE         FAT00260
+                   'FIM DE PROCESSAMENTO NORMAL           '.            FAT00261
+                                                                        FAT00259
+           05      WMS-MSG-R       PIC  X(040)            VALUE         FAT00260
+                   'FIM DE REPROCESSAMENTO NORMAL         '.            FAT00261
+                                                                        00000182
+      *----------------------------------------------------------------*00000019
+      *             NOME DOS ARQUIVOS PARA A REDE DE CONTROLE          *00000180
+      *----------------------------------------------------------------*00000019
+                                                                        00000182
+           05      WTB-DSNAMES.                                         00000183
+            10     WTB-NOMARQ      OCCURS 20 TIMES.                     00000184
+             15    WTB-DDN         PIC  X(008).                         00000185
+             15    WTB-DSN         PIC  X(044).                         00000186
+            10     WIN-DSN         PIC S9(009)     COMP    VALUE   +0.  00000187
+                                                                        00000188
+      *----------------------------------------------------------------*00000019
+      *       R E D E    D E   C O N T R O L E                          00000190
+      *----------------------------------------------------------------*00000019
+                                                                        00000192
+           05      WRC-REDE.                                            00000193
+            10     WRC-LNGT        PIC S9(009)     VALUE  +475   COMP-3.00000194
+            10     WRC-JOBN        PIC  X(008)     VALUE   SPACES.      00000195
+            10     WRC-PROG        PIC  X(008)     VALUE  'SGS07490'.   00000196
+            10     WRC-CODR        PIC  X(010)     VALUE  'SGS0749-R'.  00000198
+            10     WRC-DATA.                                            00000200
+             15    WRC-COND        PIC  X(002)     VALUE  'NV'.         00000201
+             15    WRC-DD          PIC  X(002).                         00000202
+             15    WRC-MM          PIC  X(002).                         00000203
+             15    WRC-AA          PIC  X(002).                         00000204
+            10     WRC-TIME        PIC  99.99.99.                       00000205
+            10     WRC-ETAP        PIC  X(004)     VALUE  '****'.       00000206
+            10     WRC-PAGI        PIC  X(003)     VALUE  '***'.        00000207
+                                                                        00000192
+            10     WRC-ENTR.                                            00000208
+                                                                        FAT00295
+             15    WRC-CODE1       PIC  X(024)     VALUE   SPACES.      00000209
+             15    WRC-NOME1       PIC  X(019)     VALUE                00000210
+                   'QT. LIDOS SEQENT01'.                                00000211
+             15    WRC-INDE1       PIC  X(002)     VALUE  ' '.          00000212
+             15    WRC-VALE1       PIC S9(015)     VALUE  +0     COMP-3.00000213
+                                                                        FAT00295
+             15    WRC-CODE2       PIC  X(024)     VALUE   SPACES.      00000209
+             15    WRC-NOME2       PIC  X(019)     VALUE                00000210
+                   'QT. DESPREZADOS   '.                                00000211
+             15    WRC-INDE2       PIC  X(002)     VALUE  ' '.          00000212
+             15    WRC-VALE2       PIC S9(015)     VALUE  +0     COMP-3.00000213
+                                                                        FAT00295
+             15    WRC-CODE3       PIC  X(024)     VALUE   SPACES.      00000209
+             15    WRC-NOME3       PIC  X(019)     VALUE                00000210
+                   'QT. LIDOS SERESP  '.                                00000211
+             15    WRC-INDE3       PIC  X(002)     VALUE  ' '.          00000212
+             15    WRC-VALE3       PIC S9(015)     VALUE  +0     COMP-3.00000213
+                                                                        00000192
+             15    WRC-FIMENT      PIC  X(001)     VALUE   LOW-VALUES.  00000214
+                                                                        00000192
+            10     WRC-SAIDA.                                           00000216
+                                                                        00000192
+             15    WRC-CODS1       PIC  X(024)     VALUE   SPACES.      00000217
+             15    WRC-NOMS1       PIC  X(019)     VALUE                00000218
+                   'QT. A EXCLUIR    '.                                 00000219
+             15    WRC-INDS1       PIC  X(002)     VALUE  ' '.          00000220
+             15    WRC-VALS1       PIC S9(015)     VALUE  +0     COMP-3.00000221
+                                                                        00000192
+             15    WRC-CODS2       PIC  X(024)     VALUE   SPACES.      00000222
+             15    WRC-NOMS2       PIC  X(019)     VALUE                00000223
+                   'QT. A INCLUIR    '.                                 00000224
+             15    WRC-INDS2       PIC  X(002)     VALUE  ' '.          00000225
+             15    WRC-VALS2       PIC S9(015)     VALUE  +0     COMP-3.00000226
+                                                                        00000192
+             15    WRC-CODS3       PIC  X(024)     VALUE   SPACES.      00000227
+             15    WRC-NOMS3       PIC  X(019)     VALUE                00000228
+                   'QT. GRAV. SEQSAI01'.                                00000229
+             15    WRC-INDS3       PIC  X(002)     VALUE  ' '.          00000230
+             15    WRC-VALS3       PIC S9(015)     VALUE  +0     COMP-3.00000231
+                                                                        00000192
+             15    WRC-FIMSAI      PIC  X(001)     VALUE   LOW-VALUES.  00000232
+                                                                        00000192
+            10     WRC-OBS         PIC  X(100)     VALUE   SPACES.      00000234
+            10     WRC-FIMREDE     PIC  X(001)     VALUE   HIGH-VALUES. 00000235
+                                                                        00000237
+      /----------------------------------------------------------------*00000019
+      *       A R E A   PARA   A B E N D A R                            00000239
+      *----------------------------------------------------------------*00000019
+                                                                        00000241
+           05      WAB-ABENDAR.                                         FAT00235
+            10     WAB-AB1         PIC  X(001)     VALUE   LOW-VALUES.  FAT00236
+            10     WAB-AB2         PIC S9(004)     COMP    VALUE +0.    FAT00238
+      /----------------------------------------------------------------*00000019
+       LINKAGE SECTION.                                                 00000251
+      *----------------------------------------------------------------*00000019
+                                                                        00000252
+       01  LKG-PARM.                                                    00000253
+           05  LKG-TAM                 PIC S9(004) COMP.                00000254
+           05  LKG-GENKEY.                                              00000256
+               10  LKG-SERVICO         PIC  X(005).                     00000256
+               10  LKG-MMPP            PIC  9(004).                     00000019
+                                                                        00000260
+      /----------------------------------------------------------------*00000019
+       PROCEDURE DIVISION USING LKG-PARM.                               00000265
+      *----------------------------------------------------------------*00000019
+       CSF-MAIN.                                                        FAT00338
+                                                                        00000260
+           PERFORM 10000-00-INICIALIZA                                  FAT00339
+           PERFORM 10060-00-PROCESSA                                    FAT00340
+           PERFORM 10050-00-FINALIZA                                    FAT00341
+           STOP RUN.                                                    FAT00342
+                                                                        FAT00343
+      /----------------------------------------------------------------*00000019
+      *       ROTINA   DE   INICIALIZACOES                              00000265
+      *----------------------------------------------------------------*00000019
+       10000-00-INICIALIZA.                                             FAT00346
+                                                                        FAT00343
+           OPEN    INPUT   SEQENT01                                     FAT00356
+                           INDENT01                                     FAT00357
+                   OUTPUT  SEQSAI01                                     FAT00358
+                                                                        FAT00343
+           IF      WRK-FSTATUS     NOT     EQUAL  '00'                  FAT00359
+                   PERFORM 10010-00-ERRO-VSAM                           FAT00360
+           END-IF                                                       FAT00361
+                                                                        FAT00343
+           ACCEPT  WAX-TIME        FROM    TIME.                        00000280
+           ACCEPT  WAX-DATA        FROM    DATE.                        00000281
+           MOVE    WAX-DD          TO      WRC-DD.                      00000282
+           MOVE    WAX-MM          TO      WRC-MM.                      00000283
+           MOVE    WAX-AA          TO      WRC-AA.                      00000284
+           MOVE    WAX-HHMMSS      TO      WRC-TIME.                    00000285
+                                                                        FAT00343
+           CALL   'CPD10170'       USING   WRC-JOBN.                    00000291
+           CALL   'CPD0003S'       USING   WTB-DSNAMES.                 00000292
+                                                                        FAT00343
+           PERFORM 10030-00-PESQ-DSN       VARYING WIN-DSN              FAT00367
+                   FROM    1  BY   1       UNTIL                        FAT00368
+                   WIN-DSN         GREATER 20      OR                   FAT00369
+                   WTB-DDN(WIN-DSN)  EQUAL HIGH-VALUES                  FAT00370
+                                                                        FAT00343
+           PERFORM 10040-00-LER-SEQENT01.                               FAT00371
+                                                                        FAT00343
+      /----------------------------------------------------------------*00000343
+      *       ROTINA   DE   DSNAMES                                     00000265
+      *----------------------------------------------------------------*00000019
+       10030-00-PESQ-DSN.                                               FAT00421
+                                                                        FAT00439
+           EVALUATE TRUE                                                FAT00427
+             WHEN  WTB-DDN(WIN-DSN)        EQUAL  'SEQENT01'            FAT00432
+                   MOVE    WTB-DSN(WIN-DSN)   TO   WRC-CODE1            FAT00433
+                                                   WRC-CODE2            FAT00433
+             WHEN  WTB-DDN(WIN-DSN)        EQUAL  'INDENT01'            FAT00434
+                   MOVE    WTB-DSN(WIN-DSN)   TO   WRC-CODE3            FAT00435
+             WHEN  WTB-DDN(WIN-DSN)        EQUAL  'SEQSAI01'            FAT00436
+                   MOVE    WTB-DSN(WIN-DSN)   TO   WRC-CODS1            FAT00437
+                                                   WRC-CODS2            FAT00435
+                                                   WRC-CODS3            FAT00437
+           END-EVALUATE.                                                FAT00438
+      /----------------------------------------------------------------*00000343
+      *       ROTINA   DE   LEITURA   DE   E01 (LI/LT)                  00000343
+      *----------------------------------------------------------------*00000343
+       10040-00-LER-SEQENT01.                                           FAT00442
+                                                                        FAT00448
+           READ    SEQENT01        AT      END                          FAT00452
+                   MOVE    HIGH-VALUES     TO      WCH-FAE01            FAT00453
+           END-READ.                                                    FAT00454
+                                                                        00000528
+           IF      WCH-FAE01       EQUAL   HIGH-VALUES                  00000532
+                   NEXT    SENTENCE                                           33
+           ELSE                                                               33
+                   ADD     1               TO      WRC-VALE1                  33
+                   IF      E01-VALOR       EQUAL   ZEROS
+                           ADD     1       TO      WRC-VALE2
+                           GO              TO      10040-00-LER-SEQENT01
+                   END-IF
+           END-IF.
+ 
+      /----------------------------------------------------------------*00000019
+      *       R O T I N A   D E   L E I T U R A   D O   S E R E S P     00000190
+      *----------------------------------------------------------------*00000019
+       10070-00-LER-INDENT01.                                           FAT00508
+                                                                        FAT00515
+           READ    INDENT01        NEXT                                 FAT00519
+                                                                        FAT00487
+           EVALUATE        TRUE                                         FAT00520
+             WHEN  WRK-FSTATUS             EQUAL  '00'                  FAT00523
+                   ADD             1       TO      WRC-VALE3            FAT00524
+             WHEN  WRK-FSTATUS             EQUAL  '10'                  FAT00521
+                   MOVE            1       TO      WCH-FAI01            FAT00522
+             WHEN  WRK-FSTATUS     NOT     EQUAL  '00'                  FAT00523
+                   PERFORM 10010-00-ERRO-VSAM                           FAT00524
+           END-EVALUATE.                                                FAT00527
+                                                                        FAT00527
+           IF      LKG-GENKEY      NOT     EQUAL   I01-GENKEY           FAT00525
+                   MOVE            1       TO      WCH-FAI01            FAT00526
+           END-IF.                                                      FAT00526
+                                                                        00000512
+      /----------------------------------------------------------------*00000019
+      *       ROTINA   DE   CONSULTA   AO   SERESP  P/  EXCLUIR   MMPP  00000190
+      *----------------------------------------------------------------*00000019
+       10060-00-PROCESSA.                                               FAT00481
+                                                                        FAT00487
+           MOVE    LKG-GENKEY      TO      I01-GENKEY                   FAT00491
+           MOVE   '00001'          TO      I01-SEQUENCIA                FAT00491
+                                                                        FAT00487
+           START   INDENT01                                             FAT00492
+                   KEY     IS      EQUAL   TO      I01-GENKEY           FAT00493
+                                                                        FAT00487
+           EVALUATE        TRUE                                         FAT00494
+             WHEN  WRK-FSTATUS     EQUAL  '00'                          FAT00495
+                   PERFORM 10070-00-LER-INDENT01                        FAT00496
+                   PERFORM 10080-00-PROCESSA-EXCLUSAO                   FAT00497
+                           UNTIL   WCH-FAI01       EQUAL   1            FAT00497
+             WHEN  WRK-FSTATUS     EQUAL  '23'                          FAT00499
+                   MOVE    ZEROS   TO      WRC-VALE3                    FAT00500
+             WHEN  OTHER                                                FAT00502
+                   PERFORM 10010-00-ERRO-VSAM                           FAT00503
+           END-EVALUATE.                                                FAT00504
+ 
+           PERFORM 10100-00-PROCESSA-INCLUSAO                           FAT00497
+                   UNTIL   WCH-FAE01       EQUAL   HIGH-VALUES.         FAT00497
+                                                                        FAT00505
+      /----------------------------------------------------------------*00000019
+      *       ROTINA   DE   PROCESSAMENTO   DE   EXCLUSOES              00000190
+      *----------------------------------------------------------------*00000019
+       10080-00-PROCESSA-EXCLUSAO.                                      FAT00531
+                                                                        FAT00537
+           MOVE   'E'              TO      I01-CODMOV                   FAT00556
+           WRITE   S01-REG         FROM    I01-REG                      FAT00557
+           ADD     1               TO      WRC-VALS1                    FAT00558
+                                           WRC-VALS3.                   00000520
+           PERFORM 10070-00-LER-INDENT01.                               FAT00542
+                                                                        FAT00543
+      /----------------------------------------------------------------*00000019
+      *       ROTINA   DE   PROCESSAMENTO   DE   INCLUSOES              00000190
+      *----------------------------------------------------------------*00000019
+       10100-00-PROCESSA-INCLUSAO.                                      00000442
+                                                                        00000512
+           MOVE    LKG-SERVICO     TO      S01-SERVICO                  00000455
+           MOVE    LKG-MMPP        TO      S01-MMPP                     00000455
+           ADD     1               TO      WCT-SEQUENCIA                00000456
+           MOVE    WCT-SEQUENCIA   TO      S01-SEQUENCIA                00000457
+                                                                        FAT00537
+           MOVE   '000'            TO      S01-ZONA
+           MOVE    E01-TELEFONE    TO      S01-TELEFONE
+           MOVE    E01-TELEFONE    TO      S01-TELEFONE2
+           MOVE    E01-FAT         TO      S01-CODFAT
+           MOVE    E01-TEXTO       TO      S01-TXTCOMP
+           MOVE    ZEROS           TO      S01-CONTNU
+                                           S01-CONTDV
+           MOVE    1               TO      S01-QTDADE
+           MOVE    E01-VALOR       TO      S01-VLUNIT
+           MOVE    E01-FNT         TO      S01-ICMS
+           MOVE    ZEROS           TO      S01-CDLISTA
+           MOVE    E01-DTCOMPL     TO      WAX-DATA
+           MOVE    WAX-DATA(6:2)   TO      WAX-DIA-INV
+           MOVE    WAX-DATA(4:2)   TO      WAX-MES-INV
+           MOVE    WAX-DATA(2:2)   TO      WAX-ANO-INV
+           MOVE    WAX-DATA-INV    TO      S01-DTSERV
+           MOVE    ZEROS           TO      S01-DTSTAT
+           MOVE    065             TO      S01-CODSERV
+           MOVE    E01-CON         TO      WAX-CON                      00000458
+           MOVE    WAX-CON(11:3)   TO      S01-CODLIN
+           MOVE    WRC-CODE1(15:2) TO      S01-PERIODO
+           MOVE    WAX-CON(4:9)    TO      S01-CDCONT
+           MOVE    ZEROS           TO      S01-VLEDIT
+           MOVE    E01-NRC         TO      S01-NRC.
+                                                                        00000512
+           MOVE   'I'              TO      S01-CODMOV                   FAT00556
+           WRITE   S01-REG                                              00000519
+           ADD     1               TO      WRC-VALS2                    00000520
+                                           WRC-VALS3.                   00000520
+           PERFORM 10040-00-LER-SEQENT01.                               00000446
+                                                                        FAT00530
+      /----------------------------------------------------------------*00000019
+      *       ROTINA   DE   FINALIZACOES                                00000190
+      *----------------------------------------------------------------*00000019
+       10050-00-FINALIZA.                                               FAT00458
+                                                                        FAT00465
+           CLOSE   SEQENT01                                             FAT00469
+                   INDENT01                                             FAT00470
+                   SEQSAI01                                             FAT00471
+                                                                        FAT00343
+           IF      WRC-VALE3       GREATER ZEROS
+                   MOVE    WMS-MSG-R       TO      WRC-OBS              FAT00400
+           ELSE
+                   MOVE    WMS-MSG-P       TO      WRC-OBS              FAT00400
+           END-IF.
+                                                                        FAT00343
+           CALL   'CPD10740'       USING   WRC-REDE.                    FAT00472
+                                                                        FAT00385
+      /----------------------------------------------------------------*00000019
+      *       ROTINA   UTILIZADA   EM   CASO   DE   ERRO   VSAM         00000265
+      *----------------------------------------------------------------*00000019
+       10010-00-ERRO-VSAM.                                              FAT00387
+                                                                        FAT00395
+           MOVE    WRK-FSTATUS     TO      WMS-STATUS                   FAT00399
+           MOVE    WMS-MSG01       TO      WRC-OBS                      FAT00400
+           PERFORM 10020-00-ABENDAR.                                    FAT00401
+                                                                        00000275
+      /----------------------------------------------------------------*00000019
+      *       ROTINA   DE   ABEND                                       00000190
+      *----------------------------------------------------------------*00000019
+       10020-00-ABENDAR.                                                FAT00405
+                                                                        FAT00412
+           CALL   'CPD10740'       USING   WRC-REDE                     FAT00416
+           CALL   'ABENDAR'        USING   WAB-ABENDAR.                 FAT00417

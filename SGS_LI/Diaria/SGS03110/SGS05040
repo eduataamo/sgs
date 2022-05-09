@@ -1,0 +1,555 @@
+000010 ID  DIVISION.                                                    00000010
+000020 PROGRAM-ID. SGS05040.                                            00000020
+000030 AUTHOR. GIL-PAULINO.                                             00000030
+000040 DATE-WRITTEN. AGOSTO/83.                                         00000040
+000050 DATE-COMPILED.                                                   00000050
+000060*REMARKS.                                                         00000060
+000070*    ***********************************************************  00000070
+000080*    * ANALISTA    - COELHO                                    *  00000080
+000090*    * PROGRAMADOR - PAULINO GIL                               *  00000090
+000100*    * OBJETIVOS   - GERAR MOVTOS DE ATUALIZACAO DA TABELA DE  *  00000100
+000110*    *               CORRESPONDENCIA E FIND FILE36 DAS ALTERA- *  00000110
+000120*    * ARQUIVO       COES EFETUADAS NO CADASTRO COMERCIAL EM   *  00000120
+000130*    *               GRANDES GRUPOS                            *  00000130
+000140*    * ARQUIVO     - SEQENT01  -  ALTTERM                      *  00000140
+000150*    *             - FILE 36   -  CADASTRO COMERCIAL           *  00000150
+000160*    *             - SEQSAI01  -  MOVIMENTO TAC                *  00000160
+000170*    *             - SEQSAI02  -  ARQUIVO P/ COF               *  00000170
+000180*    * CONTROLE    - REDE DE CONTROLE                          *  00000180
+000190*    ***********************************************************  00000190
+000200                **************************************************00000200
+000210                *    ALTERACAO: 07/06/96  -  DTS                  00000210
+000220                *    SANEAMENTO FASE2     -  VIACENTER (GILMAR)   00000220
+000230                **************************************************00000230
+000240 ENVIRONMENT DIVISION.                                            00000240
+000250 CONFIGURATION SECTION.                                           00000250
+000260 SPECIAL-NAMES. DECIMAL-POINT IS COMMA.                           00000260
+000270 INPUT-OUTPUT SECTION.                                            00000270
+000280     SKIP2                                                        00000280
+000290 FILE-CONTROL.                                                    00000290
+000300     SELECT  SEQENT01  ASSIGN  TO-S-SEQENT01.                     00000300
+000310     SELECT  SEQSAI01  ASSIGN  TO-S-SEQSAI01.                     00000310
+000320     SELECT  SEQSAI02  ASSIGN  TO-S-SEQSAI02.                     00000320
+000330     EJECT                                                        00000330
+000340 DATA DIVISION.                                                   00000340
+000350 FILE SECTION.                                                    00000350
+000360     SKIP3                                                        00000360
+000370*    *************************************************************00000370
+000380*    *   SEQENT01                                                *00000380
+000390*    *                                                           *00000390
+000400*    *   ARQUIVO - ALTTERM                                       *00000400
+000410*    *************************************************************00000410
+000420     SKIP2                                                        00000420
+000430 FD          SEQENT01                                             00000430
+000440             BLOCK     0                                          00000440
+000450             RECORDING F.                                         00000450
+000460 01          E01-REGI.                                            00000460
+000470     05      E01-LOC-DE          PIC  X(05).                      00000470
+000480     05      E01-CEN-DE          PIC  X(04).                      00000480
+000490     05      E01-MIL-DE.                                          00000490
+000500      10     E01-INF-DE          PIC  9(04).                      00000500
+000510      10     E01-SUP-DE          PIC  X(04).                      00000510
+000520     05      E01-CON-DE          PIC  X.                          00000520
+000530     05      E01-LOC-PA          PIC  X(05).                      00000530
+000540     05      E01-CEN-PA          PIC  X(04).                      00000540
+000550     05      E01-MIL-PA.                                          00000550
+000560      10     E01-INF-PA          PIC  9(04).                      00000560
+000570      10     E01-SUP-PA          PIC  X(04).                      00000570
+000580     05      E01-CON-PA          PIC  X.                          00000580
+000590     05      E01-DATA            PIC  X(06).                      00000590
+000600     05      E01-PER-ATU         PIC  9(02).                      00000600
+000610     05      E01-PER-ANT         PIC  9(02).                      00000610
+000620     05      FILLER              PIC  X(04).                      00000620
+000630     SKIP3                                                        00000630
+000640     EJECT                                                        00000640
+000650*    *********************************                            00000650
+000660*    *   S E Q S A I 0 1             *                            00000660
+000670*    *                               *                            00000670
+000680*    *   ARQUIVO - MOVIMENTO TAC     *                            00000680
+000690*    *********************************                            00000690
+000700     SKIP2                                                        00000700
+000710 FD          SEQSAI01                                             00000710
+000720             BLOCK     0                                          00000720
+000730             RECORDING F.                                         00000730
+000740 01          S01-REGI            PIC  X(110).                     00000740
+000750     SKIP3                                                        00000750
+000760*    ***************************                                  00000760
+000770*    *   S E Q S A I 0 2       *                                  00000770
+000780*    *                         *                                  00000780
+000790*    *   ARQUIVO - COF -       *                                  00000790
+000800*    ***************************                                  00000800
+000810     SKIP2                                                        00000810
+000820 FD          SEQSAI02                                             00000820
+000830             BLOCK     0                                          00000830
+000840             RECORDING F.                                         00000840
+000850 01          S02-REGI            PIC  X(56).                      00000850
+000860     SKIP3                                                        00000860
+000870     EJECT                                                        00000870
+000880 WORKING-STORAGE SECTION.                                         00000880
+000890 01          INICIO-DA-WORK.                                      00000890
+000900     05      FILLER              PIC  X(50)          VALUE        00000900
+000910             '**********  INICIO  DA  WORKING-STORAG  *********'. 00000910
+000920     SKIP3                                                        00000920
+000930*    *************************************************************00000930
+000940*    *   DEFINICOES  DE  MENSAGENS                               *00000940
+000950*    *************************************************************00000950
+000960     05      WMS-MENS03.                                          00001000
+000970      10     FILLER              PIC  X(40)          VALUE        00001010
+000980             'ARQUIVO SEQENT01 ESTA VAZIO'.                       00001020
+000990     05      WMS-MENS04.                                          00001030
+001000      10     FILLER              PIC  X(45)          VALUE        00001040
+001010             'CALCULO PARA DIGITO, CAMPO ALPHANUMERIC'.           00001050
+001020      10     WMS-CAMPO           PIC  X(13)          VALUE SPACES.00001060
+001030     EJECT                                                        00001070
+001040*    *************************************************************00001080
+001050*    *   DEFINICAO  DE  CHAVES                                   *00001090
+001060*    *************************************************************00001100
+001070     05      WCH-ARQVO1          PIC  X              VALUE SPACES.00001110
+001080     05      WCH-CHAVE1          PIC  9(15)          VALUE ZEROS. 00001120
+001090     05      FILLER  REDEFINES   WCH-CHAVE1.                      00001130
+001100      10     WCH-CDNULO          PIC  X(05).                      00001140
+001110      10     WCH-CENTRA          PIC  X(04).                      00001150
+001120      10     WCH-MILHAR          PIC  X(04).                      00001160
+001130      10     WCH-CONJUG          PIC  X.                          00001170
+001140      10     WCH-DV              PIC  X.                          00001180
+001150     05      WCH-LENGTH          PIC  XX             VALUE '14'.  00001190
+001160     05      WCH-FLAG            PIC  9              VALUE ZEROS. 00001200
+001170     05      WCH-CHAVE2.                                          00001210
+001180      10     FILLER              PIC  X(09)          VALUE SPACES.00001220
+001190      10     WCH-MILHA2          PIC  X(04)          VALUE SPACES.00001230
+001200      10     WCH-CONJU2          PIC  X              VALUE SPACES.00001240
+001210      10     FILLER              PIC  X              VALUE SPACES.00001250
+001220     EJECT                                                        00001260
+001230*    *************************************************************00001270
+001240*    *   AREAS  AUXILIARES                                       *00001280
+001250*    *************************************************************00001290
+001260     05      WAX-CDDATA.                                          00001300
+001270      10     WAX-CDMM            PIC  XX             VALUE SPACES.00001310
+001280      10     FILLER              PIC  X              VALUE SPACES.00001320
+001290      10     WAX-CDDD            PIC  XX             VALUE SPACES.00001330
+001300      10     FILLER              PIC  X              VALUE SPACES.00001340
+001310      10     WAX-CDAA            PIC  XX             VALUE SPACES.00001350
+001320     05      WAX-DATA1           PIC  9(06)          VALUE ZEROS. 00001360
+001330     05      FILLER  REDEFINES   WAX-DATA1.                       00001370
+001340      10     WAX-DTDD            PIC  XX.                         00001380
+001350      10     WAX-DTMM            PIC  XX.                         00001390
+001360      10     WAX-DTAA            PIC  XX.                         00001400
+001370     05      WAX-DIAS            PIC S9(05)  COMP-3  VALUE +120.  00001410
+001380     05      WAX-DATA2           PIC  9(06)          VALUE ZEROS. 00001420
+001390     05      WAX-TERTEL          PIC  9(15)          VALUE ZEROS. 00001430
+001400     05      FILLER  REDEFINES   WAX-TERTEL.                      00001440
+001410      10     WAX-CDNULO          PIC  X(05).                      00001450
+001420      10     WAX-CENTRA          PIC  X(04).                      00001460
+001430      10     WAX-MILHAR          PIC  9(04).                      00001470
+001440      10     WAX-CONJUG          PIC  X.                          00001480
+001450      10     WAX-DV              PIC  X.                          00001490
+001460     05      FILLER  REDEFINES   WAX-TERTEL.                      00001500
+001470      10     WAX-CAMPO           PIC  X(14).                      00001510
+001480     05      WAX-DIGITO          PIC  X              VALUE SPACES.00001520
+001490     05      WAX-VALOR           PIC  9(04)          VALUE ZEROS. 00001530
+001500     EJECT                                                        00001540
+001510*    *************************************************************00001550
+001520*    *  AREA PARA CONVERSAO DE CAMPOS BINARIOS PARA HEXADECIMAL  *00001560
+001530*    *************************************************************00001570
+001540     05      WBI-DAT.                                             00001580
+001550      10     FILLER              PIC  X          VALUE LOW-VALUES.00001590
+001560      10     WBI-DAT1            PIC  X(03)          VALUE SPACES.00001600
+001570     05      WBI-DAT-R REDEFINES WBI-DAT PIC S9(08) COMP.         00001610
+001580     05      WBI-DAT2            PIC  9(08)          VALUE ZEROS. 00001620
+001590     05      WBI-DAT2-R REDEFINES WBI-DAT2.                       00001630
+001600      10     FILLER              PIC  XX.                         00001640
+001610      10     WBI-DATA2           PIC  X(06).                      00001650
+001620     EJECT                                                        00001660
+001630*    *************************************************************00001770
+001640*    *   AREA PARA POSICIONAR O FILE  (LOKATE)                   *00001780
+001650*    *************************************************************00001790
+001660     05      VALUE-BUF           PIC  9(15)  COMP-3  VALUE ZEROS. 00001800
+001670     SKIP3                                                        00001810
+001680*    *************************************************************00001820
+001690*    *   AREA PARA LEITURA DO ADABAS  (SEQREAD)                  *00001830
+001700*    *************************************************************00001840
+001710     05      RECORD-BUF.                                          00001850
+001720      10     WRB-NREGCO          PIC  9(11)  COMP-3  VALUE ZEROS. 00001860
+001730      10     WRB-TERTEL          PIC  9(15)  COMP-3  VALUE ZEROS. 00001870
+001740      10     WRB-DTINST          PIC  X(03)          VALUE SPACES.00001880
+001750      10     WRB-DTALTE          PIC  X(03)          VALUE SPACES.00001890
+001760      10     WRB-DTPENAL         PIC  X(03)          VALUE SPACES.00001900
+001770     SKIP3                                                        00001910
+001780*    *************************************************************00002000
+001790*    *   MONTAGEM  DO  REGISTRO  SEQSAI01                        *00002010
+001800*    *************************************************************00002020
+001810     05      WRG-SAI001.                                          00002030
+001820      10     FILLER              PIC  9(03)          VALUE 518.   00002040
+001830      10     FILLER              PIC  X(07)          VALUE SPACES.00002050
+001840      10     WRG-TERATU          PIC  X(15)          VALUE SPACES.00002060
+001850      10     WRG-CNLANT          PIC  X(05)          VALUE SPACES.00002070
+001860      10     WRG-CENANT          PIC  X(04)          VALUE SPACES.00002080
+001870      10     WRG-MILANT          PIC  X(04)          VALUE SPACES.00002090
+001880      10     WRG-CONANT          PIC  X              VALUE SPACES.00002100
+001890      10     WRG-DVANTE          PIC  X              VALUE SPACES.00002110
+001900      10     FILLER              PIC  X(13)          VALUE SPACES.00002120
+001910      10     WRG-DAT-DE          PIC  X(06)          VALUE SPACES.00002130
+001920      10     WRG-DT-ATE          PIC  X(06)          VALUE SPACES.00002140
+001930      10     WRG-DTAANO          PIC  XX             VALUE SPACES.00002150
+001940      10     WRG-DTAMES          PIC  XX             VALUE SPACES.00002160
+001950      10     WRG-DTADIA          PIC  XX             VALUE SPACES.00002170
+001960      10     FILLER              PIC  X(16).                      00002180
+001970      10     WRG-PER-ATU         PIC  9(02).                      00002190
+001980      10     WRG-CDOPER          PIC  9              VALUE 1.     00002200
+001990      10     FILLER              PIC  X(04)          VALUE SPACES.00002210
+002000      10     WRG-TELATU          PIC  9(02)          VALUE 88.    00002220
+002010      10     WRG-TELANT          PIC  9(02)          VALUE 88.    00002230
+002020      10     WRG-NRC             PIC  9(11)     COMP-3.           00002240
+002030      10     WRG-PER-ANT         PIC  9(02).                      00002250
+002040      10     FILLER              PIC  X(04).                      00002260
+002050     EJECT                                                        00002270
+002060*    *************************************************************00002280
+002070*    *   MONTAGEM  DO  REGISTRO  SEQSAI02                        *00002290
+002080*    *************************************************************00002300
+002090     05      WRG-SAI002.                                          00002310
+002100     10      WRG-SUBSIS          PIC  9(02)          VALUE 05.    00002320
+002110     10      WRG-PROGAM          PIC  9(02)          VALUE 40.    00002330
+002120     10      WRG-TIPO            PIC  X              VALUE SPACES.00002340
+002130     10      WRG-SEQUEN          PIC  9(02)          VALUE 02.    00002350
+002140     10      WRG-LOTE            PIC  X(04)          VALUE SPACES.00002360
+002150     10      WRG-DSNARQ          PIC  X(16)          VALUE SPACES.00002370
+002160     10      WRG-VOLUME          PIC  X(06)          VALUE SPACES.00002380
+002170     10      WRG-CDPGRM          PIC  X(08)      VALUE 'SGS05040'.00002390
+002180     10      WRG-QTDREG          PIC  9(11)  COMP-3  VALUE ZEROS. 00002400
+002190     10      WRG-VALOR           PIC  X(09)          VALUE SPACES.00002410
+002200     EJECT                                                        00002420
+002210*    *************************************************************00002430
+002220*    *       R E D E   D E   C O N T R O L E                     *00002440
+002230*    *************************************************************00002450
+002240     SKIP1                                                        00002460
+002250     05      WRC-REDE.                                            00002470
+002260      10     WRC-TAMANH      PIC S9(09)  COMP-3     VALUE +369.   00002480
+002270      10     WRC-NOMJOB      PIC X(008).                          00002490
+002280      10     WRC-NOMPGM      PIC X(008)             VALUE         00002500
+002290             'SGS05040'.                                          00002510
+002300      10     WRC-CODRED      PIC X(010)             VALUE         00002520
+002310             'SGS0504-R'.                                         00002530
+002320      10     WRC-DTAPRO.                                          00002540
+002330       15    WRC-CONDIC      PIC X(002)             VALUE 'NV'.   00002550
+002340       15    WRC-DTPROC      PIC X(006).                          00002560
+002350      10     WRC-HORA        PIC 99.99.99.                        00002570
+002360      10     WRC-ETAPA       PIC X(004)             VALUE '****'. 00002580
+002370      10     WRC-PAGINA      PIC X(003)             VALUE '***'.  00002590
+002380     SKIP1                                                        00002600
+002390      10     WRC-ENTR1.                                           00002610
+002400     SKIP1                                                        00002620
+002410       15    WRC-CODE1       PIC X(018)             VALUE SPACES. 00002630
+002420       15    WRC-NOME1       PIC X(027)             VALUE         00002640
+002430             'REGISTROS LIDOS SEQENT01'.                          00002650
+002440       15    WRC-INDE1       PIC X(002)             VALUE SPACES. 00002660
+002450       15    WRC-VALE1       PIC S9(11)  COMP-3     VALUE ZEROS.  00002670
+002460      SKIP1                                                       00002680
+002470       15    WRC-CODE2       PIC X(018)             VALUE 'D.B.'. 00002690
+002480       15    WRC-NOME2       PIC X(027)             VALUE         00002700
+002490             'REGISTROS LIDOS FILE36'.                            00002710
+002500       15    WRC-INDE2       PIC X(002)             VALUE SPACES. 00002720
+002510       15    WRC-VALE2       PIC S9(11)  COMP-3     VALUE ZEROS.  00002730
+002520     SKIP1                                                        00002740
+002530       15    WRC-FIMENT      PIC X                  VALUE         00002750
+002540             LOW-VALUES.                                          00002760
+002550     SKIP1                                                        00002770
+002560      10     WRC-SAIDA1.                                          00002780
+002570     SKIP1                                                        00002790
+002580       15    WRC-CODS1       PIC X(018)             VALUE SPACES. 00002800
+002590       15    WRC-NOMS1       PIC X(027)             VALUE         00002810
+002600             'REGISTROS GRAVADOS SEQSAI01'.                       00002820
+002610       15    WRC-INDS1       PIC X(002)             VALUE SPACES. 00002830
+002620       15    WRC-VALS1       PIC S9(11)  COMP-3     VALUE ZEROS.  00002840
+002630     SKIP1                                                        00002850
+002640       15    WRC-FIMSAI6     PIC X                  VALUE         00002860
+002650             LOW-VALUES.                                          00002870
+002660     SKIP1                                                        00002880
+002670      10     WRC-OBS.                                             00002890
+002680       15    WRC-MENS        PIC X(100)              VALUE SPACES.00002900
+002690     SKIP1                                                        00002910
+002700      10     WRC-FIMRED      PIC X                  VALUE         00002920
+002710             HIGH-VALUES.                                         00002930
+002720     EJECT                                                        00002940
+002730*    ************************************************************ 00002950
+002740*    *       DD / D S N A M E S / VOLUME E/S                    * 00002960
+002750*    ************************************************************ 00002970
+002760     SKIP1                                                        00002980
+002770     05      WDS-NAM.                                             00002990
+002780      10     WDS-OCC         OCCURS  10.                          00003000
+002790       15    WDS-DDN         PIC X(08).                           00003010
+002800       15    WDS-DSN         PIC X(44).                           00003020
+002810       15    WDS-VOL         PIC X(06).                           00003030
+002820       15    FILLER          PIC X(24).                           00003040
+002830     SKIP1                                                        00003050
+002840     05      WDS-I           PIC S9(3)   COMP       VALUE +0 SYNC.00003060
+002850     EJECT                                                        00003070
+002860*    *************************************************************00003080
+002870*    *   I N I C I O   DA   P R O C E D U R E                    *00003090
+002880*    *************************************************************00003100
+002890     SKIP2                                                        00003110
+002900 01        WIZ-AREAS-ESPECIAIS.                                   00003120
+002910     05   WIZ-DATA-ACCEPT.                                        00003130
+002920       10  WIZ-DATA-ANO         PIC  9(002).                      00003140
+002930       10  WIZ-DATA-MES         PIC  9(002).                      00003150
+002940       10  WIZ-DATA-DIA         PIC  9(002).                      00003160
+002950     05    WIZ-CUR-DATE.                                          00003170
+002960       10  WIZ-DATA-MES         PIC  9(002).                      00003180
+002970       10  FILLER               PIC  X(001) VALUE '/'.            00003190
+002980       10  WIZ-DATA-DIA         PIC  9(002).                      00003200
+002990       10  FILLER               PIC  X(001) VALUE '/'.            00003210
+003000       10  WIZ-DATA-ANO         PIC  9(002).                      00003220
+003010     05    WIZ-TIME-ACCEPT      PIC  9(008).                      00003230
+003020     05    FILLER     REDEFINES WIZ-TIME-ACCEPT.                  00003240
+003030       10  WIZ-TIMEDAY          PIC  9(006).                      00003250
+003040       10  FILLER               PIC  X(002).                      00003260
+003050     EJECT                                                        00003270
+003060*  2SQL GENERATED WORKING STORAGE:                                00003280
+003070     EXEC ADABAS                                                  00003290
+003080         BEGIN DECLARE SECTION                                    00003300
+003090     END-EXEC.                                                    00003310
+003100     EXEC ADABAS                                                  00003340
+003110       READ LOGICAL                                               00003350
+003120       DECLARE C040 CURSOR FOR                                    00003360
+003130       SELECT                                                     00003370
+003140       NR-REGT-COME-ASSIN, NR-TR7TE, DT-COPC-OCS-INIA-CN7CM,      00003380
+003150       DT-ULTI-ALTE-NR-TR7TE, DT-PENU-ALTE-TR7TE                  00003390
+003160       FROM A-0036SER10                                           00003400
+003170       C040-A-0036SER10                                           00003410
+003180       WHERE NR-TR7TE                         GE                  00003420
+003190       :VALUE-BUF                                                 00003430
+003200       ORDER BY NR-TR7TE                                          00003440
+003210     END-EXEC.                                                    00003450
+003220     EJECT                                                        00003490
+003230 PROCEDURE DIVISION.                                              00003500
+003240     SKIP2                                                        00003510
+003250*    *************************************************************00003520
+003260*    *       R O T I N A   P R I N C I P A L                     *00003530
+003270*    *************************************************************00003540
+003280 00-00-PRINCIPAL SECTION.                                         00003550
+003290     PERFORM  03-00-INICIALIZA.                                   00003560
+003300     PERFORM  06-00-PROCESSA UNTIL WCH-ARQVO1 EQUAL HIGH-VALUES.  00003570
+003310     PERFORM  90-00-FINALIZA.                                     00003580
+003320     STOP  RUN.                                                   00003610
+003330      EJECT                                                       00003620
+003340*    *************************************************************00003630
+003350*    *   I N I C I A L I Z A C A O   DE   A R E A S              *00003640
+003360*    *************************************************************00003650
+003370 03-00-INICIALIZA SECTION.                                        00003660
+003380     ACCEPT WIZ-DATA-ACCEPT FROM DATE                             00003670
+003390     MOVE   CORR WIZ-DATA-ACCEPT TO WIZ-CUR-DATE                  00003680
+003400     MOVE  WIZ-CUR-DATE  TO  WAX-CDDATA.                          00003690
+003410     ACCEPT WIZ-TIME-ACCEPT FROM TIME                             00003700
+003420     MOVE  WIZ-TIMEDAY   TO  WRC-HORA.                            00003710
+003430     MOVE  WAX-CDDD      TO  WAX-DTDD.                            00003720
+003440     MOVE  WAX-CDMM      TO  WAX-DTMM.                            00003730
+003450     MOVE  WAX-CDAA      TO  WAX-DTAA.                            00003740
+003460     MOVE  WAX-DATA1     TO  WRC-DTPROC.                          00003750
+003470     CALL  'NEWDAY' USING WAX-DATA1 WAX-DIAS WAX-DATA2.           00003760
+003480     MOVE  WAX-DATA2     TO  WAX-DATA1.                           00003770
+003490     MOVE  WAX-DTDD      TO  WRG-DTADIA.                          00003780
+003500     MOVE  WAX-DTMM      TO  WRG-DTAMES.                          00003790
+003510     MOVE  WAX-DTAA      TO  WRG-DTAANO.                          00003800
+003520     SKIP1                                                        00003810
+003530     OPEN  INPUT  SEQENT01.                                       00003910
+003540     OPEN  OUTPUT SEQSAI01.                                       00003920
+003550     OPEN  OUTPUT SEQSAI02.                                       00003930
+003560     PERFORM 2SQL-90030-C999-CONNECT                              00003931
+003570     PERFORM  15-00-LERSEQ01.                                     00003940
+003580      EJECT                                                       00003950
+003590*    *************************************************************00003960
+003600*    *   ROTINA  PARA  PROCESSAMENTO                             *00003970
+003610*    *************************************************************00003980
+003620 06-00-PROCESSA SECTION.                                          00003990
+003630     MOVE  E01-LOC-PA  TO  WCH-CDNULO.                            00004000
+003640     MOVE  ZEROS       TO  WCH-CENTRA.                            00004010
+003650     MOVE  ZEROS       TO  WCH-MILHAR.                            00004020
+003660     MOVE  ZEROS       TO  WCH-CONJUG.                            00004030
+003670     MOVE  ZEROS       TO  WCH-DV.                                00004040
+003680     MOVE  ZEROS       TO  WCH-FLAG.                              00004050
+003690     IF  E01-CEN-PA  EQUAL  SPACES                                00004060
+003700     AND E01-MIL-PA  EQUAL  SPACES                                00004070
+003710         MOVE  WCH-CHAVE1  TO  VALUE-BUF                          00004080
+003720         MOVE  WCH-CHAVE1  TO  WCH-CHAVE2                         00004090
+003730         MOVE  2           TO  WCH-FLAG                           00004100
+003740     ELSE                                                         00004110
+003750         MOVE  E01-CEN-PA  TO  WCH-CENTRA                         00004120
+003760         IF  E01-MIL-PA  EQUAL  SPACES                            00004130
+003770         AND E01-CEN-PA  NOT EQUAL  SPACES                        00004140
+003780             MOVE  WCH-CHAVE1  TO  VALUE-BUF                      00004150
+003790             MOVE  WCH-CHAVE1  TO  WCH-CHAVE2                     00004160
+003800             MOVE  1           TO  WCH-FLAG                       00004170
+003810         ELSE                                                     00004180
+003820             IF  E01-CEN-PA  NOT EQUAL  SPACES                    00004190
+003830             AND E01-MIL-PA  NOT EQUAL  SPACES                    00004200
+003840                 MOVE  E01-INF-PA  TO  WCH-MILHAR                 00004210
+003850                 MOVE  E01-CON-PA  TO  WCH-CONJUG                 00004220
+003860                 MOVE  WCH-CHAVE1  TO  VALUE-BUF                  00004230
+003870                 MOVE  WCH-CHAVE1  TO  WCH-CHAVE2                 00004240
+003880                 MOVE  E01-SUP-PA  TO  WCH-MILHA2.                00004250
+003890     SKIP1                                                        00004260
+003900     PERFORM 2SQL-90050-C040-OPEN                                 00004300
+003910     MOVE  ZEROS  TO  WAX-TERTEL.                                 00004380
+003920     PERFORM  09-00-LEFILE36 UNTIL                                00004390
+003930                             WAX-TERTEL  GREATER  WCH-CHAVE2      00004400
+003940                OR  RESPONSE-CODE OF C040-A-0036SER10 EQUAL 3.    00004410
+003950     PERFORM  15-00-LERSEQ01.                                     00004420
+003960      EJECT                                                       00004430
+003970*    *************************************************************00004440
+003980*    *   ROTINA  PARA  LEITURA  DO  FILE36                       *00004450
+003990*    *************************************************************00004460
+004000 09-00-LEFILE36 SECTION.                                          00004470
+004010     PERFORM 2SQL-90040-C040-FETCH                                00004480
+004020     MOVE C040-A-0036SER10                      TO                00004490
+004030         RECORD-BUF                                               00004500
+004040     IF  RESPONSE-CODE OF C040-A-0036SER10 EQUAL ZEROS            00004530
+004050         MOVE  WRB-TERTEL  TO  WAX-TERTEL                         00004540
+004060     IF (WCH-FLAG  EQUAL  2 AND WCH-CDNULO  EQUAL  WAX-CDNULO)    00004640
+004070     OR (WCH-FLAG  LESS  2 AND WCH-CDNULO  EQUAL  WAX-CDNULO AND  00004650
+004080         WCH-CENTRA  EQUAL  WAX-CENTRA)                           00004660
+004090         ADD   1           TO  WRC-VALE2                          00004670
+004100         IF  WRB-NREGCO  NOT EQUAL  ZEROS                         00004680
+004110             PERFORM  12-00-GRAVAREG.                             00004690
+004120                                                                  00004691
+004130     IF  RESPONSE-CODE OF C040-A-0036SER10 EQUAL ZEROS            00004700
+004140         MOVE  WRB-TERTEL  TO  WAX-TERTEL                         00004710
+004150         IF  WCH-FLAG  NOT  EQUAL  ZEROS                          00004720
+004160             MOVE  ZEROS  TO  WAX-MILHAR                          00004730
+004170             MOVE  ZEROS  TO  WAX-CONJUG                          00004740
+004180             MOVE  ZEROS  TO  WAX-DV                              00004750
+004190             IF  WCH-FLAG  EQUAL  2                               00004760
+004200                 MOVE  ZEROS  TO  WAX-CENTRA.                     00004770
+004210      EJECT                                                       00004780
+004220*    *************************************************************00004790
+004230*    *   ROTINA  PARA  GRAVACAO  DO  SEQSAI01  E  SEQSAI03       *00004800
+004240*    *************************************************************00004810
+004250 12-00-GRAVAREG SECTION.                                          00004820
+004260     IF  E01-MIL-PA  NOT EQUAL  SPACES                            00004830
+004270     AND E01-CEN-PA  NOT EQUAL  SPACES                            00004840
+004280     AND WAX-CONJUG  NOT EQUAL  WCH-CONJU2                        00004850
+004290         NEXT SENTENCE                                            00004860
+004300     ELSE                                                         00004870
+004310         PERFORM 12-05-GRAVAREG.                                  00004880
+004320 12-99-GRAVAREG.    EXIT.                                         00004890
+004330*    *************************************************************00004900
+004340 12-05-GRAVAREG SECTION.                                          00004910
+004350     MOVE  WAX-TERTEL  TO  WRG-TERATU                             00004920
+004360     MOVE   WRB-DTPENAL  TO          WBI-DAT1.                    00004930
+004370     MOVE   WBI-DAT-R    TO          WBI-DAT2.                    00004940
+004380     IF     WBI-DATA2    EQUAL       ZEROS   OR       LOW-VALUES  00004950
+004390            MOVE         WRB-DTINST  TO      WBI-DAT1             00004960
+004400            MOVE         WBI-DAT-R   TO      WBI-DAT2             00004970
+004410       IF   WBI-DATA2    EQUAL       ZEROS   OR       LOW-VALUES  00004980
+004420            MOVE         ZEROS       TO      WRG-DAT-DE           00004990
+004430       ELSE                                                       00005000
+004440            MOVE         WBI-DATA2   TO      WRG-DAT-DE           00005010
+004450     ELSE                                                         00005020
+004460            MOVE         WBI-DATA2   TO      WRG-DAT-DE.          00005030
+004470     MOVE  E01-DATA    TO  WRG-DT-ATE.                            00005040
+004480     MOVE    E01-LOC-DE  TO  WRG-CNLANT  WAX-CDNULO               00005050
+004490     MOVE    E01-PER-ATU TO  WRG-PER-ATU.                         00005060
+004500     MOVE    E01-PER-ANT TO  WRG-PER-ANT.                         00005070
+004510     IF  E01-CEN-PA  EQUAL  SPACES AND                            00005080
+004520         E01-MIL-PA  EQUAL  SPACES                                00005090
+004530          MOVE    WAX-CENTRA     TO  WRG-CENANT                   00005100
+004540          MOVE    WAX-MILHAR     TO  WRG-MILANT                   00005110
+004550          MOVE    WAX-CONJUG     TO  WRG-CONANT                   00005120
+004560     ELSE                                                         00005130
+004570         IF  E01-MIL-PA  EQUAL  SPACES  AND                       00005140
+004580             E01-CEN-PA  NOT  EQUAL  SPACES                       00005150
+004590             MOVE  E01-CEN-DE    TO  WRG-CENANT  WAX-CENTRA       00005160
+004600             MOVE  WAX-MILHAR    TO  WRG-MILANT                   00005170
+004610             MOVE  WAX-CONJUG    TO  WRG-CONANT                   00005180
+004620         ELSE                                                     00005190
+004630            IF E01-MIL-PA  NOT EQUAL  SPACES  OR                  00005200
+004640               E01-CEN-PA  NOT EQUAL  SPACES                      00005210
+004650                MOVE  E01-CEN-DE TO  WRG-CENANT  WAX-CENTRA       00005220
+004660               COMPUTE  WAX-VALOR = WAX-MILHAR - E01-INF-PA +     00005230
+004670                                    E01-INF-DE                    00005240
+004680                MOVE  WAX-VALOR  TO  WRG-MILANT  WAX-MILHAR       00005250
+004690                MOVE  E01-CON-DE TO  WRG-CONANT  WAX-CONJUG.      00005260
+004700     MOVE  'N'  TO  WAX-DIGITO.                                   00005270
+004710     IF  WAX-CAMPO  IS  NUMERIC                                   00005280
+004720         CALL  'CPD10020' USING WAX-CAMPO WCH-LENGTH WAX-DIGITO   00005290
+004730         IF  WAX-DIGITO  EQUAL  'X'                               00005300
+004740             MOVE  '0'         TO  WRG-DVANTE                     00005310
+004750         ELSE                                                     00005320
+004760             MOVE  WAX-DIGITO  TO  WRG-DVANTE                     00005330
+004770     ELSE                                                         00005340
+004780         MOVE  WAX-CAMPO   TO  WMS-CAMPO                          00005350
+004790         MOVE  WMS-MENS04  TO  WRC-MENS                           00005360
+004800         PERFORM  90-00-FINALIZA                                  00005370
+004810         STOP   RUN.                                              00005400
+004820     MOVE  WRB-NREGCO  TO  WRG-NRC                                00005410
+004830     WRITE S01-REGI FROM WRG-SAI001.                              00005420
+004840     ADD   1  TO  WRC-VALS1.                                      00005430
+004850     EJECT                                                        00005440
+004860*    *************************************************************00005450
+004870*    *   ROTINA  DE  LEITURA  DO  SEQENT01                       *00005460
+004880*    *************************************************************00005470
+004890 15-00-LERSEQ01 SECTION.                                          00005480
+004900     READ SEQENT01 AT END MOVE  HIGH-VALUES  TO  WCH-ARQVO1.      00005490
+004910     SKIP1                                                        00005500
+004920     IF  WCH-ARQVO1  EQUAL  HIGH-VALUES                           00005510
+004930     AND WRC-VALE1   EQUAL  ZEROS                                 00005520
+004940         MOVE  WMS-MENS03  TO  WRC-MENS                           00005530
+004950         PERFORM  90-00-FINALIZA                                  00005540
+004960         STOP RUN.                                                00005570
+004970     IF   WCH-ARQVO1  NOT  EQUAL  HIGH-VALUES                     00005580
+004980          ADD   1     TO   WRC-VALE1.                             00005590
+004990     EJECT                                                        00005600
+005000*    *************************************************************00005610
+005010*    *          ROTINA  DE  FINALIZACAO  DO  PROGRAMA            *00005620
+005020*    *************************************************************00005630
+005030 90-00-FINALIZA SECTION.                                          00005640
+005040     PERFORM 2SQL-90020-C999-DBCLOSE                              00005641
+005050      CALL  'DDDSVOL5'  USING WDS-NAM.                            00005651
+005060      PERFORM  96-00-PESQDSN VARYING WDS-I                        00005660
+005070               FROM 1 BY 1 UNTIL WDS-I                            00005670
+005080               GREATER 10 OR WDS-DDN (WDS-I) EQUAL HIGH-VALUES.   00005680
+005090     CALL  'CPD0017S'  USING WRC-NOMJOB.                          00005690
+005100     CALL  'CPD0016S'  USING  WRC-REDE.                           00005700
+005110     CLOSE  SEQENT01 SEQSAI01 SEQSAI02.                           00005810
+005120     EJECT                                                        00005820
+005130*    *************************************************************00006000
+005140*    *    PESQUISA DSN/VOL PARA REDE DE CONTROLE E SEQSAI02      *00006010
+005150*    *************************************************************00006020
+005160 96-00-PESQDSN SECTION.                                           00006030
+005170     IF  WDS-DDN (WDS-I)  EQUAL  'SEQENT01'                       00006040
+005180         MOVE  WDS-DSN (WDS-I)  TO  WRC-CODE1                     00006050
+005190         MOVE  WDS-DSN (WDS-I)  TO  WRG-DSNARQ                    00006060
+005200         MOVE  WDS-VOL (WDS-I)  TO  WRG-VOLUME                    00006070
+005210         MOVE  WRC-VALE1        TO  WRG-QTDREG                    00006080
+005220         MOVE  'I'              TO  WRG-TIPO                      00006090
+005230         WRITE S02-REGI FROM WRG-SAI002                           00006100
+005240     ELSE                                                         00006110
+005250         IF  WDS-DDN (WDS-I)  EQUAL  'SEQSAI01'                   00006120
+005260             MOVE  WDS-DSN (WDS-I)  TO  WRC-CODS1                 00006130
+005270             MOVE  WDS-DSN (WDS-I)  TO  WRG-DSNARQ                00006140
+005280             MOVE  WDS-VOL (WDS-I)  TO  WRG-VOLUME                00006150
+005290             MOVE  WRC-VALS1        TO  WRG-QTDREG                00006160
+005300             MOVE  'O'              TO  WRG-TIPO                  00006170
+005310                  WRITE  S02-REGI  FROM  WRG-SAI002.              00006180
+005320     SKIP1                                                        00006190
+005330     EJECT                                                        00006200
+005340 2SQL-90000-ADASQL SECTION.                                       00006210
+005350     SKIP2                                                        00006220
+005360 2SQL-90030-C999-CONNECT.                                         00006230
+005370     EXEC ADABAS                                                  00006240
+005380       CONNECT                                                    00006250
+005390       ACC = A-0036SER10                                          00006260
+005400     END-EXEC.                                                    00006270
+005410     SKIP2                                                        00006310
+005420 2SQL-90020-C999-DBCLOSE.                                         00006350
+005430     EXEC ADABAS                                                  00006360
+005440       DBCLOSE                                                    00006370
+005450     END-EXEC.                                                    00006380
+005460     SKIP2                                                        00006420
+005470 2SQL-90040-C040-FETCH.                                           00006430
+005480     EXEC ADABAS                                                  00006440
+005490       FETCH C040                                                 00006450
+005500     END-EXEC.                                                    00006460
+005510     SKIP2                                                        00006530
+005520 2SQL-90050-C040-OPEN.                                            00006540
+005530     EXEC ADABAS                                                  00006550
+005540       OPEN C040                                                  00006560
+005550     END-EXEC.                                                    00006570

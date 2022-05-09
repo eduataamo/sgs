@@ -1,0 +1,1107 @@
+      *---------------------------------------------------------------*
+      *OMANDOS BASICOS PARA O ADABAS COM COBOL                        *
+      *---------------------------------------------------------------*
+      *---------------------------------------------------------------*
+      *  PARA DIRECIONAR O ADABAS BATCH                               *
+      *---------------------------------------------------------------*
+ 
+//STEP1  DD  ADABAS.TELE.INSTALL(RUNPROD)
+                                                                        00000264
+      /*****************************************************************00000264
+      *            CAMPOS DE ABEND                                     *00000265
+      ******************************************************************00000266
+                                                                        00000267
+           05      WAB-ABEND.                                           00000268
+            10     FILLER         PIC  X(001)          VALUE LOW-VALUES.00000269
+            10     WAB-CODE       PIC S9(004)  COMP    VALUE ZEROS.     00000270
+                                                                        00000271
+      /*****************************************************************00000272
+      *            MENSAGENS  DE  ERRO                                 *00000273
+      ******************************************************************00000274
+                                                                        00000281
+           05      WMS-MENS03.                                          00000282
+            10     FILLER         PIC  X(046)              VALUE        00000283
+                   'SER13270-03 - ERRO DE ACESSO AO ADABAS - CMD: '.    00000284
+            10     WMS-CMD        PIC  X(004)              VALUE SPACES.00000285
+            10     FILLER         PIC  X(007)              VALUE        00000286
+                   '- FNR: '.                                           00000287
+            10     WMS-FNR        PIC  9(003)              VALUE ZEROS. 00000288
+            10     FILLER         PIC  X(013)              VALUE        00000289
+                   ' - RESPONSE: '.                                     00000290
+            10     WMS-RC         PIC  9(004)              VALUE ZEROS. 00000291
+                                                                        00000292
+      /*****************************************************************00000355
+      *            CAMPOS DO ADABAS - FILE  002                        *00000356
+      ******************************************************************00000357
+                                                                        00000358
+           05      FORMAT-BUFFER  PIC  X(050)              VALUE SPACES.21.06.95
+                                                                        21.06.95
+           05      RECORD-BUFFER  PIC  X(050)              VALUE SPACES.21.06.95
+                                                                        00000372
+           05      SEARCH-BUFFER  PIC  X(050)              VALUE SPACES.00000373
+                                                                        00000374
+           05      VALUE-BUFFER   PIC  X(050)              VALUE SPACES.00000375
+                                                                        00000373
+           05      ISN-BUFFER.                                          00000373
+            10     ISN-BUFF OCCURS 100 TIMES  PIC S9(007)  COMP.        00000373
+                                                                        00000374
+      /*****************************************************************00000378
+      *            CAMPOS  DO  ADABAS - USO GERAL                      *00000379
+      ******************************************************************00000380
+                                                                        00000381
+           05      WBD-CONTROL-B.                                       00000382
+            10     WBD-HID        PIC  X(001).                          00000383
+            10     FILLER         PIC  X(001).                          00000384
+            10     WBD-CCODE      PIC  X(002).                          00000385
+            10     WBD-CID        PIC  X(004).                          00000386
+            10     WBD-FNB        PIC S9(004)  COMP.                    00000387
+            10     WBD-RC         PIC S9(004)  COMP.                    00000388
+            10     WBD-ISN-D  COMP.                                     00000389
+             15    WBD-ISN        PIC S9(008).                          00000390
+             15    WBD-ISN-LL     PIC S9(008).                          00000391
+             15    WBD-ISN-Q      PIC S9(008).                          00000392
+            10     WBD-BLENGTHS  COMP.                                  00000393
+             15    WBD-FBL        PIC S9(004).                          00000394
+             15    WBD-RBL        PIC S9(004).                          00000395
+             15    WBD-SBL        PIC S9(004).                          00000396
+             15    WBD-VBL        PIC S9(004).                          00000397
+             15    WBD-IBL        PIC S9(004).                          00000398
+            10     WBD-COPTIONS.                                        00000399
+             15    WBD-COP-1      PIC  X(001).                          00000399
+             15    WBD-COP-2      PIC  X(001).                          00000400
+            10     WBD-ADDITIONS.                                       00000401
+             15    WBD-ADD-1      PIC  X(008).                          00000401
+             15    WBD-ADD-2      PIC  X(004).                          00000402
+             15    WBD-ADD-3      PIC  X(008).                          00000403
+             15    WBD-ADD-4      PIC  X(008).                          00000404
+            10     FILLER         PIC  X(008).                          00000405
+            10     WBD-CTIME      PIC S9(008)  COMP.                    00000406
+            10     WBD-USER       PIC  X(004).                          00000407
+                                                                        00000408
+      /*****************************************************************00000778
+      *            ROTINA DE ABERTURA DO ADABAS                        *00000779
+      ******************************************************************00000780
+                                                                        00000781
+       010-00-ABRIR-ADABAS  SECTION.                                    00000782
+                                                                        00000783
+           MOVE  LOW-VALUES     TO  WBD-CONTROL.                        00000784
+           MOVE 'OP'            TO  WBD-CCODE.                          00000785
+           MOVE  SPACES         TO  WBD-CID.                            00000787
+           MOVE  002            TO  WBD-FNB.                            00000786
+           MOVE  1              TO  WBD-FBL.                            00000788
+           MOVE  6              TO  WBD-RBL.                            00000789
+           MOVE  ZEROS          TO  WBD-SBL   WBD-VBL.                  00000788
+           MOVE  SPACES         TO  WBD-COPTIONS  WBD-ADDITIONS.        00000790
+                                                                        00000790
+           MOVE '.'             TO  FORMAT-BUFFER.                      00000791
+                                                                        00000791
+           MOVE 'ACC=2.'        TO  RECORD-BUFFER.                      00000791
+                                                                        00000792
+           CALL 'ADABAS' USING  WBD-CONTROL                             00000793
+                                FORMAT-BUFFER                           00000794
+                                RECORD-BUFFER.                          00000795
+                                                                        00000796
+           IF  WBD-RC  NOT EQUAL  ZEROS                                 00000797
+               GO TO  055-00-ERRO-ADABAS                                00000798
+           END-IF.                                                      00000798
+                                                                        00000799
+       010-99-ABRIR-ADABAS.                                             00000800
+           EXIT.                                                        00000801
+                                                                        00000802
+      /*****************************************************************00000962
+      *        READ  ISN  -  L1/L4                                     *00000963
+      ******************************************************************00000964
+                                                                        00000965
+       001-00-EXERCICIO-1  SECTION.                                     00000966
+                                                                        00000967
+           MOVE  LOW-VALUES    TO  WBD-CONTROL.                         00000968
+           MOVE 'L1'           TO  WBD-CCODE.                           00000970
+           MOVE '01L1'         TO  WBD-CID.                             00000971
+           MOVE  001           TO  WBD-FNB.                             00000969
+           MOVE  298           TO  WBD-ISN.                             00000972
+           MOVE  28            TO  WBD-FBL.                             00000972
+           MOVE  184           TO  WBD-RBL.                             00000972
+           MOVE  ZEROS         TO  WBD-SBL.                             00000973
+           MOVE  ZEROS         TO  WBD-VBL.                             00000974
+           MOVE  SPACES        TO  WBD-COPTIONS  WBD-ADDITIONS.         00000790
+                                                                        00000975
+           MOVE 'AA,8,U,NM,BC,CC,CB,CA,CD-LA.'  TO  FORMAT-BUFFER.      00000976
+                                                                        00000978
+           CALL 'ADABAS'  USING  WBD-CONTROL                            00000979
+                                 FORMAT-BUFFER                          00000980
+                                 RECORD-BUFFER                          00000981
+                                 SEARCH-BUFFER                          00000982
+                                 VALUE-BUFFER.                          00000983
+                                                                        00000984
+           IF  WBD-RC  EQUAL  ZEROS                                     00000985
+      *        EXHIBIT  NAMED  CPF                                      00000987
+      *        EXHIBIT  NAMED  SOBRENOME                                00000987
+               DISPLAY  RECORD-BUFFER                                   00000987
+               GO TO  075-00-FECHAR-ADABAS                              00000987
+           ELSE                                                         00000986
+               IF  WBD-RC  EQUAL  03                                    00000390
+                   DISPLAY  'FIM DE ARQUIVO'                            00001204
+                   GO TO  075-00-FECHAR-ADABAS                          00001204
+               ELSE                                                     00000987
+                   GO TO  055-00-ERRO-ADABAS                            00000986
+               END-IF                                                   00000987
+           END-IF.                                                      00000987
+                                                                        00000987
+       001-99-EXERCICIO-1.                                              00000988
+           EXIT.                                                        00000989
+                                                                        00000990
+      /*****************************************************************00000962
+      *        READ  PHYSICAL  SEQUENCE  -  L2/L5                      *00000963
+      ******************************************************************00000964
+                                                                        00000965
+       002-00-EXERCICIO-2  SECTION.                                     00000966
+                                                                        00000967
+           MOVE  LOW-VALUES    TO  WBD-CONTROL.                         00000968
+           MOVE 'L2'           TO  WBD-CCODE.                           00000970
+           MOVE '03L2'         TO  WBD-CID.                             00000971
+           MOVE  003           TO  WBD-FNB.                             00000969
+           MOVE  31            TO  WBD-FBL.                             00000972
+           MOVE  62            TO  WBD-RBL.                             00000972
+           MOVE  ZEROS         TO  WBD-SBL.                             00000973
+           MOVE  ZEROS         TO  WBD-VBL.                             00000974
+           MOVE  SPACES        TO  WBD-COPTIONS  WBD-ADDITIONS.         00000790
+                                                                        00000975
+           MOVE 'BK,AA,8,U,OCC,3,U,OC1-2,SV,7,U.'  TO  FORMAT-BUFFER.   00000976
+                                                                        00000978
+       002-00-CALL-ADABAS.                                              00000966
+                                                                        00000967
+           CALL 'ADABAS'  USING  WBD-CONTROL                            00000979
+                                 FORMAT-BUFFER                          00000980
+                                 RECORD-BUFFER                          00000981
+                                 SEARCH-BUFFER                          00000982
+                                 VALUE-BUFFER.                          00000983
+                                                                        00000984
+           IF  WBD-RC  EQUAL  ZEROS                                     00000985
+               DISPLAY  WBD-ISN  ' - '  RECORD-BUFFER                   00000987
+               GO TO  002-00-CALL-ADABAS                                00000987
+           ELSE                                                         00000986
+               IF  WBD-RC  EQUAL  03                                    00000390
+                   DISPLAY  'FIM DE ARQUIVO'                            00001204
+                   GO TO  075-00-FECHAR-ADABAS                          00001204
+               ELSE                                                     00000987
+                   GO TO  055-00-ERRO-ADABAS                            00000986
+               END-IF                                                   00000987
+           END-IF.                                                      00000987
+                                                                        00000987
+       002-99-EXERCICIO-2.                                              00000988
+           EXIT.                                                        00000989
+                                                                        00000990
+      /*****************************************************************00000962
+      *        READ  LOGICAL  SEQUENCE  -  L3/L6                       *00000963
+      ******************************************************************00000964
+                                                                        00000965
+       003-00-EXERCICIO-3  SECTION.                                     00000966
+                                                                        00000967
+           MOVE  LOW-VALUES    TO  WBD-CONTROL.                         00000968
+           MOVE 'L3'           TO  WBD-CCODE.                           00000970
+           MOVE '03L3'         TO  WBD-CID.                             00000971
+           MOVE  003           TO  WBD-FNB.                             00000969
+           MOVE  26            TO  WBD-FBL.                             00000972
+           MOVE  92            TO  WBD-RBL.                             00000972
+           MOVE  ZEROS         TO  WBD-SBL.                             00000973
+           MOVE  ZEROS         TO  WBD-VBL.                             00000974
+           MOVE  SPACES        TO  WBD-COPTIONS  WBD-ADDITIONS.         00000790
+           MOVE ' '            TO  WBD-COP-1.                           00000973
+           MOVE 'BK'           TO  WBD-ADD-1.                           00000972
+                                                                        00000975
+           MOVE 'BK,AA,8,U,MCC,2,U,MC1,MC2.'  TO  FORMAT-BUFFER.        00000976
+                                                                        00000978
+       003-00-CALL-ADABAS.                                              00000966
+                                                                        00000967
+           CALL 'ADABAS'  USING  WBD-CONTROL                            00000979
+                                 FORMAT-BUFFER                          00000980
+                                 RECORD-BUFFER                          00000981
+                                 SEARCH-BUFFER                          00000982
+                                 VALUE-BUFFER.                          00000983
+                                                                        00000984
+           IF  WBD-RC  EQUAL  ZEROS                                     00000985
+               DISPLAY  WBD-ISN  ' - '  RECORD-BUFFER                   00000987
+               GO TO  003-00-CALL-ADABAS                                00000987
+           ELSE                                                         00000986
+               IF  WBD-RC  EQUAL  03                                    00000390
+                   DISPLAY  'FIM DE ARQUIVO'                            00001204
+                   GO TO  075-00-FECHAR-ADABAS                          00001204
+               ELSE                                                     00000987
+                   GO TO  055-00-ERRO-ADABAS                            00000986
+               END-IF                                                   00000987
+           END-IF.                                                      00000987
+                                                                        00000987
+       003-99-EXERCICIO-3.                                              00000988
+           EXIT.                                                        00000989
+                                                                        00000990
+      /*****************************************************************00000962
+      *        READ  LOGICAL  SEQUENCE  -  L3/L6  (OPTION = 'V')       *00000963
+      ******************************************************************00000964
+                                                                        00000965
+       004-00-EXERCICIO-4  SECTION.                                     00000966
+                                                                        00000967
+           MOVE  LOW-VALUES    TO  WBD-CONTROL.                         00000968
+           MOVE 'L3'           TO  WBD-CCODE.                           00000970
+           MOVE '03L3'         TO  WBD-CID.                             00000971
+           MOVE  003           TO  WBD-FNB.                             00000969
+           MOVE  59            TO  WBD-FBL.                             00000972
+           MOVE  108           TO  WBD-RBL.                             00000972
+           MOVE  3             TO  WBD-SBL.                             00000974
+           MOVE  30            TO  WBD-VBL.                             00000973
+           MOVE  SPACES        TO  WBD-COPTIONS  WBD-ADDITIONS.         00000790
+           MOVE 'V'            TO  WBD-COP-2.                           00000400
+           MOVE 'BK'           TO  WBD-ADD-1.                           00000972
+                                                                        00000975
+           MOVE 'BK,AA,8,U,IPC,2,U,IC1C,3,U,IC1(1-2),PA2C,3,U,PA1(1),PA100000976
+      -         '(2).'              TO  FORMAT-BUFFER.                  00000976
+                                                                        00000978
+           MOVE 'BK.'               TO  SEARCH-BUFFER.                  00000978
+                                                                        00000978
+           MOVE 'BANK OF NEW YORK'  TO  VALUE-BUFFER.                   00000978
+                                                                        00000978
+       004-00-CALL-ADABAS.                                              00000966
+                                                                        00000967
+           CALL 'ADABAS'  USING  WBD-CONTROL                            00000979
+                                 FORMAT-BUFFER                          00000980
+                                 RECORD-BUFFER                          00000981
+                                 SEARCH-BUFFER                          00000982
+                                 VALUE-BUFFER.                          00000983
+                                                                        00000984
+           IF  WBD-RC  EQUAL  ZEROS                                     00000985
+               DISPLAY  WBD-ISN  ' - '  RECORD-BUFFER                   00000987
+               GO TO  004-00-CALL-ADABAS                                00000987
+           ELSE                                                         00000986
+               IF  WBD-RC  EQUAL  03                                    00000390
+                   DISPLAY  'FIM DE ARQUIVO'                            00001204
+                   GO TO  075-00-FECHAR-ADABAS                          00001204
+               ELSE                                                     00000987
+                   GO TO  055-00-ERRO-ADABAS                            00000986
+               END-IF                                                   00000987
+           END-IF.                                                      00000987
+                                                                        00000987
+       004-99-EXERCICIO-4.                                              00000988
+           EXIT.                                                        00000989
+                                                                        00000990
+      /*****************************************************************00000962
+      *        READ  VALUES  -  L9  (HISTOGRAMA)                       *00000963
+      ******************************************************************00000964
+                                                                        00000965
+       005-00-EXERCICIO-5  SECTION.                                     00000966
+                                                                        00000967
+           MOVE  LOW-VALUES    TO  WBD-CONTROL.                         00000968
+           MOVE 'L9'           TO  WBD-CCODE.                           00000970
+           MOVE '02L9'         TO  WBD-CID.                             00000971
+           MOVE  002           TO  WBD-FNB.                             00000969
+           MOVE  3             TO  WBD-FBL.                             00000972
+           MOVE  10            TO  WBD-RBL.                             00000972
+           MOVE  3             TO  WBD-SBL.                             00000974
+           MOVE  10            TO  WBD-VBL.                             00000973
+           MOVE  SPACES        TO  WBD-COPTIONS  WBD-ADDITIONS.         00000790
+                                                                        00000975
+           MOVE 'CA.'          TO  FORMAT-BUFFER.                       00000976
+                                                                        00000978
+           MOVE 'CA.'          TO  SEARCH-BUFFER.                       00000978
+                                                                        00000978
+       005-00-CALL-ADABAS.                                              00000966
+                                                                        00000967
+           CALL 'ADABAS'  USING  WBD-CONTROL                            00000979
+                                 FORMAT-BUFFER                          00000980
+                                 RECORD-BUFFER                          00000981
+                                 SEARCH-BUFFER                          00000982
+                                 VALUE-BUFFER.                          00000983
+                                                                        00000984
+           IF  WBD-RC  EQUAL  ZEROS                                     00000985
+               DISPLAY  RECORD-BUFFER  ' - '  WBD-ISN-Q                 00000987
+               GO TO  005-00-CALL-ADABAS                                00000987
+           ELSE                                                         00000986
+               IF  WBD-RC  EQUAL  03                                    00000390
+                   DISPLAY  'FIM DE ARQUIVO'                            00001204
+                   GO TO  075-00-FECHAR-ADABAS                          00001204
+               ELSE                                                     00000987
+                   GO TO  055-00-ERRO-ADABAS                            00000986
+               END-IF                                                   00000987
+           END-IF.                                                      00000987
+                                                                        00000987
+       005-99-EXERCICIO-5.                                              00000988
+           EXIT.                                                        00000989
+                                                                        00000990
+      /*****************************************************************00000962
+      *        FIND  NORMAL  -  S1/S4                                  *00000963
+      ******************************************************************00000964
+                                                                        00000965
+       009-00-EXERCICIO-9  SECTION.                                     00000966
+                                                                        00000967
+           MOVE  LOW-VALUES    TO  WBD-CONTROL.                         00000968
+           MOVE 'S1'           TO  WBD-CCODE.                           00000970
+           MOVE '02S1'         TO  WBD-CID.                             00000971
+           MOVE  002           TO  WBD-FNB.                             00000969
+           MOVE  0             TO  WBD-ISN-LL.                          00000391
+           MOVE  0             TO  WBD-ISN-Q.                           00000392
+           MOVE  25            TO  WBD-FBL.                             00000972
+           MOVE  72            TO  WBD-RBL.                             00000972
+           MOVE  28            TO  WBD-SBL.                             00000974
+           MOVE  58            TO  WBD-VBL.                             00000973
+           MOVE  400           TO  WBD-IBL.                             00000973
+           MOVE  SPACES        TO  WBD-COPTIONS  WBD-ADDITIONS.         00000790
+                                                                        00000975
+           MOVE 'GA,8,U,AA,AB,CA,FA,DA,FB.'     TO  FORMAT-BUFFER.      00000976
+                                                                        00000978
+           MOVE 'CA,O,CA,D,FB,S,FB,N,FB,D,AA.'  TO  SEARCH-BUFFER.      00000978
+                                                                        00000978
+           MOVE 'WHITE'   TO  VB-COR-1.     * PIC X(010) *              00000978
+           MOVE 'BLACK'   TO  VB-COR-2.     * PIC X(010) *              00000978
+           MOVE '020000'  TO  VB-KM-DE.     * PIC X(006) *              00000978
+           MOVE '040000'  TO  VB-KM-ATE.    * PIC X(006) *              00000978
+           MOVE '036000'  TO  VB-KM-NAO.    * PIC X(006) *              00000978
+           MOVE 'FORD'    TO  VB-MARCA.     * PIC X(020) *              00000978
+                                                                        00000978
+       009-00-CALL-ADABAS-S1.                                           00000966
+                                                                        00000967
+           CALL 'ADABAS'  USING  WBD-CONTROL                            00000979
+                                 FORMAT-BUFFER                          00000980
+                                 RECORD-BUFFER                          00000981
+                                 SEARCH-BUFFER                          00000982
+                                 VALUE-BUFFER                           00000983
+                                 ISN-BUFFER.                            00000373
+                                                                        00000984
+           IF  WBD-RC  EQUAL  ZEROS                                     00000985
+               GO TO  009-00-READ-L1                                    00000987
+           ELSE                                                         00000987
+               GO TO  055-00-ERRO-ADABAS                                00000987
+           END-IF.                                                      00000987
+                                                                        00000987
+       009-00-READ-L1.                                                  00000966
+                                                                        00000967
+           IF  WBD-ISN-Q  EQUAL  ZEROS                                  00000978
+               DISPLAY  'NAO HA REGISTROS'                              00000978
+               GO TO  075-00-FECHAR-ADABAS                              00001204
+           END-IF.                                                      00000978
+                                                                        00000978
+           IF  WBD-ISN-Q  GREATER  100                                  00000978
+               DISPLAY  'ENCONTRADO MAIS DE 100 REGISTROS'              00000978
+               GO TO  075-00-FECHAR-ADABAS                              00001204
+           END-IF.                                                      00000978
+                                                                        00000970
+           MOVE 'L1'  TO  WBD-CCODE.                                    00000970
+           MOVE  1    TO  I.                                            00000970
+           GO TO  009-DISPLAY.                                          00000970
+                                                                        00000978
+       009-00-CALL-ADABAS-L1.                                           00000966
+                                                                        00000967
+           CALL 'ADABAS'  USING  WBD-CONTROL                            00000979
+                                 FORMAT-BUFFER                          00000980
+                                 RECORD-BUFFER.                         00000981
+                                                                        00000984
+           IF  WBD-RC  NOT EQUAL  ZEROS                                 00000985
+               GO TO  055-00-ERRO-ADABAS                                00000987
+           END-IF.                                                      00000987
+                                                                        00000987
+       009-00-DISPLAY.                                                  00000966
+                                                                        00000967
+           DISPLAY  WBD-ISN  ' - '  RECORD-BUFFER.                      00000987
+                                                                        00000986
+           ADD  1  TO  I.                                               00000986
+                                                                        00000986
+           IF  I  GREATER  WBD-ISN-Q                                    00000986
+               DISPLAY  'END OF RUN'                                    00001204
+               GO TO  075-00-FECHAR-ADABAS                              00001204
+           END-IF.                                                      00000986
+                                                                        00000986
+           MOVE  ISN-BUFF (I)  TO  WBD-ISN.                             00000986
+           GO TO  009-00-CALL-ADABAS-L1.                                00000986
+                                                                        00000986
+       009-99-EXERCICIO-9.                                              00000988
+           EXIT.                                                        00000989
+                                                                        00000990
+      /*****************************************************************00000962
+      *        FIND  AND  SORT  -  S2                                  *00000963
+      ******************************************************************00000964
+                                                                        00000965
+       012-00-EXERCICIO-12  SECTION.                                    00000966
+                                                                        00000967
+           MOVE  LOW-VALUES    TO  WBD-CONTROL.                         00000968
+           MOVE 'S2'           TO  WBD-CCODE.                           00000970
+           MOVE '03S2'         TO  WBD-CID.                             00000971
+           MOVE  003           TO  WBD-FNB.                             00000969
+           MOVE  0             TO  WBD-ISN-LL.                          00000391
+           MOVE  0             TO  WBD-ISN-Q.                           00000392
+           MOVE  1             TO  WBD-FBL.                             00000972
+           MOVE  0             TO  WBD-RBL.                             00000972
+           MOVE  13            TO  WBD-SBL.                             00000974
+           MOVE  21            TO  WBD-VBL.                             00000973
+           MOVE  0             TO  WBD-IBL.                             00000973
+           MOVE  SPACES        TO  WBD-COPTIONS  WBD-ADDITIONS.         00000790
+           MOVE ' '            TO  WBD-COP-2.                           00000973
+           MOVE 'BKCGIV  '     TO  WBD-ADD-1.                           00000973
+                                                                        00000975
+           MOVE '.'              TO  FORMAT-BUFFER.                     00000976
+                                                                        00000978
+           MOVE 'OC,O,OC,O,OC.'  TO  SEARCH-BUFFER.                     00000978
+                                                                        00000978
+           MOVE 'SHELL  '  TO  VB-GASOL-1.       * PIC X(007) *         00000978
+           MOVE 'TEXACO '  TO  VB-GASOL-2.       * PIC X(007) *         00000978
+           MOVE 'GULF   '  TO  VB-GASOL-3.       * PIC X(007) *         00000978
+                                                                        00000978
+       012-00-CALL-ADABAS-S2.                                           00000966
+                                                                        00000967
+           CALL 'ADABAS'  USING  WBD-CONTROL                            00000979
+                                 FORMAT-BUFFER                          00000980
+                                 RECORD-BUFFER                          00000981
+                                 SEARCH-BUFFER                          00000982
+                                 VALUE-BUFFER.                          00000983
+                                                                        00000984
+           IF  WBD-RC  EQUAL  ZEROS                                     00000985
+               GO TO  012-00-READ-L1                                    00000987
+           ELSE                                                         00000987
+               GO TO  055-00-ERRO-ADABAS                                00000987
+           END-IF.                                                      00000987
+                                                                        00000978
+       012-00-READ-L1.                                                  00000966
+                                                                        00000967
+           IF  WBD-ISN-Q  EQUAL  ZEROS                                  00000978
+               DISPLAY  'NAO HA REGISTROS'                              00000978
+               GO TO  075-00-FECHAR-ADABAS                              00001204
+           END-IF.                                                      00000978
+                                                                        00000970
+           MOVE 'L1'  TO  WBD-CCODE.                                    00000970
+           MOVE  22   TO  WBD-FBL.                                      00000972
+           MOVE  87   TO  WBD-RBL.                                      00000972
+           MOVE 'N'   TO  WBD-COP-2.                                    00000973
+                                                                        00000978
+           MOVE 'OC1-2,BK,CG,IV,OV1-12.'  TO  FORMAT-BUFFER.            00000978
+                                                                        00000978
+       012-00-CALL-ADABAS-L1.                                           00000966
+                                                                        00000967
+           CALL 'ADABAS'  USING  WBD-CONTROL                            00000979
+                                 FORMAT-BUFFER                          00000980
+                                 RECORD-BUFFER.                         00000981
+                                                                        00000984
+           IF  WBD-RC  EQUAL  03                                        00000985
+               DISPLAY  'END OF RUN'                                    00001204
+               GO TO  075-00-FECHAR-ADABAS                              00001204
+           ELSE                                                         00000986
+               IF  WBD-RC  NOT EQUAL  ZEROS                             00000985
+                   GO TO  055-00-ERRO-ADABAS                            00000987
+               END-IF                                                   00000987
+           END-IF.                                                      00000987
+                                                                        00000987
+       012-00-DISPLAY.                                                  00000966
+                                                                        00000967
+           DISPLAY  WBD-ISN  ' - '  RECORD-BUFFER.                      00000987
+                                                                        00000986
+           GO TO  012-00-CALL-ADABAS-L1.                                00000986
+                                                                        00000986
+       012-99-EXERCICIO-12.                                             00000988
+           EXIT.                                                        00000989
+                                                                        00000990
+      /*****************************************************************00000962
+      *        FIND  AND  SORT  -  S2                                  *00000963
+      ******************************************************************00000964
+                                                                        00000965
+       013-00-EXERCICIO-13  SECTION.                                    00000966
+                                                                        00000967
+           MOVE  LOW-VALUES    TO  WBD-CONTROL.                         00000968
+           MOVE 'S2'           TO  WBD-CCODE.                           00000970
+           MOVE '03S2'         TO  WBD-CID.                             00000971
+           MOVE  003           TO  WBD-FNB.                             00000969
+           MOVE  0             TO  WBD-ISN-LL.                          00000391
+           MOVE  0             TO  WBD-ISN-Q.                           00000392
+           MOVE  1             TO  WBD-FBL.                             00000972
+           MOVE  0             TO  WBD-RBL.                             00000972
+           MOVE  28            TO  WBD-SBL.                             00000974
+           MOVE  34            TO  WBD-VBL.                             00000973
+           MOVE  0             TO  WBD-IBL.                             00000973
+           MOVE  SPACES        TO  WBD-COPTIONS  WBD-ADDITIONS.         00000790
+           MOVE 'D'            TO  WBD-COP-2.                           00000973
+           MOVE 'AANWCR  '     TO  WBD-ADD-1.                           00000973
+                                                                        00000975
+           MOVE '.'                             TO  FORMAT-BUFFER.      00000976
+                                                                        00000978
+           MOVE 'CC1,D,CL1,S,CL1,D,CB1,S,CB1.'  TO  SEARCH-BUFFER.      00000978
+                                                                        00000978
+           MOVE 'MASTER CHARGE'  TO  VB-CARTAO.       * PIC X(018) *    00000978
+           MOVE  500             TO  VB-LIMITE-DE.    * PIC 9(004) *    00000978
+           MOVE  1000            TO  VB-LIMITE-ATE.   * PIC 9(004) *    00000978
+           MOVE  100             TO  VB-SALDO-DE.     * PIC 9(004) *    00000978
+           MOVE  200             TO  VB-SALDO-ATE.    * PIC 9(004) *    00000978
+                                                                        00000978
+       013-00-CALL-ADABAS-S2.                                           00000966
+                                                                        00000967
+           CALL 'ADABAS'  USING  WBD-CONTROL                            00000979
+                                 FORMAT-BUFFER                          00000980
+                                 RECORD-BUFFER                          00000981
+                                 SEARCH-BUFFER                          00000982
+                                 VALUE-BUFFER.                          00000983
+                                                                        00000984
+           IF  WBD-RC  EQUAL  ZEROS                                     00000985
+               GO TO  013-00-READ-L1                                    00000987
+           ELSE                                                         00000987
+               GO TO  055-00-ERRO-ADABAS                                00000987
+           END-IF.                                                      00000987
+                                                                        00000978
+       013-00-READ-L1.                                                  00000966
+                                                                        00000967
+           IF  WBD-ISN-Q  EQUAL  ZEROS                                  00000978
+               DISPLAY  'NAO HA REGISTROS'                              00000978
+               GO TO  075-00-FECHAR-ADABAS                              00001204
+           END-IF.                                                      00000978
+                                                                        00000970
+           MOVE 'L1'  TO  WBD-CCODE.                                    00000970
+           MOVE  16   TO  WBD-FBL.                                      00000972
+           MOVE  48   TO  WBD-RBL.                                      00000972
+           MOVE 'N'   TO  WBD-COP-2.                                    00000973
+                                                                        00000978
+           MOVE 'AA,8,U,NW,CR,BK.'  TO  FORMAT-BUFFER.                  00000978
+                                                                        00000978
+       013-00-CALL-ADABAS-L1.                                           00000966
+                                                                        00000967
+           CALL 'ADABAS'  USING  WBD-CONTROL                            00000979
+                                 FORMAT-BUFFER                          00000980
+                                 RECORD-BUFFER.                         00000981
+                                                                        00000984
+           IF  WBD-RC  EQUAL  03                                        00000985
+               DISPLAY  'END OF RUN'                                    00001204
+               GO TO  075-00-FECHAR-ADABAS                              00001204
+           ELSE                                                         00000986
+               IF  WBD-RC  NOT EQUAL  ZEROS                             00000985
+                   GO TO  055-00-ERRO-ADABAS                            00000987
+               END-IF                                                   00000987
+           END-IF.                                                      00000987
+                                                                        00000987
+       013-00-DISPLAY.                                                  00000966
+                                                                        00000967
+           DISPLAY  WBD-ISN  ' - '  RECORD-BUFFER.                      00000987
+                                                                        00000986
+           GO TO  013-00-CALL-ADABAS-L1.                                00000986
+                                                                        00000986
+       013-99-EXERCICIO-13.                                             00000988
+           EXIT.                                                        00000989
+                                                                        00000990
+      /*****************************************************************00000962
+      *        COMPARE  ISN  LISTS  -  S8                              *00000963
+      ******************************************************************00000964
+                                                                        00000965
+       015-00-EXERCICIO-15  SECTION.                                    00000966
+                                                                        00000967
+           EXECUTAR  QUATRO  'S1'  COM  'H'  NO  WBD-COP-1,  PARA  RETER00000967
+           A  LISTA  DE  ISN'S,  A  SABER:                              00000967
+                                                                        00000967
+           MOVE  LOW-VALUES       TO  WBD-CONTROL.                      00000968
+           MOVE 'S1'              TO  WBD-CCODE.                        00000970
+           MOVE  002              TO  WBD-FNB.                          00000969
+           MOVE '.'               TO  FORMAT-BUFFER.                    00000976
+           MOVE  1                TO  WBD-FBL.                          00000972
+           MOVE  0                TO  WBD-RBL.                          00000972
+           MOVE  SPACES           TO  WBD-COPTIONS  WBD-ADDITIONS.      00000790
+                                                                        00000976
+           MOVE 'S101'            TO  WBD-CID.                          00000971
+           MOVE  3                TO  WBD-SBL.                          00000974
+           MOVE  20               TO  WBD-VBL.                          00000973
+           MOVE 'H'               TO  WBD-COP-1.                        00000973
+           MOVE 'AA.'             TO  SEARCH-BUFFER.                    00000978
+           MOVE 'GENERAL MOTORS'  TO  VB-MARCA.           * PIC X(020) *00000978
+           PERFORM  015-00-CALL-ADABAS-S1.                              00000966
+                                                                        00000967
+           MOVE 'S102'            TO  WBD-CID.                          00000971
+           MOVE  3                TO  WBD-SBL.                          00000974
+           MOVE  10               TO  WBD-VBL.                          00000973
+           MOVE 'H'               TO  WBD-COP-1.                        00000973
+           MOVE 'CA.'             TO  SEARCH-BUFFER.                    00000978
+           MOVE 'BLUE'            TO  VB-COR.             * PIC X(010) *00000978
+           PERFORM  015-00-CALL-ADABAS-S1.                              00000966
+                                                                        00000967
+           MOVE 'S103'                 TO  WBD-CID.                     00000971
+           MOVE  3                     TO  WBD-SBL.                     00000974
+           MOVE  20                    TO  WBD-VBL.                     00000973
+           MOVE 'H'                    TO  WBD-COP-1.                   00000973
+           MOVE 'AB.'                  TO  SEARCH-BUFFER.               00000978
+           MOVE 'CHEVROLET CAMARO SS'  TO  VB-MODELO.     * PIC X(020) *00000978
+           PERFORM  015-00-CALL-ADABAS-S1.                              00000966
+                                                                        00000967
+           MOVE 'S104'            TO  WBD-CID.                          00000971
+           MOVE  3                TO  WBD-SBL.                          00000974
+           MOVE  2                TO  WBD-VBL.                          00000973
+           MOVE 'H'               TO  WBD-COP-1.                        00000973
+           MOVE 'DA.'             TO  SEARCH-BUFFER.                    00000978
+           MOVE  71               TO  VB-ANO.             * PIC 9(002) *00000978
+           PERFORM  015-00-CALL-ADABAS-S1.                              00000966
+                                                                        00000967
+*******015-00-CALL-ADABAS-S1.                                           00000966
+                                                                        00000967
+           CALL 'ADABAS'  USING  WBD-CONTROL                            00000979
+                                 FORMAT-BUFFER                          00000980
+                                 RECORD-BUFFER                          00000981
+                                 SEARCH-BUFFER                          00000982
+                                 VALUE-BUFFER.                          00000983
+                                                                        00000984
+           IF  WBD-RC  NOT EQUAL  ZEROS                                 00000985
+               GO TO  055-00-ERRO-ADABAS                                00000987
+           END-IF.                                                      00000987
+                                                                        00000978
+*******015-00-CALL-ADABAS-S1. EXIT.                                     00000966
+                                                                        00000967
+                                                                        00000967
+           MOVE 'S8'              TO  WBD-CCODE.                        00000970
+           MOVE 'S801'            TO  WBD-CID.                          00000971
+           MOVE 'H'               TO  WBD-COP-1.                        00000973
+           MOVE 'O'               TO  WBD-COP-2.                        00000973
+           MOVE 'S101S102'        TO  WBD-ADD-1.                        00000973
+           PERFORM  015-00-CALL-ADABAS-S8.                              00000966
+                                                                        00000975
+           MOVE 'S802'            TO  WBD-CID.                          00000971
+           MOVE 'H'               TO  WBD-COP-1.                        00000973
+           MOVE 'D'               TO  WBD-COP-2.                        00000973
+           MOVE 'S801S103'        TO  WBD-ADD-1.                        00000973
+           PERFORM  015-00-CALL-ADABAS-S8.                              00000966
+                                                                        00000975
+           MOVE 'S803'            TO  WBD-CID.                          00000971
+           MOVE ' '               TO  WBD-COP-1.                        00000973
+           MOVE 'N'               TO  WBD-COP-2.                        00000973
+           MOVE 'S802S104'        TO  WBD-ADD-1.                        00000973
+           PERFORM  015-00-CALL-ADABAS-S8.                              00000966
+                                                                        00000978
+*******015-00-CALL-ADABAS-S8.                                           00000966
+                                                                        00000967
+           CALL 'ADABAS'  USING  WBD-CONTROL                            00000979
+                                 FORMAT-BUFFER                          00000980
+                                 RECORD-BUFFER                          00000981
+                                 SEARCH-BUFFER                          00000982
+                                 VALUE-BUFFER.                          00000983
+                                                                        00000984
+           IF  WBD-RC  NOT EQUAL  ZEROS                                 00000985
+               GO TO  055-00-ERRO-ADABAS                                00000987
+           END-IF.                                                      00000987
+                                                                        00000978
+*******015-00-CALL-ADABAS-S8. EXIT.                                     00000966
+                                                                        00000966
+       015-00-READ-L1.                                                  00000966
+                                                                        00000967
+           IF  WBD-ISN-Q  EQUAL  ZEROS                                  00000978
+               DISPLAY  'NAO HA REGISTROS'                              00000978
+               GO TO  075-00-FECHAR-ADABAS                              00001204
+           END-IF.                                                      00000978
+                                                                        00000970
+           MOVE 'L1'    TO  WBD-CCODE.                                  00000970
+           MOVE 'S803'  TO  WBD-CID.                                    00000971
+           MOVE  21     TO  WBD-FBL.                                    00000972
+           MOVE  79     TO  WBD-RBL.                                    00000972
+           MOVE 'N'     TO  WBD-COP-2.                                  00000973
+                                                                        00000978
+           MOVE 'AA,AB,CA,DA,AC,FA,FB.'  TO  FORMAT-BUFFER.             00000978
+                                                                        00000978
+       015-00-CALL-ADABAS-L1.                                           00000966
+                                                                        00000967
+           CALL 'ADABAS'  USING  WBD-CONTROL                            00000979
+                                 FORMAT-BUFFER                          00000980
+                                 RECORD-BUFFER.                         00000981
+                                                                        00000984
+           IF  WBD-RC  EQUAL  03                                        00000985
+               DISPLAY  'END OF RUN'                                    00001204
+               GO TO  075-00-FECHAR-ADABAS                              00001204
+           ELSE                                                         00000986
+               IF  WBD-RC  NOT EQUAL  ZEROS                             00000985
+                   GO TO  055-00-ERRO-ADABAS                            00000987
+               END-IF                                                   00000987
+           END-IF.                                                      00000987
+                                                                        00000987
+       015-00-DISPLAY.                                                  00000966
+                                                                        00000967
+           DISPLAY  WBD-ISN  ' - '  RECORD-BUFFER.                      00000987
+                                                                        00000986
+           GO TO  015-00-CALL-ADABAS-L1.                                00000986
+                                                                        00000986
+       015-99-EXERCICIO-15.                                             00000988
+           EXIT.                                                        00000989
+                                                                        00000990
+      /*****************************************************************00000962
+      *        ADD  RECORD  -  S1/N1  (SEM  UNIQUE  KEY)               *00000963
+      *        ADD  RECORD  -  N1     (COM  UNIQUE  KEY)               *00000963
+      ******************************************************************00000964
+                                                                        00000965
+       019-00-EXERCICIO-19  SECTION.                                    00000966
+                                                                        00000967
+       019-00-ABRIR-ADABAS.                                             00000782
+                                                                        00000783
+           MOVE  LOW-VALUES     TO  WBD-CONTROL.                        00000784
+           MOVE 'OP'            TO  WBD-CCODE.                          00000785
+           MOVE '02OP'          TO  WBD-CID.                            00000787
+           MOVE  02             TO  WBD-FNB.                            00000786
+           MOVE  1              TO  WBD-FBL.                            00000788
+           MOVE  6              TO  WBD-RBL.                            00000789
+           MOVE  ZEROS          TO  WBD-SBL   WBD-VBL.                  00000788
+           MOVE  SPACES         TO  WBD-COPTIONS  WBD-ADDITIONS.        00000790
+                                                                        00000790
+           MOVE '.'             TO  FORMAT-BUFFER.                      00000791
+           MOVE 'UPD=2.'        TO  RECORD-BUFFER.                      00000791
+                                                                        00000792
+           CALL 'ADABAS' USING  WBD-CONTROL                             00000793
+                                FORMAT-BUFFER                           00000794
+                                RECORD-BUFFER.                          00000795
+                                                                        00000796
+           IF  WBD-RC  NOT EQUAL  ZEROS                                 00000797
+               GO TO  055-00-ERRO-ADABAS                                00000798
+           END-IF.                                                      00000798
+                                                                        00000799
+           MOVE  LOW-VALUES    TO  WBD-CONTROL.                         00000968
+           MOVE 'S1'           TO  WBD-CCODE.                           00000970
+           MOVE '02S1'         TO  WBD-CID.                             00000971
+           MOVE  02            TO  WBD-FNB.                             00000969
+           MOVE  0             TO  WBD-ISN-LL.                          00000391
+           MOVE  0             TO  WBD-ISN-Q.                           00000392
+           MOVE  1             TO  WBD-FBL.                             00000972
+           MOVE  0             TO  WBD-RBL.                             00000972
+           MOVE  7             TO  WBD-SBL.                             00000974
+           MOVE  8             TO  WBD-VBL.                             00000973
+           MOVE  0             TO  WBD-IBL.                             00000973
+           MOVE  SPACES        TO  WBD-COPTIONS  WBD-ADDITIONS.         00000790
+                                                                        00000975
+           MOVE '.'            TO  FORMAT-BUFFER.                       00000976
+                                                                        00000978
+           MOVE 'GA,8,U.'      TO  SEARCH-BUFFER.                       00000978
+                                                                        00000978
+           MOVE  00105999      TO  VALUE-BUFFER.      * PIC 9(008) *    00000978
+                                                                        00000799
+           CALL 'ADABAS'  USING  WBD-CONTROL                            00000979
+                                 FORMAT-BUFFER                          00000980
+                                 RECORD-BUFFER                          00000981
+                                 SEARCH-BUFFER                          00000982
+                                 VALUE-BUFFER.                          00000983
+                                                                        00000984
+           IF  WBD-RC  NOT EQUAL  ZEROS                                 00000985
+               GO TO  055-00-ERRO-ADABAS                                00000987
+           END-IF.                                                      00000987
+                                                                        00000978
+           IF  WBD-ISN-Q  GREATER  ZEROS                                00000978
+               DISPLAY  'REGISTRO JA EXISTE'                            00000985
+               GO TO  075-00-FECHAR-ADABAS                              00001204
+           END-IF.                                                      00000978
+                                                                        00000799
+      ***  COM UNIQUE KEY, EXECUTAR DIRETO O 'N1' E TESTAR RC = 198  ***00000799
+                                                                        00000802
+      ***  IF  WBD-RC  EQUAL  198                                       00000985
+      ***      DISPLAY  'REGISTRO JA EXISTE'                            00000985
+      ***      GO TO  075-00-FECHAR-ADABAS                              00001204
+      ***  END-IF.                                                      00000985
+                                                                        00000802
+           MOVE 'N1'           TO  WBD-CCODE.                           00000970
+           MOVE  19            TO  WBD-FBL.                             00000972
+           MOVE  60            TO  WBD-RBL.                             00000972
+           MOVE  SPACES        TO  WBD-COPTIONS  WBD-ADDITIONS.         00000790
+                                                                        00000975
+           MOVE 'AA,AB,CA,DA,GA,8,U.'  TO  FORMAT-BUFFER.               00000976
+                                                                        00000978
+           MOVE 'GENERAL MOTORS'       TO  RB-MARCA.      * PIC X(020) *00000978
+           MOVE 'CHEVROLET CAMARO SS'  TO  RB-MODELO.     * PIC X(020) *00000978
+           MOVE 'WHITE'                TO  RB-COR.        * PIC X(010) *00000978
+           MOVE  70                    TO  RB-ANO.        * PIC 9(002) *00000978
+           MOVE  00105999              TO  RB-CPF.        * PIC 9(008) *00000978
+                                                                        00000978
+           CALL 'ADABAS'  USING  WBD-CONTROL                            00000979
+                                 FORMAT-BUFFER                          00000980
+                                 RECORD-BUFFER.                         00000981
+                                                                        00000984
+           IF  WBD-RC  NOT EQUAL  ZEROS                                 00000985
+               GO TO  055-00-ERRO-ADABAS                                00000987
+           END-IF.                                                      00000987
+                                                                        00000978
+           DISPLAY  WBD-ISN  ' - '  RECORD-BUFFER.                      00000987
+                                                                        00000986
+       019-99-EXERCICIO-19.                                             00000988
+           EXIT.                                                        00000989
+                                                                        00000990
+      /*****************************************************************00000962
+      *        ADD  RECORD  -  N2                                      *00000963
+      ******************************************************************00000964
+                                                                        00000965
+       020-00-EXERCICIO-20  SECTION.                                    00000966
+                                                                        00000967
+       020-00-ABRIR-ADABAS.                                             00000782
+                                                                        00000783
+           MOVE  LOW-VALUES     TO  WBD-CONTROL.                        00000784
+           MOVE 'OP'            TO  WBD-CCODE.                          00000785
+           MOVE '02OP'          TO  WBD-CID.                            00000787
+           MOVE  02             TO  WBD-FNB.                            00000786
+           MOVE  1              TO  WBD-FBL.                            00000788
+           MOVE  6              TO  WBD-RBL.                            00000789
+           MOVE  ZEROS          TO  WBD-SBL   WBD-VBL.                  00000788
+           MOVE  SPACES         TO  WBD-COPTIONS  WBD-ADDITIONS.        00000790
+                                                                        00000790
+           MOVE '.'             TO  FORMAT-BUFFER.                      00000791
+           MOVE 'UPD=2.'        TO  RECORD-BUFFER.                      00000791
+                                                                        00000792
+           CALL 'ADABAS' USING  WBD-CONTROL                             00000793
+                                FORMAT-BUFFER                           00000794
+                                RECORD-BUFFER.                          00000795
+                                                                        00000796
+           IF  WBD-RC  NOT EQUAL  ZEROS                                 00000797
+               GO TO  055-00-ERRO-ADABAS                                00000798
+           END-IF.                                                      00000798
+                                                                        00000799
+           MOVE  LOW-VALUES    TO  WBD-CONTROL.                         00000968
+           MOVE  02            TO  WBD-FNB.                             00000969
+           MOVE 'N2'           TO  WBD-CCODE.                           00000970
+           MOVE  SPACES        TO  WBD-CID.                             00000971
+           MOVE  198           TO  WBD-ISN.                             00000972
+           MOVE  19            TO  WBD-FBL.                             00000972
+           MOVE  60            TO  WBD-RBL.                             00000972
+           MOVE  SPACES        TO  WBD-COPTIONS  WBD-ADDITIONS.         00000790
+                                                                        00000975
+                                                                        00000802
+           MOVE 'AA,AB,CA,DA,GA,8,U.'  TO  FORMAT-BUFFER.               00000976
+                                                                        00000978
+           MOVE 'GENERAL MOTORS'       TO  RB-MARCA.      * PIC X(020) *00000978
+           MOVE 'CHEVROLET CAMARO SS'  TO  RB-MODELO.     * PIC X(020) *00000978
+           MOVE 'WHITE'                TO  RB-COR.        * PIC X(010) *00000978
+           MOVE  70                    TO  RB-ANO.        * PIC 9(002) *00000978
+           MOVE  00105999              TO  RB-CPF.        * PIC 9(008) *00000978
+                                                                        00000978
+           CALL 'ADABAS'  USING  WBD-CONTROL                            00000979
+                                 FORMAT-BUFFER                          00000980
+                                 RECORD-BUFFER.                         00000981
+                                                                        00000984
+           IF  WBD-RC  EQUAL  113                                       00000985
+               DISPLAY  'REGISTRO JA EXISTE'                            00000985
+               GO TO  075-00-FECHAR-ADABAS                              00001204
+           ELSE                                                         00000985
+               IF  WBD-RC  NOT EQUAL  ZEROS                             00000985
+                   GO TO  055-00-ERRO-ADABAS                            00000987
+               END-IF                                                   00000987
+           END-IF.                                                      00000987
+                                                                        00000978
+           DISPLAY  WBD-ISN  ' - '  RECORD-BUFFER.                      00000987
+                                                                        00000986
+       020-99-EXERCICIO-20.                                             00000988
+           EXIT.                                                        00000989
+                                                                        00000990
+      /*****************************************************************00000962
+      *        UPDATE  RECORD  -  S4/A4                                *00000963
+      ******************************************************************00000964
+                                                                        00000965
+       021-00-EXERCICIO-21  SECTION.                                    00000966
+                                                                        00000967
+       021-00-ABRIR-ADABAS.                                             00000782
+                                                                        00000783
+           MOVE  LOW-VALUES     TO  WBD-CONTROL.                        00000784
+           MOVE 'OP'            TO  WBD-CCODE.                          00000785
+           MOVE '02OP'          TO  WBD-CID.                            00000787
+           MOVE  02             TO  WBD-FNB.                            00000786
+           MOVE  1              TO  WBD-FBL.                            00000788
+           MOVE  6              TO  WBD-RBL.                            00000789
+           MOVE  ZEROS          TO  WBD-SBL   WBD-VBL.                  00000788
+           MOVE  SPACES         TO  WBD-COPTIONS  WBD-ADDITIONS.        00000790
+                                                                        00000790
+           MOVE '.'             TO  FORMAT-BUFFER.                      00000791
+           MOVE 'UPD=2.'        TO  RECORD-BUFFER.                      00000791
+                                                                        00000792
+           CALL 'ADABAS' USING  WBD-CONTROL                             00000793
+                                FORMAT-BUFFER                           00000794
+                                RECORD-BUFFER.                          00000795
+                                                                        00000796
+           IF  WBD-RC  NOT EQUAL  ZEROS                                 00000797
+               GO TO  055-00-ERRO-ADABAS                                00000798
+           END-IF.                                                      00000798
+                                                                        00000799
+           MOVE  LOW-VALUES    TO  WBD-CONTROL.                         00000968
+           MOVE 'S4'           TO  WBD-CCODE.                           00000970
+           MOVE '02S4'         TO  WBD-CID.                             00000971
+           MOVE  002           TO  WBD-FNB.                             00000969
+           MOVE  0             TO  WBD-ISN-LL.                          00000391
+           MOVE  0             TO  WBD-ISN-Q.                           00000392
+           MOVE  12            TO  WBD-FBL.                             00000972
+           MOVE  52            TO  WBD-RBL.                             00000972
+           MOVE  7             TO  WBD-SBL.                             00000974
+           MOVE  8             TO  WBD-VBL.                             00000973
+           MOVE  0             TO  WBD-IBL.                             00000973
+           MOVE  SPACES        TO  WBD-COPTIONS  WBD-ADDITIONS.         00000790
+                                                                        00000975
+           MOVE 'AA,AB,CA,DA.'  TO  FORMAT-BUFFER.                      00000976
+                                                                        00000978
+           MOVE 'GA,8,U.'       TO  SEARCH-BUFFER.                      00000978
+                                                                        00000978
+           MOVE  00105999       TO  VALUE-BUFFER.     * PIC 9(008) *    00000978
+                                                                        00000966
+       021-00-CALL-ADABAS-S4.                                           00000966
+                                                                        00000967
+           CALL 'ADABAS'  USING  WBD-CONTROL                            00000979
+                                 FORMAT-BUFFER                          00000980
+                                 RECORD-BUFFER                          00000981
+                                 SEARCH-BUFFER                          00000982
+                                 VALUE-BUFFER.                          00000983
+                                                                        00000984
+           IF  WBD-RC  EQUAL  ZEROS                                     00000985
+               GO TO  021-00-UPDATE-A4                                  00000987
+           ELSE                                                         00000987
+               GO TO  055-00-ERRO-ADABAS                                00000987
+           END-IF.                                                      00000987
+                                                                        00000987
+       021-00-UPDATE-A4.                                                00000966
+                                                                        00000967
+           IF  WBD-ISN-Q  EQUAL  ZEROS                                  00000978
+               DISPLAY  'REGISTRO NAO EXISTE'                           00000978
+               GO TO  075-00-FECHAR-ADABAS                              00001204
+           END-IF.                                                      00000978
+                                                                        00000978
+           DISPLAY  'REG. ANTIGO - '  WBD-ISN  ' - '  RECORD-BUFFER.    00000987
+                                                                        00000987
+           MOVE 'A4'                   TO  WBD-CCODE.                   00000970
+                                                                        00000970
+           MOVE 'VOLKSWAGEN'           TO  RB-MARCA.      * PIC X(020) *00000978
+           MOVE 'PASSAT'               TO  RB-MODELO.     * PIC X(020) *00000978
+           MOVE 'AMARELO'              TO  RB-COR.        * PIC X(010) *00000978
+           MOVE  79                    TO  RB-ANO.        * PIC 9(002) *00000978
+                                                                        00000978
+           CALL 'ADABAS'  USING  WBD-CONTROL                            00000979
+                                 FORMAT-BUFFER                          00000980
+                                 RECORD-BUFFER.                         00000981
+                                                                        00000984
+           IF  WBD-RC  NOT EQUAL  ZEROS                                 00000985
+               GO TO  055-00-ERRO-ADABAS                                00000987
+           END-IF.                                                      00000987
+                                                                        00000978
+           DISPLAY  'REG. ATUAL - '  WBD-ISN  ' - '  RECORD-BUFFER.     00000987
+                                                                        00000986
+       021-99-EXERCICIO-21.                                             00000988
+           EXIT.                                                        00000989
+                                                                        00000990
+      /*****************************************************************00000962
+      *        DELETE  RECORD  -  S4/E4                                *00000963
+      ******************************************************************00000964
+                                                                        00000965
+       023-00-EXERCICIO-23  SECTION.                                    00000966
+                                                                        00000967
+       023-00-ABRIR-ADABAS.                                             00000782
+                                                                        00000783
+           MOVE  LOW-VALUES     TO  WBD-CONTROL.                        00000784
+           MOVE 'OP'            TO  WBD-CCODE.                          00000785
+           MOVE '02OP'          TO  WBD-CID.                            00000787
+           MOVE  02             TO  WBD-FNB.                            00000786
+           MOVE  1              TO  WBD-FBL.                            00000788
+           MOVE  6              TO  WBD-RBL.                            00000789
+           MOVE  ZEROS          TO  WBD-SBL   WBD-VBL.                  00000788
+           MOVE  SPACES         TO  WBD-COPTIONS  WBD-ADDITIONS.        00000790
+                                                                        00000790
+           MOVE '.'             TO  FORMAT-BUFFER.                      00000791
+           MOVE 'UPD=2.'        TO  RECORD-BUFFER.                      00000791
+                                                                        00000792
+           CALL 'ADABAS' USING  WBD-CONTROL                             00000793
+                                FORMAT-BUFFER                           00000794
+                                RECORD-BUFFER.                          00000795
+                                                                        00000796
+           IF  WBD-RC  NOT EQUAL  ZEROS                                 00000797
+               GO TO  055-00-ERRO-ADABAS                                00000798
+           END-IF.                                                      00000798
+                                                                        00000799
+           MOVE  LOW-VALUES    TO  WBD-CONTROL.                         00000968
+           MOVE 'S4'           TO  WBD-CCODE.                           00000970
+           MOVE '02S4'         TO  WBD-CID.                             00000971
+           MOVE  002           TO  WBD-FNB.                             00000969
+           MOVE  0             TO  WBD-ISN-LL.                          00000391
+           MOVE  0             TO  WBD-ISN-Q.                           00000392
+           MOVE  12            TO  WBD-FBL.                             00000972
+           MOVE  52            TO  WBD-RBL.                             00000972
+           MOVE  7             TO  WBD-SBL.                             00000974
+           MOVE  8             TO  WBD-VBL.                             00000973
+           MOVE  0             TO  WBD-IBL.                             00000973
+           MOVE  SPACES        TO  WBD-COPTIONS  WBD-ADDITIONS.         00000790
+                                                                        00000975
+           MOVE 'AA,AB,CA,DA.'  TO  FORMAT-BUFFER.                      00000976
+                                                                        00000978
+           MOVE 'GA,8,U.'       TO  SEARCH-BUFFER.                      00000978
+                                                                        00000978
+           MOVE  00105999       TO  VALUE-BUFFER.     * PIC 9(008) *    00000978
+                                                                        00000966
+       023-00-CALL-ADABAS-S4.                                           00000966
+                                                                        00000967
+           CALL 'ADABAS'  USING  WBD-CONTROL                            00000979
+                                 FORMAT-BUFFER                          00000980
+                                 RECORD-BUFFER                          00000981
+                                 SEARCH-BUFFER                          00000982
+                                 VALUE-BUFFER.                          00000983
+                                                                        00000984
+           IF  WBD-RC  EQUAL  ZEROS                                     00000985
+               GO TO  023-00-DELETE-E4                                  00000987
+           ELSE                                                         00000987
+               GO TO  055-00-ERRO-ADABAS                                00000987
+           END-IF.                                                      00000987
+                                                                        00000987
+       023-00-DELETE-E4.                                                00000966
+                                                                        00000967
+           IF  WBD-ISN-Q  EQUAL  ZEROS                                  00000978
+               DISPLAY  'REGISTRO NAO EXISTE'                           00000978
+               GO TO  075-00-FECHAR-ADABAS                              00001204
+           END-IF.                                                      00000978
+                                                                        00000978
+           DISPLAY  'REG. ANTIGO - '  WBD-ISN  ' - '  RECORD-BUFFER.    00000987
+                                                                        00000987
+           MOVE 'E4'  TO  WBD-CCODE.                                    00000970
+                                                                        00000970
+           CALL 'ADABAS'  USING  WBD-CONTROL.                           00000979
+                                                                        00000984
+           IF  WBD-RC  NOT EQUAL  ZEROS                                 00000985
+               GO TO  055-00-ERRO-ADABAS                                00000987
+           END-IF.                                                      00000987
+                                                                        00000978
+       023-99-EXERCICIO-23.                                             00000988
+           EXIT.                                                        00000989
+                                                                        00000990
+      /*****************************************************************00001113
+      *            ROTINA DE ERRO DO ADABAS                            *00001114
+      ******************************************************************00001115
+                                                                        00001116
+       055-00-ERRO-ADABAS  SECTION.                                     00001117
+                                                                        00001118
+           MOVE  WBD-CCODE      TO  WMS-CMD.                            00001119
+           MOVE  WBD-FNB        TO  WMS-FNR.                            00001120
+           MOVE  WBD-RC         TO  WMS-RC.                             00001121
+           MOVE  WMS-MENS03     TO  WRC-OBS.                            00001122
+           MOVE  16             TO  RETURN-CODE.                        00001123
+                                                                        00001124
+           GO TO  060-00-ABENDAR.                                       00001125
+                                                                        00001126
+       055-99-ERRO-ADABAS.                                              00001127
+           EXIT.                                                        00001128
+                                                                        00001129
+      /*****************************************************************00001130
+      *            ROTINA DE ABEND DO PROGRAMA                         *00001131
+      ******************************************************************00001132
+                                                                        00001133
+       060-00-ABENDAR  SECTION.                                         00001134
+                                                                        00001135
+           PERFORM  070-00-LIBERAR-LISTA.                               00001136
+           PERFORM  075-00-FECHAR-ADABAS.                               00001137
+                                                                        00001138
+           CALL 'CPD10740'  USING  WRC-REDE.                            00001139
+           MOVE  16            TO  WAB-CODE.                            00001140
+           CALL 'ABENDAR'   USING  WAB-ABEND.                           00001141
+                                                                        00001142
+       060-99-ABENDAR.                                                  00001143
+           EXIT.                                                        00001144
+                                                                        00001145
+      /*****************************************************************00001186
+      *            ROTINA DE LIBERACAO DE LISTAS                       *00001187
+      ******************************************************************00001188
+                                                                        00001189
+       070-00-LIBERAR-LISTA  SECTION.                                   00001190
+                                                                        00001191
+           MOVE  LOW-VALUES  TO  WBD-CONTROL.                           00001192
+           MOVE  'RC'        TO  WBD-CCODE.                             00001193
+                                                                        00001194
+           CALL 'ADABAS'  USING  WBD-CONTROL.                           00001195
+                                                                        00001196
+       070-99-LIBERAR-LISTA.                                            00001197
+           EXIT.                                                        00001198
+                                                                        00001199
+      /*****************************************************************00001200
+      *            ROTINA DE FECHAMENTO DO ADABAS                      *00001201
+      ******************************************************************00001202
+                                                                        00001203
+       075-00-FECHAR-ADABAS  SECTION.                                   00001204
+                                                                        00001205
+           MOVE  LOW-VALUES  TO  WBD-CONTROL.                           00001206
+           MOVE  'CL'        TO  WBD-CCODE.                             00001207
+                                                                        00001208
+           CALL 'ADABAS'  USING  WBD-CONTROL.                           00001209
+                                                                        00001210
+       075-99-FECHAR-ADABAS.                                            00001211
+           EXIT.                                                        00001212
+                                                                        00001213

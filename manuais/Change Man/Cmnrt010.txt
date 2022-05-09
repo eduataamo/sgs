@@ -1,0 +1,39 @@
+      010. CRIAR PACOTE PLANEJADO
+ 
+        . no painel 'PRIMARY OPTION MENU', digite opcao 1 e <enter>.
+        . no painel 'BUILD OPTIONS', digite opcao 1 e <enter>.
+        . no painel 'CREATE A NEW PACKAGE' :
+          . no campo 'OPTION ===>', digite l.
+          . no campo 'PACKAGE TITLE', digite o objetivo do pacote.
+          . no campo 'APPLICATION', digite o codigo da aplicacao com
+            4 digitos, ou deixe em branco para apresentar a lista.
+          . no campo 'REQUESTER'S NAME', digite o nome do solicitante.
+          . no campo 'REQUESTER'S PHONE', digite o fone do solicitante.
+          . no campo 'DEPARTMENT', digite o codigo do departamento do
+            solicitante, com ate 4 digitos.
+          . no campo 'PACKAGE LEVEL', digite 1.
+          . no campo 'PACKAGE TYPE', digite P.
+          . no campo 'PACKAGE TIME SPAN', digite P.
+          . no campo 'PACKAGE TO COPY FORWARD', deixe em branco.
+          . no campo 'UNPLANNED REASON CODE', deixe em branco.
+          . no campo 'TEMPORARY CHANGE DURATION', deixe em branco.
+          . tecle <enter>.
+        . no painel 'PACKAGE DESCRIPTION', informar as atividades do
+          pacote e <enter>.
+        . no painel 'INSTALLATION INSTRUCTIONS' :
+          . no campo 'CONTINGENCY', digite 1.
+          . nas linhas, digite informacoes para instalacao do pacote.
+          . tecle <enter>.
+        . no painel 'REMOTE SITE INFORMATION' :
+          . no campo 'REMOTE SITE', digite MVSA.
+          . no campo 'INSTALL DATE/TIME', digite a data e o horario de
+            inicio e fim que deseja instalar o pacote.
+          . no campo 'PRIMARY/BACKUP CONTACTS',digite o nome do primeiro
+            e segundo contatos, para solucionar quaisquer duvidas
+            relacionadas ao pacote.
+          . no campo 'PHONE NUMBERS', digite o telefone do primeiro e
+            segundo contatos.
+          . tecle <enter> para atualizar os dados digitados.
+          . tecle <enter> para gerar o numero do pacote.
+          . retorna o painel 'BUILD OPTIONS', com o numero do pacote
+            criado, no canto superior direito.

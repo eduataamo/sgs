@@ -1,0 +1,85 @@
+****** PROCEDIMENTOS PARA LIBERACAO EMERGENCIAL - AMBIENTE ONLINE ******
+*      CMNRT012                                                        *
+*----------------------------------------------------------------------*
+  1.  CRIACAO DE UM PACOTE EMERGENCIAL
+ 
+  1.1 Entrar na Opcao 5 (List)
+ 
+      - Apontar no campo APLICATION o sistema, com 4 posicoes,
+      - Apos obter a lista, na linha de comandos digitar CR,
+      - Criar o pacote, informando no campo PACKAGE TYPE - UNPLANNED
+      - Escolher o Reason Code apropriado para justificar a liberacao,
+        atraves do campo UNPLANNED REASON CODE. Digite * nesse campo,
+        ao ser apresentada a lista escolha o Reason Code apropriado.
+ 
+*----------------------------------------------------------------------*
+  2.  PARA OBTER OS COMPONENTES PARA O PACOTE
+ 
+  2.1 BROWSE dos modulos SRC com COPY para RNNNNN.LIBRARY.USER
+ 
+      Esse passo eh necessario quando se deseja clonar um programa
+      SRC para gerar o emergencial SEO.
+ 
+      - Entre na funcao BB (Baseline Browse),
+      - Escolha o tipo de componente (SRC),
+      - Assinalar o pattern para abrir a lista (Ex. RCD01*),
+        ou informe o nome do modulo que deseja clonar,
+      - Tendo sido identificado, selecione com a opcao 'C' (copy),
+        apontando a biblioteca de trabalho (RNNNNN.LIBRARY.USER),
+      - Caso queira copiar o modulo com outro nome informe no campo
+        AS MEMBER NAME
+      - Efetue a copia para a biblioteca.
+ 
+  2.2 STAGE FROM DEVELOPMENT - Para componentes que ja estao
+                               na RNNNNN.LIBRARY.USER
+ 
+      - Entrar no pacote com opcao "S1",
+      - Assinalar a biblioteca de trabalho (RNNNNN.LIBRARY.USER),
+      - Assinalar o pattern para abrir a lista (Ex. RCD01*),
+        ou informe o nome do componente,
+      - Identificar o tipo de componente:
+        SEO - Para programas emergenciais
+      - Informe a linguagem do programa,
+      - Uma copia dos modulos sera feita para o pacote.
+        **** ATENCAO ****
+        Se receber mensagem:
+        "CMN2582 - XXXXXXXX must be checked out from Baseline Library"
+        Entao devera executar o CHECKOUT do componente SEO e depois
+        executar o STAGE FROM DEVELOPMENT.
+ 
+  2.3 CHECKOUT - Obtencao de componentes ja existentes no Baseline
+                 de componentes Emergenciais SEO
+ 
+      Obs: Este procedimento so eh necessario para que o Change Man
+           controle as versoes. Sera executado para aqueles componentes
+           que receberem a mensagem "CMN2582I - ...".
+ 
+      - Entrar no pacote com opcao "C1",
+      - Assinalar o pattern para abrir a lista (Ex. RCD01*),
+      - Identificar o tipo de componente:
+        SEO - Para programas
+      - Tendo sido apresentada a lista, escolher os modulos,
+      - Uma copia dos modulos sera feita para o pacote.
+ 
+  2.4 Alteracao dos componentes e implantacao do pacote
+ 
+      - Altere os componentes do pacote (edicao/compilacao),
+      - Se desejar testar os programas promova o pacote para o DES,
+        nesse caso o(s) programa(s) serao disponibilizados na biblioteca
+        de testes CICS.V330.TESTLIB,
+      - Faca o Audit,
+      - Faca o Freeze,
+      - Aprove o pacote,
+      - Quando o pacote for instalado o Change Man ira copiar os
+        modulos para a seguintes biblioteca:
+           PROGRAMAS - CICSTS12.LOAD.EMERG
+      - Quando o pacote ja estiver como status BAS, entao estara
+        concluido o processo.
+ 
+      **** ATENCAO ****
+ 
+      - Lembre-se que esse pacote nao atualiza as bibliotecas normais
+        de Producao e sim as bibliotecas emergenciais. Portanto, no
+        momento oportuno faca a equalizacao, ou seja libere um pacote
+        planejado, contendo os modulos com os tipos normais.
+*----------------------------------------------------------------------*

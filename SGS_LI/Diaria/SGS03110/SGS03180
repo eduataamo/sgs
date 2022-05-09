@@ -1,0 +1,206 @@
+0010 ************************************************************************
+0020 **
+0030 **  PROGRAMA .....  SGS03180
+0040 **
+0050 **  AUTOR ........  SILVIA FRANCO SALOMONI
+0060 **  ESCRITO EM ...  16/11/2000         ALTERADO EM ...    /  /
+0070 **  OBJETIVOS ....  GERA ARQUIVO SEQUENCIAL C/ IMAGEM DA TABELA DE CCM
+0080 **  AMBIENTE .....  BATCH
+0090 **  CHAMADO POR ..  ETAPA SGS03-1 DIARIA (PROC SGS03110)
+0100 **
+0110 **  MODULOS CHAMADOS
+0120 **  VIA FETCH ....  NENHUM
+0130 **  MAPAS ........  NENHUM
+0140 **  HELPROUTINE ..  NENHUMA            JANELA .. NENHUMA
+0150 **  DATA GLOBAL ..  NENHUMA
+0160 **  DATA LOCALS ..  NENHUMA
+0170 **  ARQUIVOS .....  FILE 018 - COD-FAT-CONTABIL
+0180 **                  DSN=D.SGS018(0)
+0190 **
+0200 ************************************************************************
+0210 DEFINE DATA LOCAL
+0220 1 #CCM VIEW OF COD-FAT-CONTABIL
+0230   2 CODIGO-DEB-CRED          /*  AA  P03 - COD.CCM
+0240   2 CODIGO-CONTABIL          /*  AB  P07 - COD.LINHA
+0250   2 FNT                      /*  AC  A02 - ICMS
+0260   2 NUMERO-DIGITOS           /*  AD  U02
+0270   2 MENSAGEM-EM-CONTA        /*  AE  A46 - DESCRICAO
+0280   2 SERVICO                  /*  AF  A03
+0290   2 ISSC                     /*  AG  U05
+0300   2 CD-STAT-CONTB            /*  AH  A01 - STATUS ATIVADO/DESATIVADO
+0310   2 PROVEDOR                 /*  AI  A20
+0320   2 GRUPO                    /*  AJ  U04
+0330   2 FG-IND1                  /*  AK  A01
+0340   2 FG-IND2                  /*  AL  A01
+0350   2 CENTRO-CUSTO-LUCRO       /*  AM  A05
+0360   2 ATIVIDADE-OBJ-CUSTO      /*  AN  A05
+0370   2 APONTM                   /*  AO  P07
+0380   2 ORIGEM-RECEITA           /*  AP  A03
+0390   2 DEB-ICMS-SAP             /*  AQ  P07
+0400   2 CRED-ICMS-SAP            /*  AR  P07
+0410   2 DT-ATUAL-US1             /*  AS  U08
+0420   2 DT-ATUAL-US2             /*  AT  U08
+0430   2 DEB-COFINS               /*  AU  P07
+0440   2 CRED-COFINS              /*  AV  P07
+0450   2 DEB-PIS                  /*  AW  P07
+0460   2 CRED-PIS                 /*  AX  P07
+0470   2 FG-DT1-DT2               /*  AY  A01
+0480   2 CD-TP-SERVICO            /*  AZ  A01
+0490   2 PP-COMISSAO              /*  BA  P03,2
+0500 *
+0510 1 #S01-TABCCM                          /* ARQUIVO IMAGEM   LRECL=230
+0520   2 #S01-CODFAT              (N5)
+0530   2 #S01-MENSAGEM            (A46)
+0540   2 #S01-ICMS                (A2)
+0550   2 #S01-CODCON              (N13)
+0560   2 #S01-STATUS              (A1)
+0570   2 #S01-PROVEDOR            (A20)
+0580   2 #S01-GRUPO               (N4)
+0590   2 #S01-FG-IND1             (A1)
+0600   2 #S01-FG-IND2             (A1)
+0610   2 #S01-CENTRO-CUSTO-LUCRO  (A5)
+0620   2 #S01-ATIVIDADE-OBJ-CUSTO (A5)
+0630   2 #S01-APONTM              (N13)
+0640   2 #S01-ORIGEM-RECEITA      (A3)
+0650   2 #S01-DEB-ICMS-SAP        (N13)
+0660   2 #S01-CRED-ICMS-SAP       (N13)
+0670   2 #S01-DEB-COFINS          (N13)
+0680   2 #S01-CRED-COFINS         (N13)
+0690   2 #S01-DEB-PIS             (N13)
+0700   2 #S01-CRED-PIS            (N13)
+0710   2 #S01-DT-ATUAL-US1        (N8)
+0720   2 #S01-DT-ATUAL-US2        (N8)
+0730   2 #S01-FG-DT1-DT2          (A1)
+0740   2 #S01-CD-TPSERV           (A1)
+0750   2 #S01-PP-COMISSAO         (N3,2)
+0760   2 #S01-VAZIO               (A10)
+0770 *
+0780 1 #AX-AUXILIARES
+0790   2 #AX-NOK                  (N1)
+0800   2 #AX-DATA                 (A8)
+0810   2 REDEFINE #AX-DATA
+0820     3 #AX-DD                 (N2)
+0830     3 #AX-B1                 (A1)
+0840     3 #AX-MM                 (N2)
+0850     3 #AX-B2                 (A1)
+0860     3 #AX-AA                 (N2)
+0870 *
+0880 1 IN-SUBSCRITORES
+0890   2 #IN-IND                  (P7)
+0900 *
+0910 1 #TAB                                 /* TABELA DE DSNAMES
+0920   2 #DDSDSN                  (1:20)
+0930     3 #DDN                   (A8)
+0940     3 #DSN                   (A44)
+0950 *
+0960 1 #RC-REDE                             /*  REDE DE CONTROLE
+0970   2 #RC-LENG                 (P9)      INIT <634>
+0980   2 #RC-JOBN                 (A8)
+0990   2 #RC-PROG                 (A8)      INIT <'SGS03180'>
+1000   2 #RC-CODR                 (A10)     INIT <'SGS0318-R'>
+1010   2 #RC-COND                 (A2)      INIT <'NV'>
+1020   2 #RC-DATA                 (N6)
+1030   2 REDEFINE #RC-DATA
+1040     3 #RC-DD                 (N2)
+1050     3 #RC-MM                 (N2)
+1060     3 #RC-AA                 (N2)
+1070   2 #RC-TIME                 (A8)
+1080   2 #RC-ETAP                 (A4)      INIT <'****'>
+1090   2 #RC-PAGI                 (A3)      INIT <'***'>
+1100   2 #RC-DSNE1                (A24)     INIT <'FILE 018 - TAB.CCM '>
+1110   2 #RC-NOME1                (A19)     INIT <'QT.REGS.LIDOS   '>
+1120   2 #RC-INDE1                (A2)
+1130   2 #RC-VALE1                (P15)
+1140   2 #RC-FIMENT               (A1)      INIT <H'00'>
+1150   2 #RC-DSNS1                (A24)     INIT <'                   '>
+1160   2 #RC-NOMS1                (A19)     INIT <'QT.REGS.GRAVADOS'>
+1170   2 #RC-INDS1                (A2)
+1180   2 #RC-VALS1                (P15)
+1190   2 #RC-FIMSAI               (A1)      INIT <H'00'>
+1200   2 #RC-OBSV                 (A100)    INIT <'PROCESSAMENTO NORMAL'>
+1210   2 #RC-FIMRED               (A1)      INIT <H'FF'>
+1220 END-DEFINE
+1230 *
+1240 ***
+1250 *
+1260 FORMAT SG=ON
+1270 SET    CONTROL 'P=S'
+1280 MOVE   *DATE     TO  #AX-DATA
+1290 MOVE   #AX-DD    TO  #RC-DD
+1300 MOVE   #AX-MM    TO  #RC-MM
+1310 MOVE   #AX-AA    TO  #RC-AA
+1320 MOVE   *TIME     TO  #RC-TIME
+1330 CALL  'CPD10170'     #RC-JOBN
+1340 PERFORM ROTINA-PRINCIPAL
+1350 PERFORM ROTINA-DSNAMES
+1360 CALL  'CPD10740'     #RC-REDE
+1370 *
+1380 **----------------------------------**
+1390   DEFINE SUBROUTINE ROTINA-PRINCIPAL
+1400 **----------------------------------**
+1410 *
+1420 READ #CCM BY CODIGO-DEB-CRED
+1430   ADD   1                      TO  #RC-VALE1
+1440   MOVE  CODIGO-DEB-CRED        TO  #S01-CODFAT
+1450   MOVE  MENSAGEM-EM-CONTA      TO  #S01-MENSAGEM
+1460   MOVE  FNT                    TO  #S01-ICMS
+1470   MOVE  CODIGO-CONTABIL        TO  #S01-CODCON
+1480   MOVE  CD-STAT-CONTB          TO  #S01-STATUS
+1490   MOVE  PROVEDOR               TO  #S01-PROVEDOR
+1500   MOVE  GRUPO                  TO  #S01-GRUPO
+1510   MOVE  FG-IND1                TO  #S01-FG-IND1
+1520   MOVE  FG-IND2                TO  #S01-FG-IND2
+1530   MOVE  CENTRO-CUSTO-LUCRO     TO  #S01-CENTRO-CUSTO-LUCRO
+1540   MOVE  ATIVIDADE-OBJ-CUSTO    TO  #S01-ATIVIDADE-OBJ-CUSTO
+1550   MOVE  APONTM                 TO  #S01-APONTM
+1560   MOVE  ORIGEM-RECEITA         TO  #S01-ORIGEM-RECEITA
+1570   MOVE  DEB-ICMS-SAP           TO  #S01-DEB-ICMS-SAP
+1580   MOVE  CRED-ICMS-SAP          TO  #S01-CRED-ICMS-SAP
+1590   MOVE  DEB-COFINS             TO  #S01-DEB-COFINS
+1600   MOVE  CRED-COFINS            TO  #S01-CRED-COFINS
+1610   MOVE  DEB-PIS                TO  #S01-DEB-PIS
+1620   MOVE  CRED-PIS               TO  #S01-CRED-PIS
+1630   MOVE  DT-ATUAL-US1           TO  #S01-DT-ATUAL-US1
+1640   MOVE  DT-ATUAL-US2           TO  #S01-DT-ATUAL-US2
+1650   MOVE  FG-DT1-DT2             TO  #S01-FG-DT1-DT2
+1660   MOVE  CD-TP-SERVICO          TO  #S01-CD-TPSERV
+1670   MOVE  PP-COMISSAO            TO  #S01-PP-COMISSAO
+1680   WRITE WORK 1 #S01-TABCCM
+1690   ADD   1                      TO  #RC-VALS1
+1700 END-READ
+1710 *
+1720 END-SUBROUTINE
+1730 *
+1740 **--------------------------------**
+1750   DEFINE SUBROUTINE ROTINA-DSNAMES
+1760 **--------------------------------**
+1770 *
+1780 CALL  'CPD10030'   USING     #TAB
+1790 FOR #IN-IND 1 TO 20
+1800   IF     #DDN(#IN-IND)        EQ  'CMWKF01'
+1810          MOVE  #DSN(#IN-IND)  TO   #RC-DSNS1
+1820   END-IF
+1830 END-FOR
+1840 *
+1850 END-SUBROUTINE
+1860 *
+1870 **------------------------------**
+1880   DEFINE SUBROUTINE ROTINA-ABEND
+1890 **------------------------------**
+1900 *
+1910 SET   CONTROL  'P=S'
+1920 CALL 'CPD10740' USING  #RC-REDE
+1930 IF  #AX-NOK EQ 1
+1940     TERMINATE 12
+1950 END-IF
+1960 *
+1970 END-SUBROUTINE
+1980 *
+1990 ***
+2000 *
+2010 ON ERROR
+2020    COMPRESS 'ERRO NAT' *ERROR-NR ' LINHA ' *ERROR-LINE INTO #RC-OBSV
+2030    PERFORM ROTINA-ABEND
+2040 END-ERROR
+2050 *
+2060 END

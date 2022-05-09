@@ -1,0 +1,670 @@
+000010 ID DIVISION.                                                     00000120
+000020 PROGRAM-ID.                 SGS03350.                            00000130
+000030*AUTHOR.                     ROSA.                                00000140
+000040*DATE-WRITTEN.               FEVEREIRO/88.                        00000150
+000050*REMARKS.     ****************************************************00000160
+000060*             *  MONITOR DE ATUALIZACAO DO CAX                   *00000170
+000070*             *  PASSA O CONTROLE VIA XCTL PARA :                *00000180
+000080*             *  SGS03360                                        *00000190
+000090*             *  SGS03370                                        *00000200
+000100*             *  SGS03380                                        *00000210
+000110*             *  SGS03390                                        *00000220
+000120*             *  SGS03400                                        *00000230
+000130*             *  SGS03410                                        *00000240
+000140*             *  SGS04280 - HELP                                 *00000250
+000150*             ****************************************************00000260
+000160*----------------------------------------------------------------*
+000170*        ALTERACAO  -   SET/96   -  DTS  -  VITOR                *
+000180*                CONVERSAO  -   COBOL II                         *
+000190*----------------------------------------------------------------*
+000200 ENVIRONMENT DIVISION.                                            00000270
+000210 CONFIGURATION SECTION.                                           00000280
+000220 SPECIAL-NAMES.              DECIMAL-POINT IS COMMA.              00000290
+000230 DATA DIVISION.                                                   00000300
+000240 WORKING-STORAGE SECTION.                                         00000310
+000250 01          AREAS-DE-TRABALHO.                                   00000320
+000260     05      WRK-AREAS       PIC X(50)              VALUE         00000330
+000270             '*SGS03350 - INICIO DA WORKING-STORAGE SECTION *'.   00000340
+000280******************************************************************00000350
+000290*            A R E A S    P A R A    M E N S A G E N S           *00000360
+000300******************************************************************00000370
+000310     05      WAX-MENS1       PIC X(50)              VALUE         00000380
+000320             'FG200001 - TECLA INVALIDA'.                         00000390
+000330                                                                  00000400
+000340     05      WAX-MENS2       PIC X(50)              VALUE         00000410
+000350             'FG200002 - CAMPO INVALIDO'.                         00000420
+000360                                                                  00000430
+000370     05      WAX-MENS3       PIC X(50)              VALUE         00000440
+000380             'FG200003 - ERRO NA TRANSACAO - TECLE CLEAR'.        00000450
+000390                                                                  00000460
+000400     05      WAX-MENS4       PIC X(50)              VALUE         00000470
+000410             'FG200004 - ERRO NO MAPA'.                           00000480
+000420                                                                  00000490
+000430     05      WAX-MENS5.                                           00000500
+000440      10     FILLER          PIC X(46)              VALUE         00000510
+000450             'FG200005 - PROGRAMA CHAMADO NAO ENCONTRADO ='.      00000520
+000460      10     WAX-PGM         PIC X(08).                           00000530
+000470                                                                  00000540
+000480     05      WAX-MENS6.                                           00000550
+000490      10     FILLER          PIC X(35)              VALUE         00000560
+000500             'FG200006 - FIM ANORMAL - ABEND = '.                 00000570
+000510      10     WAX-ABCOD       PIC X(04).                           00000580
+000520                                                                  00000590
+000530     05      WAX-MENS7.                                           00000600
+000540      10     FILLER          PIC X(35)              VALUE         00000610
+000550             'FG200007 - SENHA INVALIDA'.                         00000620
+000560                                                                  00000630
+000570     05      WAX-MENS99.                                          00000640
+000580      10     FILLER          PIC X(11)              VALUE         00000650
+000590             'FG200099 - '.                                       00000660
+000600      10     WAX-MHELP       PIC X(40).                           00000670
+000610                                                                  00000680
+000620     EJECT                                                        00000690
+000630***************************************************************** 00000700
+000640*        AREAS  PARA  MENSAGENS NO MAPA LINHA 24                * 00000710
+000650***************************************************************** 00000720
+000660                                                                  00000730
+000670     05      WAX-CTLCHAR2    PIC S9(04)      COMP  VALUE +2.      00000740
+000680     05      FILLER          REDEFINES  WAX-CTLCHAR2.             00000750
+000690      10     FILLER          PIC X(01).                           00000760
+000700      10     FILLER          PIC X(01).                           00000770
+000710                                                                  00000780
+000720    05       WAX-SBAS        PIC S9(08)      COMP  VALUE          00000790
+000730             +1137505.                                            00000800
+000740    05       FILLER          REDEFINES  WAX-SBAS.                 00000810
+000750     10      FILLER          PIC X(01).                           00000820
+000760     10      WAX-SBA         PIC X(03).                           00000830
+000770                                                                  00000840
+000780    05       WAX-TEXTO.                                           00000850
+000790     10      WAX-SBAT        PIC X(03).                           00000860
+000800     10      FILLER          PIC S9(04)      COMP  VALUE +7656.   00000870
+000810     10      WAX-MEN         PIC X(67).                           00000880
+000820    EJECT                                                         00000890
+000830******************************************************************00000900
+000840*            AREAS AUXILIARES PARA ROTINA CPD10020               *00000910
+000850******************************************************************00000920
+000860     05      WAX-NUM         PIC X(06).                           00000930
+000870     05      WAX-DIG         PIC X(01).                           00000940
+000880     05      WAX-TAMANH      PIC X(02)              VALUE '06'.   00000950
+000890                                                                  00000960
+000900******************************************************************00000970
+000910*            AREAS AUXILIARES PARA ROTINA CPD10050               *00000980
+000920******************************************************************00000990
+000930     05      WAX-CDATE.                                           00001000
+000940      10     WAX-DIA         PIC 9(02).                           00001010
+000950      10     FILLER          PIC X(06).                           00001020
+000960     EJECT                                                        00001030
+000970******************************************************************00001040
+000980*       A R E A S     A U X I L I A R E S    G E R A I S         *00001050
+000990******************************************************************00001060
+001000     05      WAX-VALOR       PIC 9(02).                           00001070
+001010                                                                  00001080
+001020     05      WAX-SER99510.
+001030      10     FILLER          PIC  X(002)     VALUE 'CB'.
+001040      10     WAX-USERID      PIC  9(007).
+001050      10     WAX-RESPONSE    PIC  X(001).
+001060                                                                  00001090
+001070                                                                  00001100
+001080     05      WAX-SENHA.                                           00001110
+001090      10     WAX-SENHA1      PIC X(05).                           00001120
+001100      10     WAX-SENHA2      PIC 9(03).                           00001130
+001110                                                                  00001140
+001120                                                                  00001150
+001130     05      WAX-COMMAREA.                                        00001160
+001140      10     WAX-TRANS       PIC X(04).                           00001170
+001150      10     WAX-ITEM        PIC X(06).                           00001180
+001160      10     WAX-PROG        PIC X(08).                           00001190
+001170      10     WAX-MENSRET     PIC X(40).                           00001200
+001180      10     FILLER          PIC X(09).                           00001210
+001190      10     WAX-ORG         PIC X(05).                           00001220
+001200      10     WAX-NLEG        PIC 9(06).                           00001230
+001210      10     WAX-DIGITO      PIC 9(01).                           00001240
+001220      10     WAX-SERV        PIC X(04).                           00001250
+001230      10     WAX-MOV         PIC X(01).                           00001260
+001240      10     WAX-RET         PIC X(01).                           00001270
+001250                                                                  00001280
+001260     05      WAC-VALOR       PIC S9(05)      COMP-3 VALUE +0.     00001290
+001270     05      WAC-SENHA       PIC S9(05)      COMP-3 VALUE +0.     00001300
+001280     05      WAC-NLEG        PIC S9(05)      COMP-3 VALUE +0.     00001310
+001290                                                                  00001320
+001300     05      WCH-ERRO        PIC X(01)              VALUE SPACES. 00001330
+001310                                                                  00001340
+001320     05      WIN-DIG         PIC S9(09)   COMP SYNC VALUE +0.     00001350
+001330                                                                  00001360
+001340     EJECT                                                        00001370
+001350******************************************************************00001380
+001360*           COPY DA AREA PARA MENSAGEM - FIM DE TRANSACAO        *00001390
+001370******************************************************************00001400
+001380     COPY CPD9901.                                                00001410
+001390     EJECT                                                        00001420
+001400******************************************************************00001430
+001410*           COPY  -  ATRIBUTOS PARA O BMS                        *00001440
+001420******************************************************************00001450
+001430     COPY DFHBMSCA.                                               00001460
+001440     EJECT                                                        00001470
+001450******************************************************************00001480
+001460*            COPY   -   T E C L A S                              *00001490
+001470******************************************************************00001500
+001480     COPY DFHAID.                                                 00001510
+001490     EJECT                                                        00001520
+001500******************************************************************00001530
+001510*            COPY  -    M A P A S                                *00001540
+001520******************************************************************00001550
+001530     COPY  SGS0335.                                               00001560
+001540                                                                  00001570
+001550 01          MAPA-1          REDEFINES  FG2001I.                  00001580
+001560     05      FILLER          PIC X(21).                           00001590
+001570     05      M1-ORG1         PIC X(01).                           00001600
+001580     05      FILLER          PIC X(04).                           00001610
+001590     05      FILLER          PIC X(09).                           00001620
+001600     05      M1-NLEG1        PIC 9(01)   OCCURS 6 TIMES.          00001630
+001610     05      FILLER          PIC X(03).                           00000017
+001620     05      M1-DIG1         PIC 9(01).                           00001650
+001630     05      FILLER          PIC X(09).                           00000019
+001640     05      M1-SENHA.                                            00001660
+001650      10     M1-SENHA1       PIC X(01)   OCCURS 5 TIMES.          00001670
+001660      10     FILLER          PIC X(03).                           00001680
+001670     05      M1-SENHA-R      REDEFINES  M1-SENHA.                 00001690
+001680      10     M1-SENH1        PIC X(05).                           00001700
+001690      10     M1-SENH2        PIC X(03).                           00001710
+001700     05      FILLER          PIC X(09).                           00001720
+001710     05      M1-SERV.                                             00001730
+001720      10     M1-SERV3        PIC X(03).                           00001740
+001730      10     FILLER          PIC X(01).                           00001750
+001740     05      FILLER          REDEFINES   M1-SERV.                 00001760
+001750      10     M1-SERV1        PIC X(01).                           00001770
+001760      10     FILLER          PIC X(03).                           00001780
+001770     05      FILLER          PIC X(09).                           00001790
+001780     05      M1-MOV1         PIC X(01).                           00001800
+001790     05      FILLER          PIC X(63).                           00001810
+001800                                                                  00001820
+001810     EJECT                                                        00001830
+001820******************************************************************00001840
+001830*            TABELA PARA ATRIBUIR VALORES AOS CARACTERES         *00001850
+001840******************************************************************00001860
+001850 01          WT1-TAB.                                             00001870
+001860     05      FILLER          PIC X(04)              VALUE 'A 01'. 00001880
+001870     05      FILLER          PIC X(04)              VALUE 'B 02'. 00001890
+001880     05      FILLER          PIC X(04)              VALUE 'C 03'. 00001900
+001890     05      FILLER          PIC X(04)              VALUE 'D 04'. 00001910
+001900     05      FILLER          PIC X(04)              VALUE 'E 05'. 00001920
+001910     05      FILLER          PIC X(04)              VALUE 'F 06'. 00001930
+001920     05      FILLER          PIC X(04)              VALUE 'G 07'. 00001940
+001930     05      FILLER          PIC X(04)              VALUE 'H 08'. 00001950
+001940     05      FILLER          PIC X(04)              VALUE 'I 09'. 00001960
+001950     05      FILLER          PIC X(04)              VALUE 'J 10'. 00001970
+001960     05      FILLER          PIC X(04)              VALUE 'K 11'. 00001980
+001970     05      FILLER          PIC X(04)              VALUE 'L 12'. 00001990
+001980     05      FILLER          PIC X(04)              VALUE 'M 13'. 00002000
+001990     05      FILLER          PIC X(04)              VALUE 'N 14'. 00002010
+002000     05      FILLER          PIC X(04)              VALUE 'O 15'. 00002020
+002010     05      FILLER          PIC X(04)              VALUE 'P 16'. 00002030
+002020     05      FILLER          PIC X(04)              VALUE 'Q 17'. 00002040
+002030     05      FILLER          PIC X(04)              VALUE 'R 18'. 00002050
+002040     05      FILLER          PIC X(04)              VALUE 'S 19'. 00002060
+002050     05      FILLER          PIC X(04)              VALUE 'T 20'. 00002070
+002060     05      FILLER          PIC X(04)              VALUE 'U 21'. 00002080
+002070     05      FILLER          PIC X(04)              VALUE 'V 22'. 00002090
+002080     05      FILLER          PIC X(04)              VALUE 'W 23'. 00002100
+002090     05      FILLER          PIC X(04)              VALUE 'X 24'. 00002110
+002100     05      FILLER          PIC X(04)              VALUE 'Y 25'. 00002120
+002110     05      FILLER          PIC X(04)              VALUE 'Z 26'. 00002130
+002120     05      FILLER          PIC X(04)              VALUE '1 27'. 00002140
+002130     05      FILLER          PIC X(04)              VALUE '2 28'. 00002150
+002140     05      FILLER          PIC X(04)              VALUE '3 29'. 00002160
+002150     05      FILLER          PIC X(04)              VALUE '4 30'. 00002170
+002160     05      FILLER          PIC X(04)              VALUE '5 31'. 00002180
+002170     05      FILLER          PIC X(04)              VALUE '6 32'. 00002190
+002180     05      FILLER          PIC X(04)              VALUE '7 33'. 00002200
+002190     05      FILLER          PIC X(04)              VALUE '8 34'. 00002210
+002200     05      FILLER          PIC X(04)              VALUE '9 35'. 00002220
+002210     05      FILLER          PIC X(04)              VALUE '0 36'. 00002230
+002220 01          WT1-TAB-R       REDEFINES  WT1-TAB.                  00002240
+002230     05      WT1-OCC         OCCURS   36 TIMES                    00002250
+002240                             INDEXED  BY  WIN-TAB1.               00002260
+002250      10     WT1-CARACT      PIC X(01).                           00002270
+002260      10     FILLER          PIC X(01).                           00002280
+002270      10     WT1-VALOR       PIC 9(02).                           00002290
+002280     EJECT                                                        00002300
+002290 LINKAGE SECTION.                                                 00002310
+002300 01          DFHCOMMAREA     PIC X(85).                           00002320
+002310******************************************************************00002410
+002320*            T W A -  A R E A S                                  *00002420
+002330******************************************************************00002430
+002340 01          TWA-AREAS.                                           00002440
+002350     COPY COBTCAAS.                                               00002450
+002360     EJECT                                                        00002460
+002370******************************************************************00002470
+002380*            P C I  -   A R E A S                                *00002480
+002390******************************************************************00002490
+002400 01          PCI-AREA.                                            00002500
+002410     05      PCI-ORG         PIC X(05).                           00002510
+002420     05      PCI-NLEG        PIC X(06).                           00002520
+002430     05      PCI-DIG         PIC X(01).                           00002530
+002440     05      PCI-SENHA       PIC X(08).                           00002540
+002450     05      PCI-SERV        PIC X(04).                           00002550
+002460     05      PCI-MOV         PIC X(01).                           00002560
+002470     05      PCI-FLAG        PIC X(04).                           00002570
+002480     05      PCI-ABEND       PIC X(01).                           00002580
+002490     05      PCI-HELP        PIC X(04).                           00002590
+002500     05      FILLER          PIC X(120).                          00002600
+002510     EJECT                                                        00002610
+002520 PROCEDURE DIVISION.                                              00002620
+002530 00-00-PRINCIPAL SECTION.                                         00002630
+002540                                                                  00002650
+002550     EXEC    CICS    HANDLE    ABEND LABEL (55-00-ABEND)          00002660
+002560                               END-EXEC.                          00002670
+002570                                                                  00002680
+002580     EXEC    CICS    ADDRESS   TCTUA (ADDRESS OF PCI-AREA)        00002690
+002590                               TWA   (ADDRESS OF TWA-AREAS)       00002700
+002600                               END-EXEC.                                10
+002610                                                                  00002720
+002620     EXEC    CICS    HANDLE    CONDITION                          00002730
+002630                               MAPFAIL  (40-00-ERRO-MAPA)         00002740
+002640                               PGMIDERR (45-00-ERRO-PROG)         00002750
+002650                               ERROR    (50-00-ERRO-GENER)        00002760
+002660                               END-EXEC.                          00002770
+002670                                                                  00002780
+002680     IF  PCI-ABEND  EQUAL '*'                                     00002810
+002690         GO                      TO  75-00-ENCERRAR.              00002820
+002700                                                                  00002830
+002710     IF  EIBCALEN  EQUAL ZEROS                                    00002840
+002720         MOVE    LOW-VALUES      TO  PCI-AREA  FG2001I            00002850
+002730         MOVE    'FG20'          TO  PCI-FLAG                     00002860
+002740         MOVE    -1              TO  M1ORGL                       00002870
+002750         GO                      TO  70-00-ENVIA-TELA             00002880
+002760     ELSE                                                         00002890
+002770         MOVE    DFHCOMMAREA     TO  WAX-COMMAREA                 00002900
+002780         IF  PCI-FLAG  EQUAL 'FG20'                               00002910
+002790             GO                  TO  05-00-TESTA-TECLA            00002920
+002800         ELSE                                                     00002930
+002810             IF  (WAX-RET EQUAL '*')   OR                         00002940
+002820                 (PCI-HELP EQUAL '****')                          00002950
+002830                                                                  00002960
+002840                 GO                  TO  60-00-VOLTA-DE-OUTRAS    00002970
+002850             ELSE                                                 00002980
+002860                 MOVE    -1          TO  M1ORGL                   00002990
+002870                 MOVE    LOW-VALUES  TO  PCI-SENHA                00003000
+002880                 GO                  TO  70-00-ENVIA-TELA.        00003010
+002890     EJECT                                                        00003020
+002900 05-00-TESTA-TECLA SECTION.                                       00003030
+002910                                                                  00003040
+002920     IF  EIBAID  EQUAL  DFHENTER                                  00003050
+002930         GO                      TO  10-00-CONSISTE-TELA          00003060
+002940     ELSE                                                         00003070
+002950        IF  EIBAID  EQUAL  DFHCLEAR                               00003080
+002960            GO                   TO  75-00-ENCERRAR               00003090
+002970        ELSE                                                      00003100
+002980          IF  EIBAID  EQUAL  DFHPA2                               00003110
+002990              MOVE    LOW-VALUES   TO  FG2001I                    00003120
+003000              MOVE    -1           TO  M1ORGL                     00003130
+003010              MOVE    LOW-VALUES   TO  PCI-SENHA                  00003140
+003020              GO                   TO  70-00-ENVIA-TELA           00003150
+003030          ELSE                                                    00003160
+003040            IF  PCI-FLAG  NOT EQUAL 'FG20'                        00003170
+003050                MOVE    WAX-MENS1    TO  M1MENSO                  00003180
+003060                MOVE    -1           TO  M1ORGL                   00003190
+003070                GO                   TO  70-00-ENVIA-TELA-ERRO    00003200
+003080            ELSE                                                  00003210
+003090                MOVE    WAX-MENS1    TO  M1MENSO                  00003220
+003100                MOVE    -1           TO  M1SERVL                  00003230
+003110                GO                   TO  70-00-ENVIA-TELA-ERRO.   00003240
+003120     EJECT                                                        00003250
+003130 10-00-CONSISTE-TELA SECTION.                                     00003260
+003140                                                                  00003270
+003150     EXEC    CICS    RECEIVE    MAP    ('FG2001')                 00003290
+003160                                MAPSET ('SGS0335')                00003300
+003170                                INTO   (FG2001I)                  00003310
+003180                                END-EXEC                          00003320
+003190                                                                  00003340
+003200     MOVE    SPACES              TO  M1MENSO                      00003350
+003210                                                                  00003360
+003220     PERFORM 15-00-VERIFICA-HELP                                  00003370
+003230                                                                  00003380
+003240     IF  PCI-HELP  EQUAL '****'                                   00003390
+003250         GO                      TO  35-00-CHAMA-HELP.            00003400
+003260     IF  PCI-SENHA EQUAL '****'                                   00003410
+003270         GO                      TO  10-05-N-TESTA-SENHA.         00003420
+003280                                                                  00003430
+003290     IF  M1SENHAI EQUAL 'FNF02222'                                00003440
+003300         NEXT SENTENCE                                            00003450
+003310     ELSE                                                         00003460
+003320       IF  M1ORGI NOT EQUAL M1-SENH1                              00003470
+003330           MOVE    -1          TO  M1SENHAL                       00003480
+003340           MOVE    WAX-MENS7   TO  M1MENSO                        00003490
+003350           MOVE    '*'         TO  WCH-ERRO                       00003500
+003360           GO                  TO  10-15-TESTA-ERRO               00003510
+003370       ELSE                                                       00003520
+003380           PERFORM 20-00-CALCULA-SENHA                            00003530
+003390           IF  WAX-SENHA NOT EQUAL M1SENHAI                       00003540
+003400               MOVE    -1          TO  M1SENHAL                   00003550
+003410               MOVE    WAX-MENS7   TO  M1MENSO                    00003560
+003420               MOVE    '*'         TO  WCH-ERRO                   00003570
+003430               GO                  TO  10-15-TESTA-ERRO.          00003580
+003440 10-05-N-TESTA-SENHA.                                             00003590
+003450                                                                  00003600
+003460                                                                  00003610
+003470     IF  M1ORGI EQUAL SPACES  OR LOW-VALUES                       00003620
+003480         MOVE    -1              TO  M1ORGL                       00003630
+003490         MOVE    ALL  '*'        TO  M1ORGI                       00003640
+003500         MOVE    'I'             TO  M1ORGA                       00003650
+003510         MOVE    WAX-MENS2       TO  M1MENSO                      00003660
+003520         MOVE    '*'             TO  WCH-ERRO.                    00003670
+003530                                                                  00003680
+003540     IF  (M1NLEGI EQUAL SPACES OR LOW-VALUES)  OR                 00003690
+003550         (M1DIGI EQUAL SPACES OR LOW-VALUES)                      00003700
+003560         MOVE    ALL '*'         TO  M1NLEGI                      00003710
+003570                                     M1DIGI                       00003720
+003580         MOVE    'R'             TO  M1NLEGA  M1DIGA              00003730
+003590         MOVE    -1              TO  M1NLEGL                      00003740
+003600         MOVE    '*'             TO  WCH-ERRO                     00003750
+003610         GO                      TO  10-10-N-CALCULA-DIG.         00003760
+003620                                                                  00003780
+003630     IF  (M1NLEGI NOT NUMERIC)   OR                               00003790
+003640         (M1DIGI  NOT NUMERIC)                                    00003800
+003650         MOVE    -1              TO  M1NLEGL                      00003810
+003660         MOVE    'R'             TO  M1NLEGA                      00003820
+003670                                     M1DIGA                       00003830
+003680         MOVE    WAX-MENS2       TO  M1MENSO                      00003840
+003690         MOVE    '*'             TO  WCH-ERRO                     00003850
+003700         GO                      TO  10-10-N-CALCULA-DIG.         00003860
+003710                                                                  00003870
+003720     MOVE    M1NLEGI             TO  WAX-NUM                      00003880
+003730     MOVE    'N'                 TO  WAX-DIG                      00003890
+003740                                                                  00003900
+003750     CALL  'CPD10020'   USING  WAX-NUM WAX-TAMANH WAX-DIG         00003910
+003760                                                                  00003920
+003770     IF  WAX-DIG  EQUAL 'X'                                       00003930
+003780         MOVE    '0'             TO  WAX-DIG.                     00003940
+003790                                                                  00003950
+003800     IF  WAX-DIG NOT EQUAL  M1DIGI                                00003960
+003810         MOVE    -1              TO  M1DIGL                       00003970
+003820         MOVE    'R'             TO  M1DIGA                       00003980
+003830         MOVE    WAX-MENS2       TO  M1MENSO                      00003990
+003840         MOVE    '*'             TO  WCH-ERRO.                    00004000
+003850
+003860     IF WCH-ERRO EQUAL SPACES
+003870        MOVE M1NLEGI TO WAX-USERID
+003880        EXEC CICS LINK PROGRAM('SER99510')
+003890                       COMMAREA(WAX-SER99510)
+003900                       LENGTH  (LENGTH OF WAX-SER99510)
+003910                       NOHANDLE
+003920        END-EXEC
+003930        IF WAX-RESPONSE NOT EQUAL ZEROS
+003940           MOVE    -1              TO  M1NLEGL
+003950           MOVE    'R'             TO  M1NLEGA M1DIGA
+003960           MOVE    WAX-MENS2       TO  M1MENSO
+003970           MOVE    '*'             TO  WCH-ERRO.
+003980 10-10-N-CALCULA-DIG.                                             00004010
+003990                                                                  00004020
+004000     IF  M1SERVI  EQUAL  SPACES   OR   LOW-VALUES                 00004050
+004010         MOVE    ALL    '*'      TO  M1SERVI                      00004060
+004020         MOVE    -1              TO  M1SERVL                      00004070
+004030         MOVE    'I'             TO  M1SERVA                      00004080
+004040         MOVE    WAX-MENS2       TO  M1MENSO                      00004090
+004050         MOVE    '*'             TO  WCH-ERRO.                    00004100
+004060                                                                  00004110
+004070     IF  M1SERVL EQUAL 4                                          00004120
+004080             IF M1SERVI NOT EQUAL 'TOCA'  AND  'DCA'              00000130
+004090            MOVE    -1              TO  M1SERVL                   00004140
+004100            MOVE    'I'             TO  M1SERVA                   00004150
+004110            MOVE    WAX-MENS2       TO  M1MENSO                   00004160
+004120            MOVE    '*'             TO  WCH-ERRO                  00004170
+004130         ELSE                                                     00004180
+004140            NEXT SENTENCE                                         00004190
+004150     ELSE                                                         00004200
+004160        IF  M1SERVL EQUAL 3                                       00004210
+004170             IF M1-SERV3 NOT EQUAL 'DCA'                          00000150
+004180               MOVE    -1           TO  M1SERVL                   00004230
+004190               MOVE    'I'          TO  M1SERVA                   00004240
+004200               MOVE    WAX-MENS2    TO  M1MENSO                   00004250
+004210               MOVE    '*'          TO  WCH-ERRO                  00004260
+004220            ELSE                                                  00004270
+004230               NEXT SENTENCE                                      00004280
+004240        ELSE                                                      00004290
+004250            MOVE    -1              TO  M1SERVL                   00004300
+004260            MOVE    'I'             TO  M1SERVA                   00004310
+004270            MOVE    WAX-MENS2       TO  M1MENSO                   00004320
+004280            MOVE    '*'             TO  WCH-ERRO.                 00004330
+004290                                                                  00004340
+004300     IF  M1MOVI  EQUAL  SPACES   OR   LOW-VALUES                  00004350
+004310         MOVE    ALL    '*'      TO  M1MOVI                       00004360
+004320         MOVE    -1              TO  M1MOVL                       00004370
+004330         MOVE    'I'             TO  M1MOVA                       00004380
+004340         MOVE    WAX-MENS2       TO  M1MENSO                      00004390
+004350         MOVE    '*'             TO  WCH-ERRO.                    00004400
+004360                                                                  00004410
+004370     IF  M1MOVI NOT EQUAL 'I' AND 'A' AND 'E'                     00004420
+004380         MOVE    -1              TO  M1MOVL                       00004430
+004390         MOVE    'I'             TO  M1MOVA                       00004440
+004400         MOVE    WAX-MENS2       TO  M1MENSO                      00004450
+004410         MOVE    '*'             TO  WCH-ERRO.                    00004460
+004420 10-15-TESTA-ERRO.                                                00004470
+004430                                                                  00004480
+004440     IF  WCH-ERRO  EQUAL '*'                                      00004490
+004450         GO                      TO  70-00-ENVIA-TELA.            00004500
+004460                                                                  00004510
+004470     GO                          TO 30-00-CHAMA-PROGRAMAS.        00004520
+004480                                                                  00004530
+004490     EJECT                                                        00004540
+004500 15-00-VERIFICA-HELP SECTION.                                     00004550
+004510     IF  M1-ORG1  EQUAL '?'                                       00004560
+004520         MOVE    ALL  '*'        TO  PCI-HELP                     00004570
+004530         MOVE    M1CPO1I         TO  WAX-ITEM                     00004580
+004540     ELSE                                                         00004590
+004550       IF  M1-NLEG1 (1) EQUAL '?'                                 00004600
+004560           MOVE    ALL '*'       TO  PCI-HELP                     00004610
+004570           MOVE    M1CPO2I       TO  WAX-ITEM                     00004620
+004580       ELSE                                                       00004630
+004590         IF  M1-SENHA1 (1) EQUAL '?'                              00004640
+004600             MOVE    ALL '*'     TO  PCI-HELP                     00004650
+004610             MOVE    M1CPO3I     TO  WAX-ITEM                     00004660
+004620          ELSE                                                    00004670
+004630            IF  M1-SERV1 EQUAL '?'                                00004680
+004640                MOVE    ALL '*'     TO  PCI-HELP                  00004690
+004650                MOVE    M1CPO4I     TO  WAX-ITEM                  00004700
+004660            ELSE                                                  00004710
+004670              IF  M1-MOV1  EQUAL '?'                              00004720
+004680                  MOVE    ALL '*'   TO  PCI-HELP                  00004730
+004690                  MOVE    M1CPO5I   TO  WAX-ITEM.                 00004740
+004700     IF  PCI-HELP  EQUAL '****'                                   00004750
+004710         MOVE    M1ORGI             TO  PCI-ORG                   00004760
+004720         MOVE    M1NLEGI            TO  PCI-NLEG                  00004770
+004730         MOVE    M1DIGI             TO  PCI-DIG                   00004780
+004740         MOVE    M1SENHAI           TO  PCI-SENHA                 00004790
+004750         MOVE    M1SERVI            TO  PCI-SERV                  00004800
+004760         MOVE    M1MOVI             TO  PCI-MOV.                  00004810
+004770                                                                  00004820
+004780 15-99-VERIFICA.                                                  00004830
+004790     EJECT                                                        00004840
+004800 20-00-CALCULA-SENHA SECTION.                                     00004850
+004810     MOVE    M1-SENH1            TO  WAX-SENHA1                   00004860
+004820     PERFORM 25-00-ATRIBUI-VALORES                                00004870
+004830             VARYING  WIN-DIG FROM 1 BY 1                         00004880
+004840             UNTIL    WIN-DIG GREATER 5                           00004890
+004850                                                                  00004900
+004860     CALL   'DATA'    USING   WAX-CDATE                           00004910
+004870     IF  (M1NLEGI NUMERIC)  AND  (M1DIGI NUMERIC)                 00000021
+004880         COMPUTE  WAC-NLEG = M1-NLEG1 (1)  + M1-NLEG1 (2) +       00004930
+004890                             M1-NLEG1 (3)  + M1-NLEG1 (4) +       00004940
+004900                             M1-NLEG1 (5)  + M1-NLEG1 (6) +       00000023
+004910                             M1-DIG1.                             00000024
+004920                                                                  00004960
+004930     COMPUTE  WAC-SENHA = WAX-DIA + WAC-VALOR + WAC-NLEG          00004970
+004940     MOVE     WAC-SENHA          TO  WAX-SENHA2.                  00004980
+004950     EJECT                                                        00004990
+004960 25-00-ATRIBUI-VALORES SECTION.                                   00005000
+004970     SET   WIN-TAB1              TO 1                             00005010
+004980                                                                  00005020
+004990     SEARCH   WT1-OCC                                             00005030
+005000              AT END                                              00005040
+005010              MOVE    37         TO  WAX-VALOR                    00005050
+005020     WHEN    WT1-CARACT (WIN-TAB1)  EQUAL  M1-SENHA1 (WIN-DIG)    00005060
+005030     MOVE    WT1-VALOR (WIN-TAB1)   TO  WAX-VALOR.                00005070
+005040                                                                  00005080
+005050     ADD    WAX-VALOR            TO  WAC-VALOR.                   00005090
+005060     EJECT                                                        00005100
+005070 30-00-CHAMA-PROGRAMAS SECTION.                                   00005110
+005080                                                                  00005120
+005090     IF  M1-MOV1 EQUAL 'A' OR 'E'                                 00005130
+005100           IF  M1-SERV  EQUAL 'TOCA'                              00005170
+005110               MOVE    'SGS03380'     TO  WAX-PGM                 00005180
+005120           ELSE                                                   00005190
+005130               MOVE    'SGS03400'     TO  WAX-PGM                 00005200
+005140     ELSE                                                         00005210
+005150       IF  M1-MOV1  EQUAL 'I'                                     00005220
+005160           IF  M1-SERV3  EQUAL 'MUS'                              00005230
+005170               MOVE    'SGS03370'    TO  WAX-PGM                  00005240
+005180           ELSE                                                   00005250
+005190             IF  M1-SERV EQUAL 'TOCA'                             00005260
+005200                 MOVE    'SGS03390'  TO  WAX-PGM                  00005270
+005210             ELSE                                                 00005280
+005220                 MOVE    'SGS03410'  TO  WAX-PGM.                 00005290
+005230                                                                  00005300
+005240     MOVE    LOW-VALUES      TO          WAX-COMMAREA             00000130
+005250     MOVE    '****'                  TO  PCI-FLAG                 00005310
+005260     MOVE    'FG20'                  TO  WAX-TRANS                00005320
+005270     MOVE    SPACES                  TO  WAX-ITEM                 00005330
+005280     MOVE    'SGS03350'              TO  WAX-PROG                 00005340
+005290     MOVE    SPACES                  TO  WAX-MENSRET              00005350
+005300     MOVE    M1ORGI                  TO  WAX-ORG                  00005360
+005310     MOVE    M1NLEGI                 TO  WAX-NLEG                 00005370
+005320     MOVE    M1DIGI                  TO  WAX-DIGITO               00005380
+005330     MOVE    M1SERVI                 TO  WAX-SERV                 00005390
+005340     MOVE    M1MOVI                  TO  WAX-MOV                  00005400
+005350     MOVE    SPACES                  TO  WAX-RET                  00005410
+005360     MOVE    LOW-VALUES              TO  PCI-AREA                 00005420
+005370     EXEC    CICS    XCTL      PROGRAM   (WAX-PGM)                00005430
+005380                               LENGTH (85)                        00005440
+005390                               COMMAREA  (WAX-COMMAREA)           00005450
+005400                               END-EXEC.                          00005460
+005410     EJECT                                                        00005470
+005420 35-00-CHAMA-HELP SECTION.                                        00005480
+005430     MOVE    'FG20'              TO  WAX-TRANS                    00005490
+005440     MOVE    'SGS03350'          TO  WAX-PROG                     00005500
+005450     MOVE    'SAB04280'          TO  WAX-PGM                      00005510
+005460     MOVE     SPACES             TO  WAX-MENSRET                  00005520
+005470     MOVE    ALL '*'             TO  PCI-FLAG                     00005530
+005480                                                                  00005550
+005490     EXEC    CICS    XCTL      PROGRAM   (WAX-PGM)                00005560
+005500                               LENGTH (58)                        00005570
+005510                               COMMAREA  (WAX-COMMAREA)           00005580
+005520                               END-EXEC.                          00005590
+005530                                                                  00005600
+005540     EJECT                                                        00005610
+005550 40-00-ERRO-MAPA SECTION.                                         00005620
+005560                                                                  00005630
+005570     MOVE    WAX-MENS4           TO  MPMENSAO                     00005640
+005580     GO                          TO  75-05-ENCERRAR-ANORMAL.      00005650
+005590     EJECT                                                        00005660
+005600 45-00-ERRO-PROG SECTION.                                         00005670
+005610     MOVE    WAX-MENS5           TO  M1MENSO                      00005680
+005620     GO                          TO  70-00-ENVIA-TELA.            00005690
+005630     EJECT                                                        00005700
+005640 50-00-ERRO-GENER SECTION.                                        00005710
+005650     MOVE    WAX-MENS3           TO  M1MENSO                      00005720
+005660     GO                          TO  70-00-ENVIA-TELA.            00005730
+005670     EJECT                                                        00005740
+005680 55-00-ABEND SECTION.                                             00005750
+005690                                                                  00005770
+005700     EXEC    CICS    ASSIGN    ABCODE (WAX-ABCOD)                 00005780
+005710                               END-EXEC.                          00005790
+005720                                                                  00005800
+005730     MOVE    WAX-MENS6           TO  M1MENSO                      00005820
+005740     MOVE    '*'                 TO  PCI-ABEND                    00005830
+005750     GO                          TO  70-00-ENVIA-TELA.            00005840
+005760     EJECT                                                        00005850
+005770 60-00-VOLTA-DE-OUTRAS SECTION.                                   00005860
+005780                                                                  00005870
+005790     IF  PCI-HELP EQUAL '****'                                    00005880
+005800         PERFORM 65-00-VOLTA-DO-HELP                              00005890
+005810     ELSE                                                         00005900
+005820        MOVE    LOW-VALUES       TO  PCI-AREA                     00005910
+005830        MOVE    WAX-ORG          TO  M1ORGI                       00005920
+005840        MOVE    WAX-NLEG         TO  M1NLEGI                      00005930
+005850        MOVE    '****'           TO  PCI-SENHA                    00005940
+005860        MOVE    WAX-DIGITO       TO  M1DIGI                       00005950
+005870        MOVE    '/'              TO  M1ORGA                       00005960
+005880                                     M1NLEGA                      00005970
+005890                                     M1DIGA                       00005980
+005900                                     M1SENHAA                     00005990
+005910        MOVE    -1               TO  M1SERVL.                     00006000
+005920     GO                       TO  70-00-ENVIA-TELA.               00006010
+005930      EJECT                                                       00006020
+005940 65-00-VOLTA-DO-HELP SECTION.                                     00006030
+005950     MOVE    PCI-ORG             TO  M1ORGI                       00006040
+005960     MOVE    PCI-NLEG            TO  M1NLEGI                      00006050
+005970     MOVE    PCI-DIG             TO  M1DIGI                       00006060
+005980     MOVE    PCI-SENHA           TO  M1SENHAI                     00006070
+005990     MOVE    PCI-SERV            TO  M1SERVI                      00006080
+006000     MOVE    PCI-MOV             TO  M1MOVI                       00006090
+006010                                                                  00006100
+006020     IF  WAX-MENSRET NOT EQUAL LOW-VALUES AND SPACES              00006110
+006030         MOVE    WAX-MENSRET     TO  WAX-MHELP                    00006120
+006040         MOVE    WAX-MENS99      TO  M1MENSO.                     00006130
+006050                                                                  00006140
+006060     IF  M1-ORG1 EQUAL '?'                                        00006150
+006070         MOVE    -1              TO  M1ORGL                       00006160
+006080     ELSE                                                         00006170
+006090       IF  M1-NLEG1 (1)  EQUAL '?'                                00006180
+006100           MOVE    -1            TO  M1NLEGL                      00006190
+006110       ELSE                                                       00006200
+006120         IF  M1-SENHA1 (1)  EQUAL '?'                             00006210
+006130             MOVE    -1          TO  M1SENHAL                     00006220
+006140         ELSE                                                     00006230
+006150           IF  M1-SERV1 EQUAL '?'                                 00006240
+006160               MOVE    -1          TO  M1SERVL                    00006250
+006170           ELSE                                                   00006260
+006180               MOVE    -1          TO  M1MOVL.                    00006270
+006190     MOVE    SPACES                TO  PCI-HELP.                  00006280
+006200     EJECT                                                        00006290
+006210                                                                  00006300
+006220 70-00-ENVIA-TELA SECTION.                                        00006310
+006230     MOVE    'FG20'              TO  PCI-FLAG                     00006320
+006240                                                                  00006300
+006250     EXEC    CICS    SEND    MAP    ('FG2001')                    00006340
+006260                             MAPSET ('SGS0335')                   00006350
+006270                             FROM   (FG2001I)                     00006360
+006280                             CURSOR                               00006370
+006290                             ERASE                                00006380
+006300                             END-EXEC.                            00006390
+006310                                                                  00006400
+006320     EXEC    CICS    RETURN  TRANSID ('FG20')                     00006420
+006330                             COMMAREA (WAX-COMMAREA)              00000026
+006340                             LENGTH(1)                            00006440
+006350                             END-EXEC.                            00006450
+006360                                                                  00006410
+006370     EJECT                                                        00006470
+006380 70-00-ENVIA-TELA-ERRO SECTION.                                   00006480
+006390     MOVE    'FG20'              TO  PCI-FLAG                     00006490
+006400                                                                  00006410
+006410     EXEC    CICS    SEND    MAP    ('FG2001')                    00006510
+006420                             MAPSET ('SGS0335')                   00006520
+006430                             FROM   (FG2001I)                     00006530
+006440                             CURSOR                               00006540
+006450                             END-EXEC.                            00006560
+006460                                                                  00006570
+006470     EXEC    CICS    RETURN  TRANSID ('FG20')                     00006590
+006480                             COMMAREA (WAX-COMMAREA)              00000028
+006490                             LENGTH(1)                            00006610
+006500                             END-EXEC.                            00006620
+006510                                                                  00006580
+006520     EJECT                                                        00006640
+006530 75-00-ENCERRAR SECTION.                                          00006650
+006540     MOVE    'SGS03350 - T R A N S A C A O  E N C E R R A D A'    00006660
+006550                                           TO  MPMENSAO           00006670
+006560     MOVE    'FG20-02'                     TO  MPCODIO.           00006680
+006570                                                                  00006690
+006580 75-05-ENCERRAR-ANORMAL.                                          00006700
+006590                                                                  00006710
+006600     MOVE    LOW-VALUES          TO  PCI-AREA                     00006720
+006610                                                                  00006730
+006620     EXEC    CICS    SEND    MAP    ('CPD001A')                   00006770
+006630                             MAPSET ('CPD9901')                   00006780
+006640                             ERASE                                00006790
+006650                             END-EXEC.                            00006800
+006660                                                                  00006820
+006670     EXEC    CICS    RETURN                                       00006830
+006680                     END-EXEC.                                    00006840
+006690                                                                  00006850
+006700     GOBACK.                                                      00006860

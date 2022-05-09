@@ -1,0 +1,36 @@
+//SGS03910  PROC  BLK1=2000                                             00000000
+//* *-----------------------------------------------------------------* 00000010
+//* *          SGS03-9 - REORGANIZACAO DO ARQUIVO  TOTCAX             * 00000020
+//* *-----------------------------------------------------------------* 00000030
+//* ******************************************************** PCP98210 * 00000040
+//PCP98210  EXEC  PGM=PCP98210,PARM='P1,263'                            00000050
+//INDENT01  DD DSN=VPPRD004.PCP981.KCNROARQ,DISP=SHR                    00000060
+//SYSOUT    DD SYSOUT=*                                                 00000070
+//* ******************************************************** SGS0391V * 00000080
+//SGS0391V  EXEC  PGM=IDCAMS                                            00000090
+//DD1       DD UNIT=SYSDA,DISP=SHR,VOL=SER=TPR28F                       00000100
+//SYSPRINT  DD SYSOUT=*                                                 00000110
+//SEQENT01  DD DSN=VPTPR040.SGS032.KCTOTCAX,DISP=SHR                    00000120
+//SEQSAI01  DD DSN=D.SGS032(+1),UNIT=PROD,DISP=(,CATLG,DELETE),         00000130
+//             DCB=(GDGCTB,LRECL=45,RECFM=FB),                          00000140
+//             SPACE=(11475,(&BLK1,400),RLSE)                           00000150
+//SYSIN     DD DSN=SYS4.DADOS(SGS0391V),DISP=SHR                        00000160
+//* ******************************************************** SGS0391I * 00000170
+//SGS0391I  EXEC  PGM=IEFBR14,COND=(0,EQ,SGS0391V)                      00000180
+//DD1       DD DSN=D.SGS032(+1),DISP=(OLD,DELETE)                       00000190
+//* ******************************************************** SGS0393V * 00000200
+//SGS0393V  EXEC  PGM=IDCAMS,COND=(0,NE,SGS0391V)                       00000210
+//SYSPRINT  DD SYSOUT=*                                                 00000220
+//DD1       DD UNIT=SYSDA,DISP=SHR,VOL=SER=TPR28F                       00000230
+//SYSIN     DD DSN=SYS4.DADOS(SGS0387V),DISP=SHR                        00000240
+//* ******************************************************** SGS0395V * 00000250
+//SGS0395V  EXEC  PGM=IDCAMS                                            00000260
+//SYSPRINT  DD SYSOUT=*                                                 00000270
+//DD1       DD UNIT=SYSDA,DISP=SHR,VOL=SER=TPR28F                       00000280
+//SEQENT01  DD DSN=D.SGS032(+1),DISP=SHR                                00000290
+//SEQSAI01  DD DSN=VPTPR040.SGS032.KCTOTCAX,DISP=SHR                    00000300
+//SYSIN     DD DSN=SYS4.DADOS(SGS0391V),DISP=SHR                        00000310
+//* ******************************************************** PCP98211 * 00000320
+//PCP98211  EXEC  PGM=PCP98210,PARM='P2,263',COND=(0,NE,SGS0395V)       00000330
+//INDENT01  DD DSN=VPPRD004.PCP981.KCNROARQ,DISP=SHR                    00000340
+//SYSOUT    DD SYSOUT=*                                                 00000350

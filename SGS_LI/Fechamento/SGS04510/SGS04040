@@ -1,0 +1,2339 @@
+000010*----------------------------------------------------------------*SGS00001
+000020*            ID DIVISION                                         *SGS00002
+000030*----------------------------------------------------------------*SGS00003
+000040                                                                  SGS00004
+000050 ID DIVISION.                                                     SGS00005
+000060     SKIP2                                                        SGS00006
+000070 PROGRAM-ID.                 SGS04040.                            SGS00007
+000080*                                                                 SGS00008
+000090* THIS PROGRAM STRUCTURED BY:  IBM COBOL STRUCTURING FACILITY     SGS00009
+000100*                              VERSION 3 RELEASE 1.0.0            SGS00010
+000110*                       DATE:  06/23/00                           SGS00011
+000120*                       TIME:  11:19:18                           SGS00012
+000130*                                                                 SGS00013
+000140     SKIP2                                                        SGS00014
+000150 DATE-WRITTEN.               OUTUBRO-83.                          SGS00015
+000160     SKIP2                                                        SGS00016
+000170 AUTHOR.                     ZILDA.                               SGS00017
+000180     SKIP2                                                        SGS00018
+000190*REMARKS              ********************************************SGS00019
+000200*                     *    L E R   F I L E S   3 7   3 8   3 9   *SGS00020
+000210*                     *      GERAR  ARQUIVOS  COM  TABELAS       *SGS00021
+000220*                     *         DE  VALORES , PREPARADAS         *SGS00022
+000230*                     ********************************************SGS00023
+000240*                     ********************************************SGS00024
+000250*                     *   SANEADO  EM  31/07/96   -    GILMAR    *SGS00025
+000260*                     *   FASE2  (VIACENTER)      -      DTS     *SGS00026
+000270*----------------------------------------------------------------*SGS00027
+000280     EJECT                                                        SGS00028
+000290*----------------------------------------------------------------*SGS00029
+000300*            ENVIRONMENT DIVISION                                *SGS00030
+000310*----------------------------------------------------------------*SGS00031
+000320                                                                  SGS00032
+000330 ENVIRONMENT DIVISION.                                            SGS00033
+000340     SKIP2                                                        SGS00034
+000350 CONFIGURATION SECTION.                                           SGS00035
+000360     SKIP2                                                        SGS00036
+000370 SPECIAL-NAMES.              DECIMAL-POINT IS COMMA.              SGS00037
+000380     SKIP2                                                        SGS00038
+000390 INPUT-OUTPUT SECTION.                                            SGS00039
+000400     SKIP2                                                        SGS00040
+000410 FILE-CONTROL.                                                    SGS00041
+000420     SKIP2                                                        SGS00042
+000430     SELECT SEQENT01         ASSIGN UT-S-SEQENT01.                SGS00043
+000440     SELECT SEQSOR01         ASSIGN UT-S-SORTWK01                 SGS00044
+000450                                    UT-S-SORTWK02.                SGS00045
+000460     SELECT SEQTRA01         ASSIGN UT-S-SEQTRA01.                SGS00046
+000470     SELECT SEQSAI01         ASSIGN UT-S-SEQSAI01.                SGS00047
+000480     EJECT                                                        SGS00048
+000490*----------------------------------------------------------------*SGS00049
+000500*            DATA DIVISION                                       *SGS00050
+000510*----------------------------------------------------------------*SGS00051
+000520                                                                  SGS00052
+000530 DATA DIVISION.                                                   SGS00053
+000540     SKIP2                                                        SGS00054
+000550 FILE SECTION.                                                    SGS00055
+000560*****************************************************             SGS00056
+000570*                S E Q E N T 0 1                    *             SGS00057
+000580*        A R Q U I V O    C O N T R O L E           *             SGS00058
+000590*****************************************************             SGS00059
+000600     SKIP1                                                        SGS00060
+000610 FD          SEQENT01                                             SGS00061
+000620             BLOCK           0                                    SGS00062
+000630     DATA RECORD IS E01-REG                                       SGS00063
+000640             RECORD          80.                                  SGS00064
+000650     SKIP1                                                        SGS00065
+000660 01          E01-REG.                                             SGS00066
+000670     05      E01-IDENT       PIC 9.                               SGS00067
+000680     05      FILLER          PIC X(22).                           SGS00068
+000690     05      E01-INIC-PER    PIC 9(6).                            SGS00069
+000700     05      FILLER   REDEFINES  E01-INIC-PER.                    SGS00070
+000710      10     E01-INIC-DD     PIC 9(2).                            SGS00071
+000720      10     E01-INIC-MM     PIC 9(2).                            SGS00072
+000730      10     E01-INIC-AA     PIC 9(2).                            SGS00073
+000740     05      FILLER          PIC X(6).                            SGS00074
+000750     05      E01-TERM-PER    PIC 9(6).                            SGS00075
+000760     05      FILLER   REDEFINES  E01-TERM-PER.                    SGS00076
+000770      10     E01-TERM-DD     PIC 9(2).                            SGS00077
+000780      10     E01-TERM-MM     PIC 9(2).                            SGS00078
+000790      10     E01-TERM-AA     PIC 9(2).                            SGS00079
+000800     05      FILLER     OCCURS  10  TIMES.                        SGS00080
+000810      10     E01-V           PIC 9.                               SGS00081
+000820     05      E01-STATUS      PIC 9.                               SGS00082
+000830     05      FILLER          PIC X(28).                           SGS00083
+000840     EJECT                                                        SGS00084
+000850*****************************************************             SGS00085
+000860*                S E Q S A I 0 1                    *             SGS00086
+000870* A R Q U I V O   T A B E L A  D E   V A L O R E S  *             SGS00087
+000880*****************************************************             SGS00088
+000890     SKIP1                                                        SGS00089
+000900 FD          SEQSAI01                                             SGS00090
+000910             BLOCK           0                                    SGS00091
+000920     DATA RECORD IS S01-REG                                       SGS00092
+000930             RECORD          92.                                  SGS00093
+000940     SKIP1                                                        SGS00094
+000950 01          S01-REG.                                             SGS00095
+000960     05      FILLER          PIC X(92).                           SGS00096
+000970     EJECT                                                        SGS00097
+000980************************************************************      SGS00098
+000990*                S E Q T R A 0 1                           *      SGS00099
+001000*  REGS ASSINATURA E SERVICO CARACTERIZADOS COMO SINONIMO  *      SGS00100
+001010************************************************************      SGS00101
+001020     SKIP1                                                        SGS00102
+001030 FD          SEQTRA01                                             SGS00103
+001040             BLOCK           0                                    SGS00104
+001050     DATA RECORD IS WAX-TRAB                                      SGS00105
+001060             RECORD          92.                                  SGS00106
+001070     SKIP1                                                        SGS00107
+001080 01          WAX-TRAB.                                            SGS00108
+001090     05      WAX-CODPRO      PIC 9(5)       COMP-3.               SGS00109
+001100     05      WAX-CODSIN      PIC 9(5)       COMP-3.               SGS00110
+001110     05      FILLER          PIC X(86).                           SGS00111
+001120     EJECT                                                        SGS00112
+001130**********************************************                    SGS00113
+001140*     - REGS     ASSINATURA  COR  ATB        *                    SGS00114
+001150*     - REGS     PECAS                       *                    SGS00115
+001160**********************************************                    SGS00116
+001170     SKIP1                                                        SGS00117
+001180 SD          SEQSOR01.                                            SGS00118
+001190     SKIP1                                                        SGS00119
+001200 01          SOR-REG37.                                           SGS00120
+001210     05      SOR-CODPRO      PIC 9(5)     COMP-3.                 SGS00121
+001220     05      SOR-DADOS.                                           SGS00122
+001230      10     SOR-CODSIN      PIC 9(5)     COMP-3.                 SGS00123
+001240      10     SOR-DIVID.                                           SGS00124
+001250       15    SOR-CL-LINHA    PIC X(4).                            SGS00125
+001260       15    SOR-CL-ADIC     PIC X(3).                            SGS00126
+001270       15    SOR-TIPO        PIC X(3).                            SGS00127
+001280       15    SOR-COR         PIC X(2).                            SGS00128
+001290       15    SOR-PROP-MOD    PIC X(7).                            SGS00129
+001300       15    SOR-CPCC        PIC X(2).                            SGS00130
+001310     05      FILLER  REDEFINES  SOR-DADOS.                        SGS00131
+001320      10     FILLER          PIC X(3).                            SGS00132
+001330      10     SOR-COR-ATB     PIC X(2).                            SGS00133
+001340      10     FILLER          PIC X(17).                           SGS00134
+001350     05      SOR-COD-FAT.                                         SGS00135
+001360      10     SOR-DEB         PIC 9(5)     COMP-3.                 SGS00136
+001370      10     SOR-CRED        PIC 9(5)     COMP-3.                 SGS00137
+001380     05      SOR-FNT         PIC 9(3)     COMP-3.                 SGS00138
+001390     05      SOR-CONTAB      PIC 9(9)     COMP-3.                 SGS00139
+001400     05      SOR-INIC-N1     PIC 9(7)     COMP-3.                 SGS00140
+001410     05      SOR-FIM-N1      PIC 9(7)     COMP-3.                 SGS00141
+001420     05      SOR-VALOR-N1    PIC S9(9)V99 COMP-3.                 SGS00142
+001430     05      SOR-INIC-N2     PIC 9(7)     COMP-3.                 SGS00143
+001440     05      SOR-FIM-N2      PIC 9(7)     COMP-3.                 SGS00144
+001450     05      SOR-VALOR-N2    PIC S9(9)V99 COMP-3.                 SGS00145
+001460     05      SOR-INIC-R      PIC 9(7)     COMP-3.                 SGS00146
+001470     05      SOR-FIM-R       PIC 9(7)     COMP-3.                 SGS00147
+001480     05      SOR-VALOR-R     PIC S9(9)V99 COMP-3.                 SGS00148
+001490     05      FILLER          PIC X(7).                            SGS00149
+001500     05      SOR-V           PIC 9(2).                            SGS00150
+001510     05      SOR-COD1        PIC X.                               SGS00151
+001520     EJECT                                                        SGS00152
+001530 WORKING-STORAGE SECTION.                                         SGS00153
+001540     SKIP2                                                        SGS00154
+001550 01          AREAS-DE-TRABALHO.                                   SGS00155
+001560     SKIP1                                                        SGS00156
+001570     05      FILLER          PIC X(48)              VALUE         SGS00157
+001580             '*PRG30010-INICIO DA WORKING-STORAGE SECTION*'.      SGS00158
+001590**************************************************                SGS00159
+001600*    TABELA  REGS  CLASSIFICADOS  FILE 37 / 38   *                SGS00160
+001610**************************************************                SGS00161
+001620     SKIP2                                                        SGS00162
+001630 01          WTB-TRAB1.                                           SGS00163
+001640     05      WTB-REG      OCCURS   1000  TIMES.                   SGS00164
+001650      10     WTB-CODPRO      PIC 9(5)       COMP-3.               SGS00165
+001660      10     WTB-CODSIN      PIC 9(5)       COMP-3.               SGS00166
+001670      10     FILLER          PIC X(86).                           SGS00167
+001680 01          WTB-TRAB2.                                           SGS00168
+001690     05      FILLER       OCCURS   1000  TIMES.                   SGS00169
+001700      10     FILLER          PIC 9(5)       COMP-3.               SGS00170
+001710      10     FILLER          PIC 9(5)       COMP-3.               SGS00171
+001720      10     FILLER          PIC X(86).                           SGS00172
+001730 01          WTB-TRAB3.                                           SGS00173
+001740     05      FILLER       OCCURS   1000  TIMES.                   SGS00174
+001750      10     FILLER          PIC 9(5)       COMP-3.               SGS00175
+001760      10     FILLER          PIC 9(5)       COMP-3.               SGS00176
+001770      10     FILLER          PIC X(86).                           SGS00177
+001780 01          WTB-TRAB4.                                           SGS00178
+001790     05      FILLER       OCCURS   1001  TIMES.                   SGS00179
+001800      10     FILLER          PIC 9(5)       COMP-3.               SGS00180
+001810      10     FILLER          PIC 9(5)       COMP-3.               SGS00181
+001820      10     FILLER          PIC X(86).                           SGS00182
+001830     EJECT                                                        SGS00183
+001840 01          WAX-AUX.                                             SGS00184
+001850********************************************************          SGS00185
+001860*    AREA PARA  ARQUIVOS  ADAMINT    FILE 37  38  39   *          SGS00186
+001870********************************************************          SGS00187
+001880     SKIP1                                                        SGS00188
+001890     SKIP1                                                        SGS00189
+001900     05      WBD-RCODE       PIC S9(4)   COMP       VALUE +0.     SGS00190
+001910     SKIP1                                                        SGS00191
+001920     05      WBD-SERV37      PIC X(12)              VALUE         SGS00192
+001930             '            '.                                      SGS00193
+001940     05      WBD-SERV38      PIC X(7)               VALUE         SGS00194
+001950             '       '.                                           SGS00195
+001960     05      WBD-SERV39      PIC 9(3)               VALUE 000.    SGS00196
+001970     SKIP1                                                        SGS00197
+001980************************                                          SGS00198
+001990*    F I L E   3 7     *                                          SGS00199
+002000************************                                          SGS00200
+002010     SKIP1                                                        SGS00201
+002020     05      WBD-RBUF37.                                          SGS00202
+002030      10     WBD-LINHA37     PIC X(4).                            SGS00203
+002040      10     FILLER          PIC X(8).                            SGS00204
+002050      10     WBD-ADIC-37     PIC X(3).                            SGS00205
+002060      10     WBD-EQUIP-37.                                        SGS00206
+002070       15    WBD-TIPO-37     PIC X(3).                            SGS00207
+002080       15    WBD-COR         PIC X(2).                            SGS00208
+002090       15    WBD-PROP-MOD    PIC X(7).                            SGS00209
+002100      10     FILLER          PIC X(33).                           SGS00210
+002110      10     WBD-CONTAB-37   PIC 9(9)        COMP-3.              SGS00211
+002120      10     FILLER          PIC X(4).                            SGS00212
+002130      10     WBD-ATB-37      PIC X(2).                            SGS00213
+002140      10     WBD-CPCC-37     PIC X(2).                            SGS00214
+002150      10     WBD-DEB-37      PIC 9(5)        COMP-3.              SGS00215
+002160      10     WBD-CRED-37     PIC 9(5)        COMP-3.              SGS00216
+002170      10     FILLER          PIC X(3).                            SGS00217
+002180      10     WBD-FNT-37      PIC X(3).                            SGS00218
+002190      10     FILLER          PIC X(46).                           SGS00219
+002200      10     WBD-QTD-37      PIC X.                               SGS00220
+002210      10     WBD-VALORES-37    OCCURS  12 TIMES.                  SGS00221
+002220       15    WBD-TARIFA-37     OCCURS  10 TIMES.                  SGS00222
+002230        20   FILLER          PIC X(11).                           SGS00223
+002240        20   WBD-VALOR-37    PIC S9(9)V99    COMP-3.              SGS00224
+002250       15    WBD-INIC-37X.                                        SGS00225
+002260        20   WBD-INIC-37     PIC 9(07)       COMP-3.              SGS00226
+002270       15    WBD-FIM-37      PIC 9(7)        COMP-3.              SGS00227
+002280       15    WBD-STAT-37     PIC 9.                               SGS00228
+002290     EJECT                                                        SGS00229
+002300************************                                          SGS00230
+002310*    F I L E   3 8     *                                          SGS00231
+002320************************                                          SGS00232
+002330     SKIP1                                                        SGS00233
+002340     05      WBD-RBUF38.                                          SGS00234
+002350      10     WBD-NATUREZA    PIC X(7).                            SGS00235
+002360      10     WBD-LINHA-38    PIC X(4).                            SGS00236
+002370      10     FILLER          PIC X(6).                            SGS00237
+002380      10     WBD-ADIC-38     PIC X(3).                            SGS00238
+002390      10     WBD-EQUIP-38    PIC X(10).                           SGS00239
+002400      10     FILLER          PIC X(13).                           SGS00240
+002410      10     WBD-CONTAB-38   PIC 9(9)        COMP-3.              SGS00241
+002420      10     FILLER          PIC X(22).                           SGS00242
+002430      10     WBD-CPCC-38     PIC X(2).                            SGS00243
+002440      10     WBD-DEB-N38     PIC 9(5)        COMP-3.              SGS00244
+002450      10     WBD-CRED-N38    PIC 9(5)        COMP-3.              SGS00245
+002460      10     WBD-DEB-R38     PIC 9(5)        COMP-3.              SGS00246
+002470      10     WBD-CRED-R38    PIC 9(5)        COMP-3.              SGS00247
+002480      10     FILLER          PIC X(3).                            SGS00248
+002490      10     WBD-FNT-38      PIC X(3).                            SGS00249
+002500      10     FILLER          PIC X(46).                           SGS00250
+002510      10     WBD-QTD-38      PIC X.                               SGS00251
+002520      10     WBD-VALORES-38    OCCURS  20 TIMES.                  SGS00252
+002530       15    FILLER          PIC X(11).                           SGS00253
+002540       15    WBD-VALOR-N38   PIC S9(9)V99    COMP-3.              SGS00254
+002550       15    FILLER          PIC X(11).                           SGS00255
+002560       15    WBD-VALOR-R38   PIC S9(9)V99    COMP-3.              SGS00256
+002570       15    WBD-INIC-38X.                                        SGS00257
+002580        20   WBD-INIC-38     PIC 9(07)       COMP-3.              SGS00258
+002590       15    WBD-FIM-38      PIC 9(7)        COMP-3.              SGS00259
+002600       15    WBD-STAT-38     PIC 9.                               SGS00260
+002610     EJECT                                                        SGS00261
+002620************************                                          SGS00262
+002630*    F I L E   3 9     *                                          SGS00263
+002640************************                                          SGS00264
+002650     SKIP1                                                        SGS00265
+002660     05      WBD-RBUF39.                                          SGS00266
+002670      10     WBD-CODPECA     PIC 9(3).                            SGS00267
+002680      10     FILLER          PIC X(46).                           SGS00268
+002690      10     WBD-DEB-39      PIC 9(5)     COMP-3.                 SGS00269
+002700      10     WBD-CRED-39     PIC 9(5)     COMP-3.                 SGS00270
+002710      10     WBD-FNT-39      PIC X(3).                            SGS00271
+002720      10     WBD-QTD-VAL     PIC X.                               SGS00272
+002730      10     WBD-VALORES-39   OCCURS  16  TIMES.                  SGS00273
+002740       15    WBD-VALOR1-39   PIC S9(9)V99 COMP-3.                 SGS00274
+002750       15    WBD-INIC1-39X.                                       SGS00275
+002760        20   WBD-INIC1-39    PIC 9(07)       COMP-3.              SGS00276
+002770       15    WBD-FIM1-39     PIC 9(7)     COMP-3.                 SGS00277
+002780       15    WBD-STAT1-39    PIC X.                               SGS00278
+002790      10     WBD-QTD-FAT     PIC X.                               SGS00279
+002800      10     WBD-FATORES-39   OCCURS  11  TIMES.                  SGS00280
+002810       15    WBD-FAT-IND     PIC X(4).                            SGS00281
+002820       15    WBD-VALOR2-39   PIC S9(9)V99 COMP-3.                 SGS00282
+002830      10     WBD-FLAG-39     PIC 9.                               SGS00283
+002840      10     WBD-STAT2-39    PIC X.                               SGS00284
+002850      10     WBD-INIC2-39    PIC 9(7)     COMP-3.                 SGS00285
+002860      10     WBD-FIM2-39     PIC 9(7)     COMP-3.                 SGS00286
+002870      10     WBD-CONTAB-39   PIC 9(9)      COMP-3.                SGS00287
+002880     EJECT                                                        SGS00288
+002890**********************************************                    SGS00289
+002900*    TABELA  REGS  VALORES - OK   FILE 37    *                    SGS00290
+002910**********************************************                    SGS00291
+002920     SKIP2                                                        SGS00292
+002930     05      WAX-REG37    OCCURS   3   TIMES.                     SGS00293
+002940      10     WAX-VALORES.                                         SGS00294
+002950       15    WAX-TARIFA   OCCURS   10  TIMES.                     SGS00295
+002960        20   FILLER          PIC X(11).                           SGS00296
+002970        20   WAX-VALOR       PIC S9(9)V99   COMP-3.               SGS00297
+002980       15    WAX-INIC        PIC 9(7)       COMP-3.               SGS00298
+002990       15    WAX-FIM         PIC 9(7)       COMP-3.               SGS00299
+003000       15    WAX-STATUS      PIC 9.                               SGS00300
+003010     EJECT                                                        SGS00301
+003020**********************************************                    SGS00302
+003030*  TABELA  REGS  VALORES - OK   FILE 38 / 39 *                    SGS00303
+003040**********************************************                    SGS00304
+003050     SKIP2                                                        SGS00305
+003060    03       WAX-TAB38-XX.                                        SGS00306
+003070     05      WAX-TAB38-39   OCCURS  2  TIMES.                     SGS00307
+003080      10     WAX-VAL-N       PIC S9(9)V99   COMP-3.               SGS00308
+003090      10     WAX-VAL-R       PIC S9(9)V99   COMP-3.               SGS00309
+003100      10     WAX-INIC-38-39  PIC 9(7)       COMP-3.               SGS00310
+003110      10     WAX-FIM-38-39   PIC 9(7)       COMP-3.               SGS00311
+003120     SKIP2                                                        SGS00312
+003130*----------------------------------------------------------------*SGS00313
+003140*  REGS FILE 39  'ORTN' CLASSIFICADOS DESCEND. POR DATA INICIO   *SGS00314
+003150*----------------------------------------------------------------*SGS00315
+003160     SKIP2                                                        SGS00316
+003170    03       WAX-TABXX-XX.                                        SGS00317
+003180     05      WAX-TAB.                                             SGS00318
+003190      10     FILLER    OCCURS   36  TIMES.                        SGS00319
+003200       15    WAX-VALOR2-39   PIC S9(9)V99   COMP-3.               SGS00320
+003210       15    WAX-SECU-39     PIC 9(1).                            SGS00321
+003220       15    WAX-INIC-39     PIC 9(7)        COMP-3.              SGS00322
+003230       15    WAX-FIM-39      PIC 9(7)       COMP-3.               SGS00323
+003240     SKIP1                                                        SGS00324
+003250     05      WAX-PARAM.                                           SGS00325
+003260      10     FILLER          PIC 9(4)               VALUE 36.     SGS00326
+003270      10     FILLER          PIC 9(4)               VALUE 15.     SGS00327
+003280      10     FILLER          PIC 9(2)               VALUE 5.      SGS00328
+003290      10     FILLER          PIC 9(4)               VALUE 7.      SGS00329
+003300     EJECT                                                        SGS00330
+003310**********************************************                    SGS00331
+003320*    REGISTRO   AUXILIAR   FILE   38         *                    SGS00332
+003330**********************************************                    SGS00333
+003340     SKIP2                                                        SGS00334
+003350     05      WAX-REG38.                                           SGS00335
+003360      10     WAX-CODPRO-38   PIC 9(5)       COMP-3.               SGS00336
+003370      10     WAX-CODSIN-38   PIC 9(5)       COMP-3.               SGS00337
+003380      10     WAX-DADOS-38.                                        SGS00338
+003390       15    WAX-NATUREZA    PIC X(7).                            SGS00339
+003400       15    WAX-LINHA-38    PIC X(4).                            SGS00340
+003410       15    WAX-ADIC-38     PIC X(3).                            SGS00341
+003420       15    WAX-EQUIP-38    PIC X(10).                           SGS00342
+003430       15    WAX-CPCC-38     PIC X(2).                            SGS00343
+003440      10     WAX-DEB-N38     PIC 9(5)       COMP-3.               SGS00344
+003450      10     WAX-CRED-N38    PIC 9(5)       COMP-3.               SGS00345
+003460      10     WAX-DEB-R38     PIC 9(5)       COMP-3.               SGS00346
+003470      10     WAX-CRED-R38    PIC 9(5)       COMP-3.               SGS00347
+003480      10     WAX-FNT-38      PIC 9(3)       COMP-3.               SGS00348
+003490      10     WAX-CONTAB-38   PIC 9(9)       COMP-3.               SGS00349
+003500      10     WAX-VAL38-N1    PIC S9(9)V99   COMP-3.               SGS00350
+003510      10     WAX-VAL38-R1    PIC S9(9)V99   COMP-3.               SGS00351
+003520      10     WAX-INIC38-1    PIC 9(7)       COMP-3.               SGS00352
+003530      10     WAX-FIM38-1     PIC 9(7)       COMP-3.               SGS00353
+003540      10     WAX-VAL38-N2    PIC S9(9)V99   COMP-3.               SGS00354
+003550      10     WAX-VAL38-R2    PIC S9(9)V99   COMP-3.               SGS00355
+003560      10     WAX-INIC38-2    PIC 9(7)       COMP-3.               SGS00356
+003570      10     WAX-FIM38-2     PIC 9(7)       COMP-3.               SGS00357
+003580      10     FILLER          PIC X(1)               VALUE '2'.    SGS00358
+003590     EJECT                                                        SGS00359
+003600**********************************************                    SGS00360
+003610*    REGISTRO   AUXILIAR   FILE   39         *                    SGS00361
+003620**********************************************                    SGS00362
+003630     SKIP2                                                        SGS00363
+003640     05      WAX-REG39.                                           SGS00364
+003650      10     S01-CODPECA     PIC 9(5)     COMP-3.                 SGS00365
+003660      10     FILLER          PIC X(3)               VALUE SPACES. SGS00366
+003670      10     S01-DEB         PIC 9(5)     COMP-3.                 SGS00367
+003680      10     S01-CRED        PIC 9(5)     COMP-3.                 SGS00368
+003690      10     S01-CONTAB      PIC 9(9)     COMP-3.                 SGS00369
+003700      10     S01-FNT         PIC 9(3)     COMP-3.                 SGS00370
+003710      10     S01-VALOR-N1    PIC S9(9)V99 COMP-3.                 SGS00371
+003720      10     S01-INIC-N1     PIC 9(7)     COMP-3.                 SGS00372
+003730      10     S01-FIM-N1      PIC 9(7)     COMP-3.                 SGS00373
+003740      10     S01-VALOR-N2    PIC S9(9)V99 COMP-3.                 SGS00374
+003750      10     S01-INIC-N2     PIC 9(7)     COMP-3.                 SGS00375
+003760      10     S01-FIM-N2      PIC 9(7)     COMP-3.                 SGS00376
+003770      10     FILLER          PIC X(42)              VALUE SPACES. SGS00377
+003780      10     S01-COD3        PIC X(3)               VALUE '  3'.  SGS00378
+003790     EJECT                                                        SGS00379
+003800************************                                          SGS00380
+003810*   REDE DE CONTROLE   *                                          SGS00381
+003820************************                                          SGS00382
+003830     SKIP2                                                        SGS00383
+003840     05      WRC-REDE.                                            SGS00384
+003850     SKIP1                                                        SGS00385
+003860      10     WRC-TAMANH      PIC S9(09)  COMP-3     VALUE +687.   SGS00386
+003870      10     WRC-NOMJOB      PIC X(8).                            SGS00387
+003880      10     WRC-NOMPRG      PIC X(8)               VALUE         SGS00388
+003890             'SGS04040'.                                          SGS00389
+003900      10     WRC-CODRED      PIC X(10)              VALUE         SGS00390
+003910             'SGS0404-R'.                                         SGS00391
+003920      10     WRC-DTPROC.                                          SGS00392
+003930       15    WRC-CONDIC      PIC X(2)               VALUE 'NV'.   SGS00393
+003940       15    WRC-DDPROC      PIC X(2).                            SGS00394
+003950       15    WRC-MMPROC      PIC X(2).                            SGS00395
+003960       15    WRC-AAPROC      PIC X(2).                            SGS00396
+003970      10     WRC-HORA        PIC 99.99.99.                        SGS00397
+003980      10     WRC-ETAPA       PIC X(4)               VALUE '****'. SGS00398
+003990      10     WRC-PAGINA      PIC X(3)               VALUE '***'.  SGS00399
+004000     SKIP1                                                        SGS00400
+004010      10     WRC-ENTR.                                            SGS00401
+004020     SKIP1                                                        SGS00402
+004030       15    WRC-CODE1       PIC X(18)              VALUE SPACES. SGS00403
+004040       15    WRC-NOME1       PIC X(27)              VALUE         SGS00404
+004050             'SEQENT01 - REGS LIDOS'.                             SGS00405
+004060       15    WRC-INDE1       PIC X(2)               VALUE SPACES. SGS00406
+004070       15    WRC-VALE1       PIC S9(11)  COMP-3     VALUE ZEROS.  SGS00407
+004080     SKIP1                                                        SGS00408
+004090       15    WRC-CODE2       PIC X(18)              VALUE SPACES. SGS00409
+004100       15    WRC-NOME2       PIC X(27)              VALUE         SGS00410
+004110             'FILE37   - REGS LIDOS'.                             SGS00411
+004120       15    WRC-INDE2       PIC X(2)               VALUE SPACES. SGS00412
+004130       15    WRC-VALE2       PIC S9(11)  COMP-3     VALUE ZEROS.  SGS00413
+004140     SKIP1                                                        SGS00414
+004150       15    WRC-CODE3       PIC X(18)              VALUE SPACES. SGS00415
+004160       15    WRC-NOME3       PIC X(27)              VALUE         SGS00416
+004170             'FILE38   - REGS LIDOS'.                             SGS00417
+004180       15    WRC-INDE3       PIC X(2)               VALUE SPACES. SGS00418
+004190       15    WRC-VALE3       PIC S9(11)  COMP-3     VALUE ZEROS.  SGS00419
+004200     SKIP1                                                        SGS00420
+004210       15    WRC-CODE4       PIC X(18)              VALUE SPACES. SGS00421
+004220       15    WRC-NOME4       PIC X(27)              VALUE         SGS00422
+004230             'FILE39   - REGS LIDOS'.                             SGS00423
+004240       15    WRC-INDE4       PIC X(2)               VALUE SPACES. SGS00424
+004250       15    WRC-VALE4       PIC S9(11)  COMP-3     VALUE ZEROS.  SGS00425
+004260     SKIP1                                                        SGS00426
+004270       15    WRC-FIMENT      PIC X(1)               VALUE         SGS00427
+004280             LOW-VALUES.                                          SGS00428
+004290     EJECT                                                        SGS00429
+004300      10     WRC-SAIDAS.                                          SGS00430
+004310     SKIP1                                                        SGS00431
+004320       15    WRC-CODS1       PIC X(18)              VALUE SPACES. SGS00432
+004330       15    WRC-NOMS1       PIC X(27)              VALUE         SGS00433
+004340             'SEQSAI01   - REGS GRAVADOS'.                        SGS00434
+004350       15    WRC-INDS1       PIC X(2)               VALUE SPACES. SGS00435
+004360       15    WRC-VALS1       PIC S9(11)  COMP-3     VALUE ZEROS.  SGS00436
+004370     SKIP1                                                        SGS00437
+004380       15    WRC-CODS2       PIC X(18)              VALUE SPACES. SGS00438
+004390       15    WRC-NOMS2       PIC X(27)              VALUE         SGS00439
+004400             'ASSINATURA - REGS GRAVADOS'.                        SGS00440
+004410       15    WRC-INDS2       PIC X(2)               VALUE SPACES. SGS00441
+004420       15    WRC-VALS2       PIC S9(11)  COMP-3     VALUE ZEROS.  SGS00442
+004430     SKIP1                                                        SGS00443
+004440       15    WRC-CODS3       PIC X(18)              VALUE SPACES. SGS00444
+004450       15    WRC-NOMS3       PIC X(27)              VALUE         SGS00445
+004460             'ASSIN. ATB - REGS GRAVADOS'.                        SGS00446
+004470       15    WRC-INDS3       PIC X(2)               VALUE SPACES. SGS00447
+004480       15    WRC-VALS3       PIC S9(11)  COMP-3     VALUE ZEROS.  SGS00448
+004490     SKIP1                                                        SGS00449
+004500       15    WRC-CODS4       PIC X(18)              VALUE SPACES. SGS00450
+004510       15    WRC-NOMS4       PIC X(27)              VALUE         SGS00451
+004520             'ASSIN. COR - REGS GRAVADOS'.                        SGS00452
+004530       15    WRC-INDS4       PIC X(2)               VALUE SPACES. SGS00453
+004540       15    WRC-VALS4       PIC S9(11)  COMP-3     VALUE ZEROS.  SGS00454
+004550     SKIP1                                                        SGS00455
+004560       15    WRC-CODS5       PIC X(18)              VALUE SPACES. SGS00456
+004570       15    WRC-NOMS5       PIC X(27)              VALUE         SGS00457
+004580             'SERVICOS   - REGS GRAVADOS'.                        SGS00458
+004590       15    WRC-INDS5       PIC X(2)               VALUE SPACES. SGS00459
+004600       15    WRC-VALS5       PIC S9(11)  COMP-3     VALUE ZEROS.  SGS00460
+004610     SKIP1                                                        SGS00461
+004620       15    WRC-CODS6       PIC X(18)              VALUE SPACES. SGS00462
+004630       15    WRC-NOMS6       PIC X(27)              VALUE         SGS00463
+004640             'PECAS      - REGS GRAVADOS'.                        SGS00464
+004650       15    WRC-INDS6       PIC X(2)               VALUE SPACES. SGS00465
+004660       15    WRC-VALS6       PIC S9(11)  COMP-3     VALUE ZEROS.  SGS00466
+004670     SKIP1                                                        SGS00467
+004680       15    WRC-FIMSAID     PIC X(1)               VALUE         SGS00468
+004690             LOW-VALUES.                                          SGS00469
+004700     SKIP1                                                        SGS00470
+004710      10     WRC-OBS.                                             SGS00471
+004720       15    WRC-OBS1        PIC X(100).                          SGS00472
+004730      10     WRC-FIMRED      PIC X(1)               VALUE         SGS00473
+004740             HIGH-VALUES.                                         SGS00474
+004750     EJECT                                                        SGS00475
+004760****************************                                      SGS00476
+004770*      CURRENT-DATE        *                                      SGS00477
+004780****************************                                      SGS00478
+004790     SKIP2                                                        SGS00479
+004800     05      WCD-DTA.                                             SGS00480
+004810      10     WCD-MM          PIC XX.                              SGS00481
+004820      10     FILLER          PIC X.                               SGS00482
+004830      10     WCD-DD          PIC XX.                              SGS00483
+004840      10     FILLER          PIC X.                               SGS00484
+004850      10     WCD-AA          PIC XX.                              SGS00485
+004860     EJECT                                                        SGS00486
+004870****************************************                          SGS00487
+004880*     AREA P/ OBTENCAO DSN             *                          SGS00488
+004890****************************************                          SGS00489
+004900     SKIP2                                                        SGS00490
+004910     05      WDS-DSNAME.                                          SGS00491
+004920      10     FILLER OCCURS 15 TIMES.                              SGS00492
+004930       15    WDS-DDN         PIC X(8).                            SGS00493
+004940       15    WDS-DSN         PIC X(44).                           SGS00494
+004950     05      WIN-INI         PIC S9(9)    COMP SYNC VALUE +0.     SGS00495
+004960**********************************                                SGS00496
+004970*         C H A V E              *                                SGS00497
+004980**********************************                                SGS00498
+004990     SKIP2                                                        SGS00499
+005000     05      WCH-FIMCAD      PIC X.                               SGS00500
+005010     05      WCH-FIMARQ37    PIC X.                               SGS00501
+005020     05      WCH-FIMSORT     PIC X.                               SGS00502
+005030     05      WCH-FIMTRAB     PIC X.                               SGS00503
+005040     05      WCH-FIMARQ38    PIC X.                               SGS00504
+005050     05      WCH-FIMARQ39    PIC X.                               SGS00505
+005060     SKIP2                                                        SGS00506
+005070**********************************                                SGS00507
+005080*      I N D E X A D O R E S     *                                SGS00508
+005090**********************************                                SGS00509
+005100     SKIP2                                                        SGS00510
+005110     05      WIN-IND         PIC S9(9)  COMP-3      VALUE +0.     SGS00511
+005120     EJECT                                                        SGS00512
+005130*********************************                                 SGS00513
+005140*   R O T I N A   A B E N D A R *                                 SGS00514
+005150*********************************                                 SGS00515
+005160     SKIP1                                                        SGS00516
+005170     05      WAX-ABENDAR.                                         SGS00517
+005180      10     WAX-ABEN        PIC X                  VALUE         SGS00518
+005190             LOW-VALUES.                                          SGS00519
+005200      10     WAX-RCODE       PIC 9(4)    COMP.                    SGS00520
+005210     SKIP2                                                        SGS00521
+005220*********************************                                 SGS00522
+005230*  R O T I N A    D A Y G A P   *                                 SGS00523
+005240*********************************                                 SGS00524
+005250     SKIP1                                                        SGS00525
+005260     05      WAX-DATA1       PIC 9(6).                            SGS00526
+005270     05      WAX-DATA2       PIC 9(6).                            SGS00527
+005280     05      WAX-DIAS        PIC S9(11)    COMP-3.                SGS00528
+005290     SKIP2                                                        SGS00529
+005300*********************************                                 SGS00530
+005310*  R O T I N A    SGS99010      *                                 SGS00531
+005320*********************************                                 SGS00532
+005330     SKIP1                                                        SGS00533
+005340     05      WAX-DIVID1      PIC X(21).                           SGS00534
+005350     05      WAX-DIVID2      PIC X(26).                           SGS00535
+005360     05      WAX-TAMAN       PIC 9(4)      COMP.                  SGS00536
+005370     05      WAX-DIVIS       PIC 9(4).                            SGS00537
+005380     05      WAX-REST       PIC 9(4).                             SGS00538
+005390     EJECT                                                        SGS00539
+005400*********************************                                 SGS00540
+005410*   DATAS     AUXILIARES        *                                 SGS00541
+005420*********************************                                 SGS00542
+005430     SKIP1                                                        SGS00543
+005440     05      WAX-BUG1        PIC 9(6).                            SGS00544
+005450     05      WAX-BUG2        PIC 9(6).                            SGS00545
+005460     05      WAX-BUG3        PIC 9(6).                            SGS00546
+005470     05      WAX-BUG4        PIC 9(6).                            SGS00547
+005480     05      WAX-AAMMDD      PIC 9(6).                            SGS00548
+005490     05      FILLER    REDEFINES    WAX-AAMMDD.                   SGS00549
+005500      10     WAX-I-AA        PIC 9(2).                            SGS00550
+005510      10     WAX-I-MM        PIC 9(2).                            SGS00551
+005520      10     WAX-I-DD        PIC 9(2).                            SGS00552
+005530     SKIP1                                                        SGS00553
+005540     05      WAX-DDMMAA      PIC 9(6).                            SGS00554
+005550     05      FILLER    REDEFINES    WAX-DDMMAA.                   SGS00555
+005560      10     WAX-DD-I        PIC 9(2).                            SGS00556
+005570      10     WAX-MM-I        PIC 9(2).                            SGS00557
+005580      10     WAX-AA-I        PIC 9(2).                            SGS00558
+005590     05      WAX-SALMM       PIC 99                 VALUE 00.     SGS00559
+005600     EJECT                                                        SGS00560
+005610*********************************                                 SGS00561
+005620*  A R E A    A U X I L I A R   *                                 SGS00562
+005630*********************************                                 SGS00563
+005640     SKIP1                                                        SGS00564
+005650     05      WAX-OBS.                                             SGS00565
+005660      10     WAX-OBS1        PIC X(40).                           SGS00566
+005670      10     WAX-OBS2        PIC 9(2).                            SGS00567
+005680      10     WAX-OBS3        PIC X(40).                           SGS00568
+005690      10     WAX-OBS4        PIC 9(2).                            SGS00569
+005700     SKIP1                                                        SGS00570
+005710     05      WAC-OCORR       PIC 9                  VALUE 0.      SGS00571
+005720     05      WAX-ACHOU       PIC X(3).                            SGS00572
+005730     SKIP1                                                        SGS00573
+005740     05      WAX-POSIT       PIC 9(5)     COMP-3.                 SGS00574
+005750     05      WAX-NEGAT       PIC 9(5)     COMP-3.                 SGS00575
+005760     SKIP1                                                        SGS00576
+005770     05      WAX-W1          PIC S9(9)V9999  COMP-3.              SGS00577
+005780     05      WAX-W2          PIC S9(9)V9999  COMP-3.              SGS00578
+005790     05      WAX-W3          PIC  9(7)     COMP-3.                SGS00579
+005800     SKIP1                                                        SGS00580
+005810     05      WAX-CODPRO-ATB  PIC 9(5)     COMP-3    VALUE 3001.   SGS00581
+005820     05      WAX-CODPRO-COR  PIC 9(5)     COMP-3    VALUE 3011.   SGS00582
+005830     SKIP1                                                        SGS00583
+005840     05      WAX-R1          PIC 9(11)    COMP-3.                 SGS00584
+005850     05      WAX-R2          PIC 9(11)    COMP-3.                 SGS00585
+005860     SKIP1                                                        SGS00586
+005870     05      WAX-DIV-BISS    PIC 9.                               SGS00587
+005880     05      WAX-RES-BISS    PIC 9.                               SGS00588
+005890     SKIP1                                                        SGS00589
+005900     05      WAX-ASTERISCO   PIC X.                               SGS00590
+005910     05      WAX-PESQ        PIC 9(5)     COMP-3.                 SGS00591
+005920     SKIP2                                                        SGS00592
+005930     05      WAX-V           PIC 9(2).                            SGS00593
+005940     EJECT                                                        SGS00594
+005950 01        WIZ-AREAS-ESPECIAIS.                                   SGS00595
+005960     05   WIZ-DATA-ACCEPT.                                        SGS00596
+005970       10  WIZ-DATA-ANO         PIC  9(002).                      SGS00597
+005980       10  WIZ-DATA-MES         PIC  9(002).                      SGS00598
+005990       10  WIZ-DATA-DIA         PIC  9(002).                      SGS00599
+006000     05    WIZ-CUR-DATE.                                          SGS00600
+006010       10  WIZ-DATA-MES         PIC  9(002).                      SGS00601
+006020       10  FILLER               PIC  X(001) VALUE '/'.            SGS00602
+006030       10  WIZ-DATA-DIA         PIC  9(002).                      SGS00603
+006040       10  FILLER               PIC  X(001) VALUE '/'.            SGS00604
+006050       10  WIZ-DATA-ANO         PIC  9(002).                      SGS00605
+006060     05    WIZ-TIME-ACCEPT      PIC  9(008).                      SGS00606
+006070     05    FILLER     REDEFINES WIZ-TIME-ACCEPT.                  SGS00607
+006080       10  WIZ-TIMEDAY          PIC  9(006).                      SGS00608
+006090       10  FILLER               PIC  X(002).                      SGS00609
+006100     EJECT                                                        SGS00610
+006110*  2SQL GENERATED WORKING STORAGE:                                SGS00611
+006120     EXEC ADABAS                                                  SGS00612
+006130         BEGIN DECLARE SECTION                                    SGS00613
+006140     END-EXEC.                                                    SGS00614
+006150 01  2SQL-DBS276-CURRENT-ISN      PIC 9(9)  COMP.                 SGS00615
+006160 01  R040-A-0037SGS04.                                            SGS00616
+006170  02 RECORD-BUFR040.                                              SGS00617
+006180   03 SG-CLAS-PRIC-SERVI      PIC X(12).                          SGS00618
+006190   03 SG-CLAS-ADII-SERVI      PIC X(3).                           SGS00619
+006200   03 SG-TIPO-ASSO-EQUIP      PIC X(3).                           SGS00620
+006210   03 SG-COR-ASSO-EQUIP       PIC X(2).                           SGS00621
+006220   03 SG-PROP-ASSO-EQUIP      PIC X(1).                           SGS00622
+006230   03 CD-MODE-ASSO-EQUIP      PIC X(6).                           SGS00623
+006240   03 SG-TARI-SERVI-TARIF     PIC X(3).                           SGS00624
+006250   03 SG-FAOR-REAT-TARIF      PIC X(10).                          SGS00625
+006260   03 SG-PALA-CHAV-TARIF      PIC X(20).                          SGS00626
+006270   03 NR-CLAI-CONB-FATUR-CONTB                                    SGS00627
+006280                              PIC 9(9) COMP-3.                    SGS00628
+006290   03 NR-CLAI-CONB-FATUR-CONTB-R         REDEFINES                SGS00629
+006300     NR-CLAI-CONB-FATUR-CONTB                                     SGS00630
+006310                              PIC X(5).                           SGS00631
+006320   03 CD-DEGR-TARR-TARIF      PIC 9(2).                           SGS00632
+006330   03 CD-DEGR-TARR-TARIF-R               REDEFINES                SGS00633
+006340     CD-DEGR-TARR-TARIF       PIC X(2).                           SGS00634
+006350   03 CD-ID-VR-ASST-LOCAD     PIC 9(2).                           SGS00635
+006360   03 CD-ID-VR-ASST-LOCAD-R              REDEFINES                SGS00636
+006370     CD-ID-VR-ASST-LOCAD      PIC X(2).                           SGS00637
+006380   03 NR-DISA-ATB-INSA-LOGRA  PIC X(2).                           SGS00638
+006390   03 CD-COND-PART-CN7CM      PIC X(2).                           SGS00639
+006400   03 CD-DEBI-FATUR           PIC 9(5) COMP-3.                    SGS00640
+006410   03 CD-DEBI-FATUR-R                    REDEFINES                SGS00641
+006420     CD-DEBI-FATUR            PIC X(3).                           SGS00642
+006430   03 CD-CRET-FATUR           PIC 9(5) COMP-3.                    SGS00643
+006440   03 CD-CRET-FATUR-R                    REDEFINES                SGS00644
+006450     CD-CRET-FATUR            PIC X(3).                           SGS00645
+006460   03 SG-FREQ-INCI-TARIF      PIC X(3).                           SGS00646
+006470   03 PP-FNT-LOCAD            PIC X(3).                           SGS00647
+006480   03 DE-COBA-ASSO-PRST-SERVI PIC X(46).                          SGS00648
+006490   03 C-VR-CASS-TARIF         PIC S9(04) COMP.                    SGS00649
+006500   03 VR-CASS-TARIF           PIC X(179)             OCCURS 012.  SGS00650
+006510     EJECT                                                        SGS00651
+006520 01  R040-A-0037SGS04-RED REDEFINES R040-A-0037SGS04.             SGS00652
+006530     05     R040-A-0037SGS04-P1            PIC X(131).            SGS00653
+006540     05     FILLER                         PIC X(001).            SGS00654
+006550     05     R040-A-0037SGS04-CXC           PIC X(001).            SGS00655
+006560     05     R040-A-0037SGS04-P2            PIC X(2148).           SGS00656
+006570*  BUFFER AJUSTANDO O TAMANHO DO COUNT    030696-KAO              SGS00657
+006580*         ATENCAO - TEM UM BYTE A MENOS   030696-KAO              SGS00658
+006590 01         R040-A-0037SGS04-AJUSTADO.                            SGS00659
+006600     05     R040-A-0037SGS04-AJUSTE-P1     PIC X(131).            SGS00660
+006610     05     R040-A-0037SGS04-AJUSTE-CXC    PIC X(001).            SGS00661
+006620     05     R040-A-0037SGS04-AJUSTE-P2     PIC X(2148).           SGS00662
+006630     EJECT                                                        SGS00663
+006640 01  C040-START-BROWSE-VALUE       PIC X(12).                     SGS00664
+006650     EXEC ADABAS                                                  SGS00665
+006660       READ LOGICAL                                               SGS00666
+006670       DECLARE C040 CURSOR FOR                                    SGS00667
+006680       SELECT                                                     SGS00668
+006690       SG-CLAS-PRIC-SERVI, SG-CLAS-ADII-SERVI,                    SGS00669
+006700       SG-TIPO-ASSO-EQUIP, SG-COR-ASSO-EQUIP,                     SGS00670
+006710       SG-PROP-ASSO-EQUIP, CD-MODE-ASSO-EQUIP,                    SGS00671
+006720       SG-TARI-SERVI-TARIF, SG-FAOR-REAT-TARIF,                   SGS00672
+006730       SG-PALA-CHAV-TARIF, NR-CLAI-CONB-FATUR-CONTB,              SGS00673
+006740       CD-DEGR-TARR-TARIF, CD-ID-VR-ASST-LOCAD,                   SGS00674
+006750       NR-DISA-ATB-INSA-LOGRA, CD-COND-PART-CN7CM,                SGS00675
+006760       CD-DEBI-FATUR, CD-CRET-FATUR, SG-FREQ-INCI-TARIF,          SGS00676
+006770       PP-FNT-LOCAD, DE-COBA-ASSO-PRST-SERVI,                     SGS00677
+006780       VR-CASS-TARIF(COUNT), VR-CASS-TARIF(1-12)                  SGS00678
+006790       FROM A-0037SGS04                                           SGS00679
+006800       C040-A-0037SGS04                                           SGS00680
+006810       WHERE SG-CLAS-PRIC-SERVI               GE                  SGS00681
+006820       :C040-START-BROWSE-VALUE                                   SGS00682
+006830       ORDER BY SG-CLAS-PRIC-SERVI                                SGS00683
+006840     END-EXEC.                                                    SGS00684
+006850 01  2SQL-DBS277-CURRENT-ISN      PIC 9(9)  COMP.                 SGS00685
+006860 01  R041-A-0038SGS02.                                            SGS00686
+006870  02 RECORD-BUFR041.                                              SGS00687
+006880   03 SG-NATE-ORDEM           PIC X(7).                           SGS00688
+006890   03 SG-CLAS-PRIC-SERVI      PIC X(10).                          SGS00689
+006900   03 SG-CLAS-ADII-SERVI      PIC X(3).                           SGS00690
+006910   03 SG-TIPO-ASSO-EQUIP      PIC X(3).                           SGS00691
+006920   03 SG-PROP-ASSO-EQUIP      PIC X(1).                           SGS00692
+006930   03 CD-MODE-ASSO-EQUIP      PIC X(6).                           SGS00693
+006940   03 SG-TARI-SERVI-TARIF     PIC X(3).                           SGS00694
+006950   03 SG-FAOR-REAT-TARIF      PIC X(10).                          SGS00695
+006960   03 NR-CLAI-CONB-FATUR-CONTB                                    SGS00696
+006970                              PIC 9(9) COMP-3.                    SGS00697
+006980   03 NR-CLAI-CONB-FATUR-CONTB-R         REDEFINES                SGS00698
+006990     NR-CLAI-CONB-FATUR-CONTB                                     SGS00699
+007000                              PIC X(5).                           SGS00700
+007010   03 CD-ID-VR-ASST-LOCAD     PIC 9(2).                           SGS00701
+007020   03 CD-ID-VR-ASST-LOCAD-R              REDEFINES                SGS00702
+007030     CD-ID-VR-ASST-LOCAD      PIC X(2).                           SGS00703
+007040   03 SG-PALA-CHAV-TARIF      PIC X(20).                          SGS00704
+007050   03 CD-COND-PART-CN7CM      PIC X(2).                           SGS00705
+007060   03 CD-DEBI-TARI-NORA-FATUR PIC 9(5) COMP-3.                    SGS00706
+007070   03 CD-DEBI-TARI-NORA-FATUR-R          REDEFINES                SGS00707
+007080     CD-DEBI-TARI-NORA-FATUR                                      SGS00708
+007090                              PIC X(3).                           SGS00709
+007100   03 CD-CRET-TARI-NORA-FATUR PIC 9(5) COMP-3.                    SGS00710
+007110   03 CD-CRET-TARI-NORA-FATUR-R          REDEFINES                SGS00711
+007120     CD-CRET-TARI-NORA-FATUR                                      SGS00712
+007130                              PIC X(3).                           SGS00713
+007140   03 CD-DEBI-TARI-REDZ-FATUR PIC 9(5) COMP-3.                    SGS00714
+007150   03 CD-DEBI-TARI-REDZ-FATUR-R          REDEFINES                SGS00715
+007160     CD-DEBI-TARI-REDZ-FATUR                                      SGS00716
+007170                              PIC X(3).                           SGS00717
+007180   03 CD-CRET-TARI-REDZ-FATUR PIC 9(5) COMP-3.                    SGS00718
+007190   03 CD-CRET-TARI-REDZ-FATUR-R          REDEFINES                SGS00719
+007200     CD-CRET-TARI-REDZ-FATUR                                      SGS00720
+007210                              PIC X(3).                           SGS00721
+007220   03 SG-FREQ-INCI-TARIF      PIC X(3).                           SGS00722
+007230   03 PP-FNT-LOCAD            PIC X(3).                           SGS00723
+007240   03 DE-COBA-ASSO-PRST-SERVI PIC X(46).                          SGS00724
+007250   03 C-VR-TARI-SERVI-PRST-TARIF  PIC S9(04) COMP.                SGS00725
+007260   03 VR-TARI-SERVI-PRST-TARIF                                    SGS00726
+007270                              PIC X(43)              OCCURS 020.  SGS00727
+007280     EJECT                                                        SGS00728
+007290 01  FILLER REDEFINES R041-A-0038SGS02.                           SGS00729
+007300     05     R041-A-0038SGS02-P1            PIC X(0136).           SGS00730
+007310     05     FILLER                         PIC X(0001).           SGS00731
+007320     05     R041-A-0038SGS02-CYC           PIC X(0001).           SGS00732
+007330     05     R041-A-0038SGS02-P2            PIC X(0860).           SGS00733
+007340*  BUFFER AJUSTANDO O TAMANHO DO COUNT    030696-KAO              SGS00734
+007350*         ATENCAO - TEM UM BYTE A MENOS   030696-KAO              SGS00735
+007360 01         R041-A-0038SGS02-AJUSTADO.                            SGS00736
+007370     05     R041-A-0038SGS02-AJUSTE-P1     PIC X(0136).           SGS00737
+007380     05     R041-A-0038SGS02-AJUSTE-CYC    PIC X(0001).           SGS00738
+007390     05     R041-A-0038SGS02-AJUSTE-P2     PIC X(0860).           SGS00739
+007400 01  C041-START-BROWSE-VALUE       PIC X(7).                      SGS00740
+007410     EXEC ADABAS                                                  SGS00741
+007420       READ LOGICAL                                               SGS00742
+007430       DECLARE C041 CURSOR FOR                                    SGS00743
+007440       SELECT                                                     SGS00744
+007450       SG-NATE-ORDEM, SG-CLAS-PRIC-SERVI, SG-CLAS-ADII-SERVI,     SGS00745
+007460       SG-TIPO-ASSO-EQUIP, SG-PROP-ASSO-EQUIP,                    SGS00746
+007470       CD-MODE-ASSO-EQUIP, SG-TARI-SERVI-TARIF,                   SGS00747
+007480       SG-FAOR-REAT-TARIF, NR-CLAI-CONB-FATUR-CONTB,              SGS00748
+007490       CD-ID-VR-ASST-LOCAD, SG-PALA-CHAV-TARIF,                   SGS00749
+007500       CD-COND-PART-CN7CM, CD-DEBI-TARI-NORA-FATUR,               SGS00750
+007510       CD-CRET-TARI-NORA-FATUR, CD-DEBI-TARI-REDZ-FATUR,          SGS00751
+007520       CD-CRET-TARI-REDZ-FATUR, SG-FREQ-INCI-TARIF,               SGS00752
+007530       PP-FNT-LOCAD, DE-COBA-ASSO-PRST-SERVI,                     SGS00753
+007540       VR-TARI-SERVI-PRST-TARIF(COUNT),                           SGS00754
+007550       VR-TARI-SERVI-PRST-TARIF(1-20)                             SGS00755
+007560       FROM A-0038SGS02                                           SGS00756
+007570       C041-A-0038SGS02                                           SGS00757
+007580       WHERE SG-NATE-ORDEM                    GE                  SGS00758
+007590       :C041-START-BROWSE-VALUE                                   SGS00759
+007600       ORDER BY SG-NATE-ORDEM                                     SGS00760
+007610     END-EXEC.                                                    SGS00761
+007620 01  2SQL-DBS278-CURRENT-ISN      PIC 9(9)  COMP.                 SGS00762
+007630 01  R042-A-0039SGS03.                                            SGS00763
+007640  02 RECORD-BUFR042.                                              SGS00764
+007650   03 CD-EQUIP-ASSIN-PECA     PIC 9(3).                           SGS00765
+007660   03 CD-EQUIP-ASSIN-PECA-R              REDEFINES                SGS00766
+007670     CD-EQUIP-ASSIN-PECA      PIC X(3).                           SGS00767
+007680   03 DE-EQUIP-ASSIN-PECA     PIC X(46).                          SGS00768
+007690   03 CD-DEBI-FATUR           PIC 9(5) COMP-3.                    SGS00769
+007700   03 CD-DEBI-FATUR-R                    REDEFINES                SGS00770
+007710     CD-DEBI-FATUR            PIC X(3).                           SGS00771
+007720   03 CD-CRET-FATUR           PIC 9(5) COMP-3.                    SGS00772
+007730   03 CD-CRET-FATUR-R                    REDEFINES                SGS00773
+007740     CD-CRET-FATUR            PIC X(3).                           SGS00774
+007750   03 PP-FNT-LOCAD            PIC 9(3).                           SGS00775
+007760   03 PP-FNT-LOCAD-R                     REDEFINES                SGS00776
+007770     PP-FNT-LOCAD             PIC X(3).                           SGS00777
+007780   03 C-VR-EQUIP-ASSIN-PECA   PIC S9(04) COMP.                    SGS00778
+007790   03 VR-EQUIP-ASSIN-PECA     PIC X(15)              OCCURS 016.  SGS00779
+007800   03 C-IE-FAOR-REAT-TARIF    PIC S9(04) COMP.                    SGS00780
+007810   03 PEGROUP01                                      OCCURS 011.  SGS00781
+007820    04 SG-FAOR-REAT-TARIF     PIC X(4).                           SGS00782
+007830    04 VR-FAOR-REAT-TARIF     PIC 9(11) COMP-3.                   SGS00783
+007840    04 VR-FAOR-REAT-TARIF-R              REDEFINES                SGS00784
+007850     VR-FAOR-REAT-TARIF       PIC X(6).                           SGS00785
+007860   03 FG-CADR-PECA            PIC 9(1).                           SGS00786
+007870   03 FG-CADR-PECA-R                     REDEFINES                SGS00787
+007880     FG-CADR-PECA             PIC X(1).                           SGS00788
+007890   03 FG-STAT-TARIF           PIC X(1).                           SGS00789
+007900   03 DT-INIA-VIGE-TABEL-TARIF                                    SGS00790
+007910                              PIC 9(7) COMP-3.                    SGS00791
+007920   03 DT-INIA-VIGE-TABEL-TARIF-R         REDEFINES                SGS00792
+007930     DT-INIA-VIGE-TABEL-TARIF                                     SGS00793
+007940                              PIC X(4).                           SGS00794
+007950   03 DT-FINA-VIGE-TABEL-TARIF                                    SGS00795
+007960                              PIC 9(7) COMP-3.                    SGS00796
+007970   03 DT-FINA-VIGE-TABEL-TARIF-R         REDEFINES                SGS00797
+007980     DT-FINA-VIGE-TABEL-TARIF                                     SGS00798
+007990                              PIC X(4).                           SGS00799
+008000   03 NR-CLAI-CONB-FATUR-CONTB                                    SGS00800
+008010                              PIC 9(9) COMP-3.                    SGS00801
+008020   03 NR-CLAI-CONB-FATUR-CONTB-R         REDEFINES                SGS00802
+008030     NR-CLAI-CONB-FATUR-CONTB                                     SGS00803
+008040                              PIC X(5).                           SGS00804
+008050     EJECT                                                        SGS00805
+008060 01  FILLER REDEFINES R042-A-0039SGS03.                           SGS00806
+008070     05     R042-A-0039SGS03-P1            PIC X(0058).           SGS00807
+008080     05     FILLER                         PIC X(0001).           SGS00808
+008090     05     R042-A-0039SGS03-DGC           PIC X(0001).           SGS00809
+008100     05     R042-A-0039SGS03-P2            PIC X(0240).           SGS00810
+008110     05     FILLER                         PIC X(0001).           SGS00811
+008120     05     R042-A-0039SGS03-DHC           PIC X(0001).           SGS00812
+008130     05     R042-A-0039SGS03-P3            PIC X(0125).           SGS00813
+008140*  BUFFER AJUSTANDO O TAMANHO DO COUNT    030696-KAO              SGS00814
+008150*         ATENCAO - TEM UM BYTE A MENOS   030696-KAO              SGS00815
+008160 01         R042-A-0039SGS03-AJUSTADO.                            SGS00816
+008170     05     R042-A-0039SGS03-AJUSTE-P1     PIC X(0058).           SGS00817
+008180     05     R042-A-0039SGS03-AJUSTE-DGC    PIC X(0001).           SGS00818
+008190     05     R042-A-0039SGS03-AJUSTE-P2     PIC X(0240).           SGS00819
+008200     05     R042-A-0039SGS03-AJUSTE-DHC    PIC X(0001).           SGS00820
+008210     05     R042-A-0039SGS03-AJUSTE-P3     PIC X(0125).           SGS00821
+008220     EJECT                                                        SGS00822
+008230 01  C042-START-BROWSE-VALUE       PIC 9(3).                      SGS00823
+008240     EXEC ADABAS                                                  SGS00824
+008250       READ LOGICAL                                               SGS00825
+008260       DECLARE C042 CURSOR FOR                                    SGS00826
+008270       SELECT                                                     SGS00827
+008280       CD-EQUIP-ASSIN-PECA, DE-EQUIP-ASSIN-PECA, CD-DEBI-FATUR,   SGS00828
+008290       CD-CRET-FATUR, PP-FNT-LOCAD, VR-EQUIP-ASSIN-PECA(COUNT),   SGS00829
+008300       VR-EQUIP-ASSIN-PECA(1-16), IE-FAOR-REAT-TARIF(COUNT),      SGS00830
+008310       SG-FAOR-REAT-TARIF(1-11), VR-FAOR-REAT-TARIF(1-11),        SGS00831
+008320       FG-CADR-PECA, FG-STAT-TARIF, DT-INIA-VIGE-TABEL-TARIF,     SGS00832
+008330       DT-FINA-VIGE-TABEL-TARIF, NR-CLAI-CONB-FATUR-CONTB         SGS00833
+008340       FROM A-0039SGS03                                           SGS00834
+008350       C042-A-0039SGS03                                           SGS00835
+008360       WHERE CD-EQUIP-ASSIN-PECA              GE                  SGS00836
+008370       :C042-START-BROWSE-VALUE                                   SGS00837
+008380       ORDER BY CD-EQUIP-ASSIN-PECA                               SGS00838
+008390     END-EXEC.                                                    SGS00839
+008400 01  2SQL-RESPONSE-CODE            PIC S9(4) COMP.                SGS00840
+008410 01  2SQL-S1         PIC S9(3)  COMP-3.                           SGS00841
+008420 01  2SQL-LAST-ET                  PIC X(04).                     SGS00842
+008430 01  2SQL-LAST-ETBN REDEFINES 2SQL-LAST-ET PIC 9(09) COMP.        SGS00843
+008440     EJECT                                                        SGS00844
+008450                                                                  SGS00845
+008460 01  CSFSF-CONTROL-FLOW-VARIABLES.                                SGS00846
+008470     03  CSFSF-AT-END                       PIC X.                SGS00847
+008480                                                                  SGS00848
+008490/C                                                                SGS00849
+008500*----------------------------------------------------------------*SGS00850
+008510*            PROCEDURE DIVISION                                  *SGS00851
+008520*----------------------------------------------------------------*SGS00852
+008530                                                                  SGS00853
+008540 PROCEDURE DIVISION.                                              SGS00854
+008550     SKIP2                                                        SGS00855
+008560 CSF-MAIN.                                                        SGS00856
+008570     PERFORM 10000-00-INICIO                                      SGS00857
+008580     MOVE    'SORTMSGE' TO  SORT-MESSAGE                          SGS00858
+008590     SORT    SEQSOR01   ASCENDING  KEY  SOR-V  SOR-CODPRO         SGS00859
+008600     INPUT PROCEDURE IS     10090-00-INPUT-FILE37                 SGS00860
+008610     OUTPUT PROCEDURE IS    10220-00-OUTPUT-FILE37                SGS00861
+008620     IF  SORT-RETURN     NOT EQUAL   ZEROS                        SGS00862
+008630         MOVE  '  ERRO NO SORT'      TO         WAX-OBS1          SGS00863
+008640         MOVE  SORT-RETURN           TO         WAX-OBS2          SGS00864
+008650         PERFORM         10020-00-ERRO                            SGS00865
+008660     END-IF                                                       SGS00866
+008670     PERFORM 10330-00-FILE38                                      SGS00867
+008680             UNTIL WCH-FIMARQ38 EQUAL HIGH-VALUES                 SGS00868
+008690     PERFORM 10420-00-FILE39                                      SGS00869
+008700     PERFORM 10510-00-FINAL                                       SGS00870
+008710     STOP RUN.                                                    SGS00871
+008720                                                                  SGS00872
+008730                                                                  SGS00873
+008740                                                                  SGS00874
+008750 10000-00-INICIO.                                                 SGS00875
+008760*C                                                                SGS00876
+008770*C  PERFORMED BY:                                                 SGS00877
+008780*C                                                                SGS00878
+008790*C      CSF-MAIN                                                  SGS00879
+008800*C                                                                SGS00880
+008810                                                                  SGS00881
+008820*00-99-SGS03100.                                                  SGS00882
+008830*    EXIT.                                                        SGS00883
+008840     ACCEPT WIZ-DATA-ACCEPT FROM DATE                             SGS00884
+008850     MOVE   CORR WIZ-DATA-ACCEPT TO WIZ-CUR-DATE                  SGS00885
+008860     MOVE WIZ-CUR-DATE TO WCD-DTA                                 SGS00886
+008870     MOVE  WCD-DD  TO WRC-DDPROC                                  SGS00887
+008880     MOVE  WCD-MM  TO WRC-MMPROC                                  SGS00888
+008890     MOVE  WCD-AA  TO WRC-AAPROC                                  SGS00889
+008900     ACCEPT WIZ-TIME-ACCEPT FROM TIME                             SGS00890
+008910     MOVE  WIZ-TIMEDAY TO WRC-HORA                                SGS00891
+008920     MOVE  SPACES      TO WAX-OBS                                 SGS00892
+008930     PERFORM 10010-2SQL-90030-C999-CONNECT                        SGS00893
+008940     MOVE 2SQL-RESPONSE-CODE TO                                   SGS00894
+008950         WBD-RCODE                                                SGS00895
+008960     IF  WBD-RCODE NOT EQUAL 0                                    SGS00896
+008970         MOVE '  ERRO  MULTIOPEN'   TO WAX-OBS1                   SGS00897
+008980         MOVE     WBD-RCODE         TO WAX-OBS2                   SGS00898
+008990         PERFORM 10020-00-ERRO                                    SGS00899
+009000     END-IF                                                       SGS00900
+009010     MOVE                                                         SGS00901
+009020         WBD-SERV37                                               SGS00902
+009030         TO C040-START-BROWSE-VALUE                               SGS00903
+009040     PERFORM 10040-2SQL-90080-C040-OPEN                           SGS00904
+009050     MOVE 2SQL-RESPONSE-CODE TO                                   SGS00905
+009060         WBD-RCODE                                                SGS00906
+009070     IF  WBD-RCODE NOT EQUAL 0                                    SGS00907
+009080         MOVE '  ERRO LOKATE FILE 37' TO WAX-OBS1                 SGS00908
+009090         MOVE     WBD-RCODE           TO WAX-OBS2                 SGS00909
+009100         PERFORM 10020-00-ERRO                                    SGS00910
+009110     END-IF                                                       SGS00911
+009120     MOVE                                                         SGS00912
+009130         WBD-SERV38                                               SGS00913
+009140         TO C041-START-BROWSE-VALUE                               SGS00914
+009150     PERFORM 10050-2SQL-90130-C041-OPEN                           SGS00915
+009160     MOVE 2SQL-RESPONSE-CODE TO                                   SGS00916
+009170         WBD-RCODE                                                SGS00917
+009180     IF  WBD-RCODE NOT EQUAL 0                                    SGS00918
+009190         MOVE '  ERRO LOKATE FILE 38' TO WAX-OBS1                 SGS00919
+009200         MOVE     WBD-RCODE           TO WAX-OBS2                 SGS00920
+009210         PERFORM 10020-00-ERRO                                    SGS00921
+009220     END-IF                                                       SGS00922
+009230     MOVE                                                         SGS00923
+009240         WBD-SERV39                                               SGS00924
+009250         TO C042-START-BROWSE-VALUE                               SGS00925
+009260     PERFORM 10060-2SQL-90190-C042-OPEN                           SGS00926
+009270     MOVE 2SQL-RESPONSE-CODE TO                                   SGS00927
+009280         WBD-RCODE                                                SGS00928
+009290     IF  WBD-RCODE NOT EQUAL 0                                    SGS00929
+009300         MOVE '  ERRO LOKATE FILE 39' TO WAX-OBS1                 SGS00930
+009310         MOVE     WBD-RCODE           TO WAX-OBS2                 SGS00931
+009320         PERFORM 10020-00-ERRO                                    SGS00932
+009330     END-IF                                                       SGS00933
+009340     OPEN  INPUT  SEQENT01                                        SGS00934
+009350           OUTPUT SEQSAI01                                        SGS00935
+009360     PERFORM 10070-00-LER01                                       SGS00936
+009370     IF  WCH-FIMCAD EQUAL HIGH-VALUES                             SGS00937
+009380         MOVE '  SEQENT01  VAZIO' TO WRC-OBS                      SGS00938
+009390         MOVE    0100             TO WAX-RCODE                    SGS00939
+009400         CALL 'CPD0016S'   USING WRC-REDE                         SGS00940
+009410         CALL 'ABENDAR'    USING WAX-ABENDAR                      SGS00941
+009420     END-IF                                                       SGS00942
+009430     PERFORM 10070-00-LER01                                       SGS00943
+009440             UNTIL (E01-IDENT EQUAL 1 AND E01-STATUS EQUAL 1)     SGS00944
+009450             OR WCH-FIMCAD EQUAL HIGH-VALUES                      SGS00945
+009460     IF  WCH-FIMCAD EQUAL HIGH-VALUES                             SGS00946
+009470         MOVE '  ARQ. CONTROLE SEM REG/STATUS 1' TO WRC-OBS       SGS00947
+009480         MOVE   0500  TO WAX-RCODE                                SGS00948
+009490         CALL 'CPD0016S'  USING WRC-REDE                          SGS00949
+009500         CALL 'ABENDAR' USING WAX-ABENDAR                         SGS00950
+009510     END-IF                                                       SGS00951
+009520     PERFORM 10080-00-ZERA-TABELA                                 SGS00952
+009530             VARYING  WIN-IND  FROM 1 BY 1                        SGS00953
+009540             UNTIL    WIN-IND  GREATER  36.                       SGS00954
+009550                                                                  SGS00955
+009560                                                                  SGS00956
+009570                                                                  SGS00957
+009580 10010-2SQL-90030-C999-CONNECT.                                   SGS00958
+009590*C                                                                SGS00959
+009600*C  PERFORMED BY:                                                 SGS00960
+009610*C                                                                SGS00961
+009620*C      10000-00-INICIO                                           SGS00962
+009630*C                                                                SGS00963
+009640     EXEC ADABAS                                                  SGS00964
+009650       CONNECT                                                    SGS00965
+009660     END-EXEC                                                     SGS00966
+009670     MOVE  COMMAND-IDOPN TO 2SQL-LAST-ET                          SGS00967
+009680     MOVE RESPONSE-CODEOPN TO                                     SGS00968
+009690              2SQL-RESPONSE-CODE.                                 SGS00969
+009700                                                                  SGS00970
+009710                                                                  SGS00971
+009720                                                                  SGS00972
+009730 10020-00-ERRO.                                                   SGS00973
+009740*C                                                                SGS00974
+009750*C  PERFORMED BY:                                                 SGS00975
+009760*C                                                                SGS00976
+009770*C      CSF-MAIN                                                  SGS00977
+009780*C      10000-00-INICIO                                           SGS00978
+009790*C      10100-00-FORMATA37                                        SGS00979
+009800*C      10340-00-FORMATA38                                        SGS00980
+009810*C      10430-00-FORMATA39                                        SGS00981
+009820*C      10510-00-FINAL                                            SGS00982
+009830*C                                                                SGS00983
+009840     PERFORM 10030-2SQL-90020-C999-DBCLOSE                        SGS00984
+009850     MOVE 2SQL-RESPONSE-CODE TO                                   SGS00985
+009860         WBD-RCODE                                                SGS00986
+009870     IF  WBD-RCODE NOT EQUAL 0                                    SGS00987
+009880         MOVE '  ERRO CLOSE ARQ-ADAMINT' TO WAX-OBS3              SGS00988
+009890         MOVE WBD-RCODE TO WAX-OBS4                               SGS00989
+009900     END-IF                                                       SGS00990
+009910     IF  WAX-OBS NOT EQUAL SPACES                                 SGS00991
+009920         MOVE WAX-OBS TO WRC-OBS                                  SGS00992
+009930         CONTINUE                                                 SGS00993
+009940         CALL 'CPD0016S' USING WRC-REDE                           SGS00994
+009950         STOP RUN                                                 SGS00995
+009960     END-IF.                                                      SGS00996
+009970                                                                  SGS00997
+009980                                                                  SGS00998
+009990                                                                  SGS00999
+010000 10030-2SQL-90020-C999-DBCLOSE.                                   SGS01000
+010010*C                                                                SGS01001
+010020*C  PERFORMED BY:                                                 SGS01002
+010030*C                                                                SGS01003
+010040*C      10020-00-ERRO                                             SGS01004
+010050*C                                                                SGS01005
+010060     EXEC ADABAS                                                  SGS01006
+010070       DBCLOSE                                                    SGS01007
+010080     END-EXEC                                                     SGS01008
+010090     MOVE  COMMAND-IDOPN TO 2SQL-LAST-ET                          SGS01009
+010100     MOVE RESPONSE-CODEOPN TO                                     SGS01010
+010110              2SQL-RESPONSE-CODE.                                 SGS01011
+010120                                                                  SGS01012
+010130                                                                  SGS01013
+010140                                                                  SGS01014
+010150 10040-2SQL-90080-C040-OPEN.                                      SGS01015
+010160*C                                                                SGS01016
+010170*C  PERFORMED BY:                                                 SGS01017
+010180*C                                                                SGS01018
+010190*C      10000-00-INICIO                                           SGS01019
+010200*C                                                                SGS01020
+010210     EXEC ADABAS                                                  SGS01021
+010220       OPEN C040                                                  SGS01022
+010230     END-EXEC                                                     SGS01023
+010240     MOVE ZERO                                                    SGS01024
+010250       TO 2SQL-RESPONSE-CODE.                                     SGS01025
+010260                                                                  SGS01026
+010270                                                                  SGS01027
+010280                                                                  SGS01028
+010290 10050-2SQL-90130-C041-OPEN.                                      SGS01029
+010300*C                                                                SGS01030
+010310*C  PERFORMED BY:                                                 SGS01031
+010320*C                                                                SGS01032
+010330*C      10000-00-INICIO                                           SGS01033
+010340*C                                                                SGS01034
+010350     EXEC ADABAS                                                  SGS01035
+010360       OPEN C041                                                  SGS01036
+010370     END-EXEC                                                     SGS01037
+010380     MOVE ZERO                                                    SGS01038
+010390       TO 2SQL-RESPONSE-CODE.                                     SGS01039
+010400                                                                  SGS01040
+010410                                                                  SGS01041
+010420                                                                  SGS01042
+010430 10060-2SQL-90190-C042-OPEN.                                      SGS01043
+010440*C                                                                SGS01044
+010450*C  PERFORMED BY:                                                 SGS01045
+010460*C                                                                SGS01046
+010470*C      10000-00-INICIO                                           SGS01047
+010480*C                                                                SGS01048
+010490     EXEC ADABAS                                                  SGS01049
+010500       OPEN C042                                                  SGS01050
+010510     END-EXEC                                                     SGS01051
+010520     MOVE ZERO                                                    SGS01052
+010530       TO 2SQL-RESPONSE-CODE.                                     SGS01053
+010540                                                                  SGS01054
+010550                                                                  SGS01055
+010560                                                                  SGS01056
+010570 10070-00-LER01.                                                  SGS01057
+010580*C                                                                SGS01058
+010590*C  PERFORMED BY:                                                 SGS01059
+010600*C                                                                SGS01060
+010610*C      10000-00-INICIO                                           SGS01061
+010620*C                                                                SGS01062
+010630     MOVE 'F' TO CSFSF-AT-END                                     SGS01063
+010640     READ SEQENT01                                                SGS01064
+010650          AT END                                                  SGS01065
+010660         MOVE 'T' TO CSFSF-AT-END                                 SGS01066
+010670     END-READ                                                     SGS01067
+010680     IF CSFSF-AT-END = 'T'                                        SGS01068
+010690         MOVE HIGH-VALUES TO WCH-FIMCAD                           SGS01069
+010700     ELSE                                                         SGS01070
+010710         ADD 1 TO WRC-VALE1                                       SGS01071
+010720     END-IF.                                                      SGS01072
+010730                                                                  SGS01073
+010740                                                                  SGS01074
+010750                                                                  SGS01075
+010760 10080-00-ZERA-TABELA.                                            SGS01076
+010770*C                                                                SGS01077
+010780*C  PERFORMED BY:                                                 SGS01078
+010790*C                                                                SGS01079
+010800*C      10000-00-INICIO                                           SGS01080
+010810*C                                                                SGS01081
+010820     MOVE    ZEROS          TO   WAX-VALOR2-39 (WIN-IND)          SGS01082
+010830                                 WAX-SECU-39 (WIN-IND)            SGS01083
+010840                                 WAX-INIC-39 (WIN-IND)            SGS01084
+010850                                 WAX-FIM-39 (WIN-IND).            SGS01085
+010860                                                                  SGS01086
+010870                                                                  SGS01087
+010880 10100-00-FORMATA37.                                              SGS01088
+010890*C                                                                SGS01089
+010900*C  PERFORMED BY:                                                 SGS01090
+010910*C                                                                SGS01091
+010920*C      10090-00-INPUT-FILE37                                     SGS01092
+010930*C                                                                SGS01093
+010940     PERFORM 10110-2SQL-90060-C040-FETCH                          SGS01094
+010950     MOVE R040-A-0037SGS04-P1   TO   R040-A-0037SGS04-AJUSTE-P1   SGS01095
+010960     MOVE R040-A-0037SGS04-P2   TO   R040-A-0037SGS04-AJUSTE-P2   SGS01096
+010970     MOVE R040-A-0037SGS04-CXC  TO   R040-A-0037SGS04-AJUSTE-CXC  SGS01097
+010980     MOVE R040-A-0037SGS04-AJUSTADO TO WBD-RBUF37                 SGS01098
+010990     MOVE 2SQL-RESPONSE-CODE TO                                   SGS01099
+011000         WBD-RCODE                                                SGS01100
+011010     IF  WBD-RCODE EQUAL -1                                       SGS01101
+011020         MOVE HIGH-VALUES TO WCH-FIMARQ37                         SGS01102
+011030     ELSE                                                         SGS01103
+011040         IF  WBD-RCODE NOT EQUAL 0                                SGS01104
+011050             MOVE '  ERRO LEITURA ARQ.37' TO WAX-OBS1             SGS01105
+011060             MOVE     WBD-RCODE           TO WAX-OBS2             SGS01106
+011070             PERFORM 10020-00-ERRO                                SGS01107
+011080         END-IF                                                   SGS01108
+011090         ADD 1 TO WRC-VALE2                                       SGS01109
+011100         MOVE  13  TO  WIN-IND                                    SGS01110
+011110         PERFORM 10130-00-OCORR-37OK                              SGS01111
+011120                 UNTIL  WAC-OCORR  EQUAL  1  OR                   SGS01112
+011130                        WIN-IND    EQUAL  0                       SGS01113
+011140         IF  WIN-IND  EQUAL  0  AND  WAC-OCORR  EQUAL  0          SGS01114
+011150             CONTINUE                                             SGS01115
+011160         ELSE                                                     SGS01116
+011170             COMPUTE WAX-BUG1 = (WAX-INIC(1) + 500000)            SGS01117
+011180             COMPUTE WAX-BUG2 = (E01-INIC-PER + 500000)           SGS01118
+011190             COMPUTE WAX-BUG3 = (WAX-FIM(1) + 500000)             SGS01119
+011200             COMPUTE WAX-BUG4 = (E01-TERM-PER + 500000)           SGS01120
+011210             IF  (WAX-BUG1  NOT  GREATER  WAX-BUG2)  AND          SGS01121
+011220                 (WAX-BUG3  NOT  LESS     WAX-BUG4)               SGS01122
+011230                 PERFORM  10130-00-OCORR-37OK                     SGS01123
+011240                          UNTIL  WAC-OCORR  EQUAL  3  OR          SGS01124
+011250                                 WIN-IND    EQUAL  0              SGS01125
+011260                 IF  WIN-IND  EQUAL  0                            SGS01126
+011270                     PERFORM  10140-00-ACERTA-OCORR37             SGS01127
+011280                     MOVE  WAX-REG37 (1)  TO  WAX-REG37 (2)       SGS01128
+011290                     PERFORM 10150-01-FORMATA37                   SGS01129
+011300                 ELSE                                             SGS01130
+011310                     MOVE  WAX-REG37 (2)  TO  WAX-REG37 (3)       SGS01131
+011320                     MOVE  WAX-REG37 (1)  TO  WAX-REG37 (2)       SGS01132
+011330                     PERFORM 10150-01-FORMATA37                   SGS01133
+011340                 END-IF                                           SGS01134
+011350             ELSE                                                 SGS01135
+011360                 PERFORM 10130-00-OCORR-37OK                      SGS01136
+011370                         UNTIL   WAC-OCORR EQUAL  2   OR          SGS01137
+011380                                 WIN-IND  EQUAL  0                SGS01138
+011390                 IF  WIN-IND  EQUAL  0                            SGS01139
+011400                     PERFORM 10140-00-ACERTA-OCORR37              SGS01140
+011410                     PERFORM 10200-00-DATA-OCORR1                 SGS01141
+011420                     PERFORM 10210-00-DATA-OCORR2                 SGS01142
+011430                     MOVE WAX-REG37 (2)  TO  WAX-REG37 (3)        SGS01143
+011440                     MOVE WAX-REG37 (1)  TO  WAX-REG37 (2)        SGS01144
+011450                     MOVE SPACES         TO  WAX-REG37 (1)        SGS01145
+011460                     PERFORM 10150-01-FORMATA37                   SGS01146
+011470                 ELSE                                             SGS01147
+011480                     PERFORM 10200-00-DATA-OCORR1                 SGS01148
+011490                     PERFORM 10210-00-DATA-OCORR2                 SGS01149
+011500                     MOVE WAX-REG37 (2)  TO  WAX-REG37 (3)        SGS01150
+011510                     MOVE WAX-REG37 (1)  TO  WAX-REG37 (2)        SGS01151
+011520                     MOVE SPACES         TO  WAX-REG37 (1)        SGS01152
+011530                     PERFORM 10150-01-FORMATA37                   SGS01153
+011540                 END-IF                                           SGS01154
+011550             END-IF                                               SGS01155
+011560         END-IF                                                   SGS01156
+011570     END-IF                                                       SGS01157
+011580     CONTINUE.                                                    SGS01158
+011590                                                                  SGS01159
+011600                                                                  SGS01160
+011610                                                                  SGS01161
+011620 10110-2SQL-90060-C040-FETCH.                                     SGS01162
+011630*C                                                                SGS01163
+011640*C  PERFORMED BY:                                                 SGS01164
+011650*C                                                                SGS01165
+011660*C      10100-00-FORMATA37                                        SGS01166
+011670*C                                                                SGS01167
+011680     EXEC ADABAS                                                  SGS01168
+011690       FETCH C040                                                 SGS01169
+011700     END-EXEC                                                     SGS01170
+011710     IF  RESPONSE-CODE OF C040-A-0037SGS04 = 0                    SGS01171
+011720         AND ADACODE = 0                                          SGS01172
+011730         MOVE CORR RECORD-BUFC040 TO RECORD-BUFR040               SGS01173
+011740         PERFORM 10120-2SQL-90070-C040-MOVE-PEG                   SGS01174
+011750            VARYING 2SQL-S1 FROM 1 BY 1                           SGS01175
+011760            UNTIL 2SQL-S1 > 0012                                  SGS01176
+011770     END-IF                                                       SGS01177
+011780     MOVE RESPONSE-CODE OF C040-A-0037SGS04                       SGS01178
+011790       TO 2SQL-RESPONSE-CODE                                      SGS01179
+011800     IF  2SQL-RESPONSE-CODE = 3                                   SGS01180
+011810         MOVE -1 TO 2SQL-RESPONSE-CODE                            SGS01181
+011820     END-IF                                                       SGS01182
+011830     MOVE ISN OF C040-A-0037SGS04                                 SGS01183
+011840       TO 2SQL-DBS276-CURRENT-ISN.                                SGS01184
+011850                                                                  SGS01185
+011860                                                                  SGS01186
+011870                                                                  SGS01187
+011880 10120-2SQL-90070-C040-MOVE-PEG.                                  SGS01188
+011890*C                                                                SGS01189
+011900*C  PERFORMED BY:                                                 SGS01190
+011910*C                                                                SGS01191
+011920*C      10110-2SQL-90060-C040-FETCH                               SGS01192
+011930*C                                                                SGS01193
+011940     MOVE VR-CASS-TARIF                  OF                       SGS01194
+011950       C040-A-0037SGS04                     (2SQL-S1)             SGS01195
+011960         TO VR-CASS-TARIF                  OF                     SGS01196
+011970       R040-A-0037SGS04                     (2SQL-S1).            SGS01197
+011980                                                                  SGS01198
+011990                                                                  SGS01199
+012000                                                                  SGS01200
+012010 10130-00-OCORR-37OK.                                             SGS01201
+012020*C                                                                SGS01202
+012030*C  PERFORMED BY:                                                 SGS01203
+012040*C                                                                SGS01204
+012050*C      10100-00-FORMATA37                                        SGS01205
+012060*C                                                                SGS01206
+012070                                                                  SGS01207
+012080*----------------------------------------------------------------*SGS01208
+012090*    SELECIONAR OCORRENCIAS  REG-37 COM DT-VIG-INIC (FILE37)     *SGS01209
+012100*       MENOR IGUAL   DT-TERM-PER (SEQENT01) E STATUS 1          *SGS01210
+012110*----------------------------------------------------------------*SGS01211
+012120     SUBTRACT  1  FROM  WIN-IND                                   SGS01212
+012130     IF  WIN-IND  EQUAL  0                                        SGS01213
+012140         CONTINUE                                                 SGS01214
+012150     ELSE                                                         SGS01215
+012160         IF  WBD-INIC-37X (WIN-IND)  EQUAL  SPACES                SGS01216
+012170             CONTINUE                                             SGS01217
+012180         ELSE                                                     SGS01218
+012190             IF  WBD-FIM-37(WIN-IND) EQUAL 311298                 SGS01219
+012200                 MOVE 311299 TO WBD-FIM-37(WIN-IND)               SGS01220
+012210             END-IF                                               SGS01221
+012220             MOVE WBD-INIC-37 (WIN-IND) TO WAX-DDMMAA             SGS01222
+012230             MOVE WAX-DD-I  TO  WAX-I-DD                          SGS01223
+012240             MOVE WAX-MM-I  TO  WAX-I-MM                          SGS01224
+012250             MOVE WAX-AA-I  TO  WAX-I-AA                          SGS01225
+012260             COMPUTE WAX-BUG1 = (WAX-AAMMDD + 500000)             SGS01226
+012270             COMPUTE WAX-BUG2 = (E01-TERM-PER + 500000)           SGS01227
+012280             IF  ( WAX-BUG1 NOT GREATER WAX-BUG2 ) AND            SGS01228
+012290                 ( WBD-STAT-37 (WIN-IND) EQUAL 0 )                SGS01229
+012300                 ADD 1 TO WAC-OCORR                               SGS01230
+012310                 MOVE WBD-VALORES-37 (WIN-IND) TO WAX-REG37       SGS01231
+012320                     (WAC-OCORR)                                  SGS01232
+012330                 MOVE WAX-AAMMDD          TO WAX-INIC (WAC-OCORR) SGS01233
+012340                 MOVE WBD-FIM-37 (WIN-IND) TO WAX-DDMMAA          SGS01234
+012350                 MOVE WAX-DD-I             TO WAX-I-DD            SGS01235
+012360                 MOVE WAX-MM-I             TO WAX-I-MM            SGS01236
+012370                 MOVE WAX-AA-I             TO WAX-I-AA            SGS01237
+012380                 MOVE WAX-AAMMDD           TO WAX-FIM (WAC-OCORR) SGS01238
+012390             END-IF                                               SGS01239
+012400         END-IF                                                   SGS01240
+012410     END-IF.                                                      SGS01241
+012420                                                                  SGS01242
+012430                                                                  SGS01243
+012440                                                                  SGS01244
+012450 10140-00-ACERTA-OCORR37.                                         SGS01245
+012460*C                                                                SGS01246
+012470*C  PERFORMED BY:                                                 SGS01247
+012480*C                                                                SGS01248
+012490*C      10100-00-FORMATA37                                        SGS01249
+012500*C                                                                SGS01250
+012510     IF  WAX-REG37 (2)  EQUAL SPACES                              SGS01251
+012520         MOVE   WAX-REG37 (1)   TO  WAX-REG37 (2)                 SGS01252
+012530     END-IF                                                       SGS01253
+012540****                                                              SGS01254
+012550**                                                                SGS01255
+012560****                                                              SGS01256
+012570     IF  WAX-REG37 (3)  EQUAL SPACES                              SGS01257
+012580         MOVE  WAX-REG37 (2)  TO  WAX-REG37 (3)                   SGS01258
+012590     END-IF.                                                      SGS01259
+012600                                                                  SGS01260
+012610                                                                  SGS01261
+012620                                                                  SGS01262
+012630 10150-01-FORMATA37.                                              SGS01263
+012640*C                                                                SGS01264
+012650*C  PERFORMED BY:                                                 SGS01265
+012660*C                                                                SGS01266
+012670*C      10100-00-FORMATA37                                        SGS01267
+012680*C                                                                SGS01268
+012690     MOVE SPACES TO WAX-ASTERISCO                                 SGS01269
+012700     PERFORM 10160-00-STATUS-TAB                                  SGS01270
+012710             VARYING WIN-IND FROM 1 BY 1                          SGS01271
+012720             UNTIL   WIN-IND EQUAL 11                             SGS01272
+012730     MOVE SPACES TO SOR-REG37                                     SGS01273
+012740                    WAX-REG37 (1)  WAX-REG37 (2)  WAX-REG37 (3)   SGS01274
+012750     MOVE 0 TO WAC-OCORR.                                         SGS01275
+012760                                                                  SGS01276
+012770                                                                  SGS01277
+012780                                                                  SGS01278
+012790 10160-00-STATUS-TAB.                                             SGS01279
+012800*C                                                                SGS01280
+012810*C  PERFORMED BY:                                                 SGS01281
+012820*C                                                                SGS01282
+012830*C      10150-01-FORMATA37                                        SGS01283
+012840*C                                                                SGS01284
+012850                                                                  SGS01285
+012860*----------------------------------------------------------------*SGS01286
+012870*     FORMATAR TANTOS REGISTROS QTOS FOREM OS CAMPOS E01-V = 1   *SGS01287
+012880*           COM O RESPECTIVO CAMPO VALOR (FILE37).               *SGS01288
+012890*     - USAR ROTINA SGS99010 PARA GERAR CODIGO PROPRIO.          *SGS01289
+012900*----------------------------------------------------------------*SGS01290
+012910     IF  E01-V (WIN-IND) NOT EQUAL 1                              SGS01291
+012920         CONTINUE                                                 SGS01292
+012930     ELSE                                                         SGS01293
+012940         IF  WAX-ASTERISCO EQUAL SPACES                           SGS01294
+012950             PERFORM 10170-00-ASSINATURA                          SGS01295
+012960         END-IF                                                   SGS01296
+012970         MOVE WAX-VALOR (3 WIN-IND) TO SOR-VALOR-N1               SGS01297
+012980         MOVE WAX-VALOR (2 WIN-IND) TO SOR-VALOR-N2               SGS01298
+012990         IF  WAX-REG37 (1) NOT EQUAL SPACES                       SGS01299
+013000             MOVE  WAX-VALOR (1 WIN-IND) TO SOR-VALOR-R           SGS01300
+013010             MOVE  WAX-INIC (1)          TO SOR-INIC-R            SGS01301
+013020             MOVE  WAX-FIM  (1)          TO SOR-FIM-R             SGS01302
+013030         ELSE                                                     SGS01303
+013040             MOVE  E01-INIC-PER          TO SOR-INIC-R            SGS01304
+013050             MOVE  E01-TERM-PER          TO SOR-FIM-R             SGS01305
+013060             IF  ((WAX-R1 + WAX-R2) EQUAL 30) AND                 SGS01306
+013070                  (WAX-VALOR(3 WIN-IND) EQUAL WAX-VALOR(2         SGS01307
+013080                      WIN-IND))                                   SGS01308
+013090                 MOVE   WAX-VALOR(3 WIN-IND)  TO  SOR-VALOR-R     SGS01309
+013100             ELSE                                                 SGS01310
+013110                 COMPUTE  WAX-W1 = (WAX-VALOR(3 WIN-IND) / 30)    SGS01311
+013120                                      * WAX-R2                    SGS01312
+013130                 COMPUTE  WAX-W2 = (WAX-VALOR(2 WIN-IND) / 30)    SGS01313
+013140                                      * WAX-R1                    SGS01314
+013150                 COMPUTE  WAX-W2 = WAX-W1 + WAX-W2                SGS01315
+013160                 MOVE     WAX-W2   TO  SOR-VALOR-R                SGS01316
+013170                 MOVE     ZEROS    TO  WAX-W2  WAX-W1             SGS01317
+013180             END-IF                                               SGS01318
+013190         END-IF                                                   SGS01319
+013200         MOVE     ZEROS    TO  WAX-W2  WAX-W1                     SGS01320
+013210         MOVE WIN-IND TO SOR-V                                    SGS01321
+013220         RELEASE SOR-REG37                                        SGS01322
+013230         EVALUATE TRUE                                            SGS01323
+013240         WHEN WBD-ATB-37 EQUAL '99'                               SGS01324
+013250             ADD 1 TO WRC-VALS3                                   SGS01325
+013260         WHEN WBD-COR NOT EQUAL '99'                              SGS01326
+013270             ADD 1 TO WRC-VALS4                                   SGS01327
+013280         WHEN OTHER                                               SGS01328
+013290             ADD 1 TO WRC-VALS2                                   SGS01329
+013300         END-EVALUATE                                             SGS01330
+013310     END-IF.                                                      SGS01331
+013320                                                                  SGS01332
+013330                                                                  SGS01333
+013340                                                                  SGS01334
+013350 10170-00-ASSINATURA.                                             SGS01335
+013360*C                                                                SGS01336
+013370*C  PERFORMED BY:                                                 SGS01337
+013380*C                                                                SGS01338
+013390*C      10160-00-STATUS-TAB                                       SGS01339
+013400*C                                                                SGS01340
+013410     MOVE  '*'  TO WAX-ASTERISCO                                  SGS01341
+013420     EVALUATE TRUE                                                SGS01342
+013430     WHEN WBD-ATB-37 EQUAL '99'                                   SGS01343
+013440         MOVE WBD-ATB-37 TO SOR-COR-ATB                           SGS01344
+013450         ADD 1 TO WAX-CODPRO-ATB                                  SGS01345
+013460         MOVE WAX-CODPRO-ATB TO SOR-CODPRO                        SGS01346
+013470         PERFORM       10180-05-ASSINATURA                        SGS01347
+013480     WHEN WBD-COR NOT EQUAL '99' AND 'CP' AND 'SP' AND 'SE' AND
+013490                  'VA' AND  'TA' AND 'TE' AND 'TS' AND 'TP' AND
+013500                            'VD' AND 'VP'
+013510
+013520         MOVE WBD-COR TO SOR-COR-ATB                              SGS01352
+013530         ADD 1 TO WAX-CODPRO-COR                                  SGS01353
+013540         MOVE WAX-CODPRO-COR TO SOR-CODPRO                        SGS01354
+013550         PERFORM       10180-05-ASSINATURA                        SGS01355
+013560     WHEN OTHER                                                   SGS01356
+013570         PERFORM       10190-05-CONTINUA                          SGS01357
+013580     END-EVALUATE.                                                SGS01358
+013590                                                                  SGS01359
+013600                                                                  SGS01360
+013610                                                                  SGS01361
+013620 10180-05-ASSINATURA.                                             SGS01362
+013630*C                                                                SGS01363
+013640*C  PERFORMED BY:                                                 SGS01364
+013650*C                                                                SGS01365
+013660*C      10170-00-ASSINATURA                                       SGS01366
+013670*C      10190-05-CONTINUA                                         SGS01367
+013680*C                                                                SGS01368
+013690     MOVE    '1'                 TO SOR-COD1                      SGS01369
+013700     MOVE WBD-DEB-37             TO SOR-DEB                       SGS01370
+013710     MOVE WBD-CRED-37            TO SOR-CRED                      SGS01371
+013720     IF  WBD-FNT-37  NOT NUMERIC                                  SGS01372
+013730         MOVE 0 TO SOR-FNT                                        SGS01373
+013740     ELSE                                                         SGS01374
+013750         MOVE WBD-FNT-37          TO SOR-FNT                      SGS01375
+013760     END-IF                                                       SGS01376
+013770     MOVE WBD-CONTAB-37          TO SOR-CONTAB                    SGS01377
+013780     MOVE WAX-INIC (3)           TO SOR-INIC-N1                   SGS01378
+013790     MOVE WAX-FIM  (3)           TO SOR-FIM-N1                    SGS01379
+013800     MOVE WAX-INIC (2)           TO SOR-INIC-N2                   SGS01380
+013810     MOVE WAX-FIM (2)            TO  SOR-FIM-N2                   SGS01381
+013820     MOVE 0 TO SOR-CODSIN.                                        SGS01382
+013830                                                                  SGS01383
+013840                                                                  SGS01384
+013850                                                                  SGS01385
+013860 10190-05-CONTINUA.                                               SGS01386
+013870*C                                                                SGS01387
+013880*C  PERFORMED BY:                                                 SGS01388
+013890*C                                                                SGS01389
+013900*C      10170-00-ASSINATURA                                       SGS01390
+013910*C                                                                SGS01391
+013920     MOVE WBD-LINHA37     TO SOR-CL-LINHA                         SGS01392
+013930     MOVE WBD-ADIC-37     TO SOR-CL-ADIC                          SGS01393
+013940     MOVE WBD-TIPO-37     TO SOR-TIPO                             SGS01394
+013950     IF  WBD-COR EQUAL SPACES OR LOW-VALUES                       SGS01395
+013960         MOVE 99 TO SOR-COR                                       SGS01396
+013970     ELSE                                                         SGS01397
+013980         MOVE WBD-COR TO SOR-COR                                  SGS01398
+013990     END-IF                                                       SGS01399
+014000     MOVE WBD-PROP-MOD    TO SOR-PROP-MOD                         SGS01400
+014010     MOVE WBD-CPCC-37     TO SOR-CPCC                             SGS01401
+014020     MOVE SOR-DIVID       TO WAX-DIVID1                           SGS01402
+014030     CALL 'SGS99010' USING WAX-DIVID1 WAX-TAMAN WAX-DIVIS WAX-RESTSGS01403
+014040     EVALUATE TRUE                                                SGS01404
+014050     WHEN RETURN-CODE EQUAL 100                                   SGS01405
+014060         MOVE ' WAX-TAMAN MAIOR QUE 24' TO WRC-OBS                SGS01406
+014070     WHEN RETURN-CODE EQUAL 300                                   SGS01407
+014080         MOVE ' WAX-DIVID C/ BRANCOS OU ZEROS' TO WRC-OBS         SGS01408
+014090     WHEN RETURN-CODE EQUAL 200                                   SGS01409
+014100         MOVE ' WAX-DIVIS NAO NUMERICO' TO WRC-OBS                SGS01410
+014110     WHEN OTHER                                                   SGS01411
+014120         MOVE WAX-REST TO SOR-CODPRO                              SGS01412
+014130         PERFORM 10180-05-ASSINATURA                              SGS01413
+014140     END-EVALUATE                                                 SGS01414
+014150     IF  RETURN-CODE EQUAL 100 OR 200 OR 300                      SGS01415
+014160         CALL 'CPD0016S' USING  WRC-REDE                          SGS01416
+014170         CALL 'ABENDAR'  USING  WAX-ABENDAR                       SGS01417
+014180     END-IF.                                                      SGS01418
+014190                                                                  SGS01419
+014200                                                                  SGS01420
+014210                                                                  SGS01421
+014220 10200-00-DATA-OCORR1.                                            SGS01422
+014230*C                                                                SGS01423
+014240*C  PERFORMED BY:                                                 SGS01424
+014250*C                                                                SGS01425
+014260*C      10100-00-FORMATA37                                        SGS01426
+014270*C                                                                SGS01427
+014280                                                                  SGS01428
+014290*----------------------------------------------------------------*SGS01429
+014300*   CALCULAR NUMERO DE DIAS ENTRE DT-TERM-PER (SEQENT01) -       *SGS01430
+014310*   DT-VIG-INIC (FILE37) ALTERANDO OU NAO ESSE RESULTADO         *SGS01431
+014320*----------------------------------------------------------------*SGS01432
+014330     MOVE WAX-INIC (1) TO WAX-AAMMDD                              SGS01433
+014340     IF  WAX-I-DD  EQUAL 31                                       SGS01434
+014350         OR ( WAX-I-MM  EQUAL 02                                  SGS01435
+014360         AND ( WAX-I-DD  EQUAL 29 OR WAX-I-DD EQUAL 28 ) )        SGS01436
+014370         MOVE 30 TO WAX-I-DD                                      SGS01437
+014380         MOVE WAX-AAMMDD TO WAX-INIC (1)                          SGS01438
+014390     END-IF                                                       SGS01439
+014400     MOVE WAX-I-DD     TO   WAX-DD-I                              SGS01440
+014410     MOVE WAX-I-MM     TO   WAX-MM-I   WAX-SALMM                  SGS01441
+014420     MOVE WAX-I-AA     TO   WAX-AA-I                              SGS01442
+014430     MOVE WAX-DDMMAA   TO   WAX-DATA1                             SGS01443
+014440     MOVE E01-TERM-PER TO   WAX-AAMMDD                            SGS01444
+014450     MOVE WAX-I-DD     TO   WAX-DD-I                              SGS01445
+014460     MOVE WAX-I-MM     TO   WAX-MM-I                              SGS01446
+014470     MOVE WAX-I-AA     TO   WAX-AA-I                              SGS01447
+014480     MOVE WAX-DDMMAA   TO   WAX-DATA2                             SGS01448
+014490     CALL 'DAYGAP' USING WAX-DATA1 WAX-DATA2 WAX-DIAS             SGS01449
+014500     IF  WAX-DIAS EQUAL -2147483648                               SGS01450
+014510         MOVE 'DATA INCONSISTENTE / ROTINA DAYGAP' TO WRC-OBS     SGS01451
+014520         DISPLAY WAX-DATA1 '  ' WAX-DATA2                         SGS01452
+014530         CALL 'CPD0016S' USING WRC-OBS                            SGS01453
+014540         CALL 'ABENDAR' USING WAX-ABENDAR                         SGS01454
+014550     END-IF                                                       SGS01455
+014560     IF  ( WAX-SALMM  EQUAL  01  AND  E01-TERM-MM EQUAL 02) OR    SGS01456
+014570         ( WAX-SALMM  EQUAL  03  AND  E01-TERM-MM EQUAL 04) OR    SGS01457
+014580         ( WAX-SALMM  EQUAL  05  AND  E01-TERM-MM EQUAL 06) OR    SGS01458
+014590         ( WAX-SALMM  EQUAL  07  AND  E01-TERM-MM EQUAL 08) OR    SGS01459
+014600         ( WAX-SALMM  EQUAL  08  AND  E01-TERM-MM EQUAL 09) OR    SGS01460
+014610         ( WAX-SALMM  EQUAL  10  AND  E01-TERM-MM EQUAL 11) OR    SGS01461
+014620         ( WAX-SALMM  EQUAL  12  AND  E01-TERM-MM EQUAL 01)       SGS01462
+014630         CONTINUE                                                 SGS01463
+014640     ELSE                                                         SGS01464
+014650         IF  WAX-I-MM EQUAL 02 AND E01-TERM-MM EQUAL 03           SGS01465
+014660             DIVIDE WAX-I-AA  BY 4                                SGS01466
+014670             GIVING WAX-DIV-BISS                                  SGS01467
+014680             REMAINDER WAX-RES-BISS                               SGS01468
+014690             IF  WAX-RES-BISS EQUAL 0                             SGS01469
+014700                 ADD 2 TO WAX-DIAS                                SGS01470
+014710             ELSE                                                 SGS01471
+014720                 ADD 3 TO WAX-DIAS                                SGS01472
+014730             END-IF                                               SGS01473
+014740         ELSE                                                     SGS01474
+014750             ADD 1 TO WAX-DIAS                                    SGS01475
+014760         END-IF                                                   SGS01476
+014770     END-IF                                                       SGS01477
+014780     MOVE WAX-DIAS TO WAX-R1.                                     SGS01478
+014790                                                                  SGS01479
+014800                                                                  SGS01480
+014810                                                                  SGS01481
+014820 10210-00-DATA-OCORR2.                                            SGS01482
+014830*C                                                                SGS01483
+014840*C  PERFORMED BY:                                                 SGS01484
+014850*C                                                                SGS01485
+014860*C      10100-00-FORMATA37                                        SGS01486
+014870*C                                                                SGS01487
+014880                                                                  SGS01488
+014890*----------------------------------------------------------------*SGS01489
+014900*   CALCULAR NUMERO DE DIAS ENTRE DT-VIG-FIM (FILE37)    -       *SGS01490
+014910*   DT-INIC-PER (SEQENT01) ALTERANDO OU NAO ESSE RESULTADO       *SGS01491
+014920*----------------------------------------------------------------*SGS01492
+014930                                                                  SGS01493
+014940*----------- SE EXISTIR SOMENTE UMA OCORRENCIA PARA A TABELA --*  SGS01494
+014950*----------- DE VALORES, AJEITA VALOR -------------------------*  SGS01495
+014960     IF  WAX-REG37(1) EQUAL WAX-REG37(2)                          SGS01496
+014970         MOVE WAX-INIC (1) TO WAX-AAMMDD                          SGS01497
+014980     ELSE                                                         SGS01498
+014990         MOVE WAX-FIM (2) TO WAX-AAMMDD                           SGS01499
+015000     END-IF                                                       SGS01500
+015010     IF  WAX-I-DD  EQUAL 31                                       SGS01501
+015020         OR ( WAX-I-MM  EQUAL 02                                  SGS01502
+015030         AND ( WAX-I-DD  EQUAL 29 OR WAX-I-DD EQUAL 28 ) )        SGS01503
+015040         MOVE    30       TO WAX-I-DD                             SGS01504
+015050         MOVE WAX-AAMMDD  TO WAX-FIM (2)                          SGS01505
+015060     END-IF                                                       SGS01506
+015070     MOVE WAX-I-DD     TO   WAX-DD-I                              SGS01507
+015080     MOVE WAX-I-MM     TO   WAX-MM-I   WAX-SALMM                  SGS01508
+015090     MOVE WAX-I-AA     TO   WAX-AA-I                              SGS01509
+015100     MOVE WAX-DDMMAA   TO   WAX-DATA2                             SGS01510
+015110     MOVE E01-INIC-PER TO   WAX-AAMMDD                            SGS01511
+015120     MOVE WAX-I-DD     TO   WAX-DD-I                              SGS01512
+015130     MOVE WAX-I-MM     TO   WAX-MM-I                              SGS01513
+015140     MOVE WAX-I-AA     TO   WAX-AA-I                              SGS01514
+015150     MOVE WAX-DDMMAA   TO   WAX-DATA1                             SGS01515
+015160     CALL 'DAYGAP' USING WAX-DATA1 WAX-DATA2 WAX-DIAS             SGS01516
+015170     IF  WAX-DIAS EQUAL -2147483648                               SGS01517
+015180         MOVE 'DATA INCONSISTENTE / ROTINA DAYGAP' TO WRC-OBS     SGS01518
+015190         DISPLAY WAX-DATA1 '  ' WAX-DATA2                         SGS01519
+015200         CALL 'CPD0016S' USING WRC-OBS                            SGS01520
+015210         CALL 'ABENDAR'  USING WAX-ABENDAR                        SGS01521
+015220     END-IF                                                       SGS01522
+015230     IF  ( E01-INIC-MM  EQUAL  01  AND  WAX-SALMM  EQUAL 02) OR   SGS01523
+015240         ( E01-INIC-MM  EQUAL  03  AND  WAX-SALMM  EQUAL 04) OR   SGS01524
+015250         ( E01-INIC-MM  EQUAL  05  AND  WAX-SALMM  EQUAL 06) OR   SGS01525
+015260         ( E01-INIC-MM  EQUAL  07  AND  WAX-SALMM  EQUAL 08) OR   SGS01526
+015270         ( E01-INIC-MM  EQUAL  08  AND  WAX-SALMM  EQUAL 09) OR   SGS01527
+015280         ( E01-INIC-MM  EQUAL  10  AND  WAX-SALMM  EQUAL 11) OR   SGS01528
+015290         ( E01-INIC-MM  EQUAL  12  AND  WAX-SALMM  EQUAL 01)      SGS01529
+015300         CONTINUE                                                 SGS01530
+015310     ELSE                                                         SGS01531
+015320         IF  E01-INIC-MM EQUAL 02 AND WAX-I-MM EQUAL 03           SGS01532
+015330             DIVIDE E01-INIC-AA BY 4                              SGS01533
+015340             GIVING WAX-DIV-BISS                                  SGS01534
+015350             REMAINDER WAX-RES-BISS                               SGS01535
+015360             IF  WAX-RES-BISS EQUAL 0                             SGS01536
+015370                 ADD 2 TO WAX-DIAS                                SGS01537
+015380             ELSE                                                 SGS01538
+015390                 ADD 3 TO WAX-DIAS                                SGS01539
+015400             END-IF                                               SGS01540
+015410         ELSE                                                     SGS01541
+015420             ADD 1 TO WAX-DIAS                                    SGS01542
+015430         END-IF                                                   SGS01543
+015440     END-IF                                                       SGS01544
+015450*----------- SE EXISTIR SOMENTE UMA OCORRENCIA PARA A TABELA --*  SGS01545
+015460*----------- DE VALORES, AJEITA VALOR -------------------------*  SGS01546
+015470     IF  WAX-REG37(1) EQUAL WAX-REG37(2)                          SGS01547
+015480         COMPUTE WAX-R2 = WAX-DIAS - 1                            SGS01548
+015490     ELSE                                                         SGS01549
+015500         MOVE WAX-DIAS TO WAX-R2                                  SGS01550
+015510     END-IF.                                                      SGS01551
+015520                                                                  SGS01552
+015530                                                                  SGS01553
+015540 10230-00-LER-SORT.                                               SGS01554
+015550*C                                                                SGS01555
+015560*C  PERFORMED BY:                                                 SGS01556
+015570*C                                                                SGS01557
+015580*C      10220-00-OUTPUT-FILE37                                    SGS01558
+015590*C      10250-00-QUEBRAV                                          SGS01559
+015600*C                                                                SGS01560
+015610     RETURN SEQSOR01                                              SGS01561
+015620            AT END                                                SGS01562
+015630         MOVE HIGH-VALUES TO WCH-FIMSORT                          SGS01563
+015640     END-RETURN.                                                  SGS01564
+015650                                                                  SGS01565
+015660                                                                  SGS01566
+015670                                                                  SGS01567
+015680 10240-00-ARQ-TRAB.                                               SGS01568
+015690*C                                                                SGS01569
+015700*C  PERFORMED BY:                                                 SGS01570
+015710*C                                                                SGS01571
+015720*C      10220-00-OUTPUT-FILE37                                    SGS01572
+015730*C                                                                SGS01573
+015740     MOVE SPACES TO WTB-TRAB1  WTB-TRAB2  WTB-TRAB3  WTB-TRAB4    SGS01574
+015750                            WCH-FIMTRAB                           SGS01575
+015760     OPEN OUTPUT SEQTRA01                                         SGS01576
+015770     MOVE SOR-V TO WAX-V                                          SGS01577
+015780     PERFORM 10250-00-QUEBRAV                                     SGS01578
+015790             UNTIL WCH-FIMSORT EQUAL HIGH-VALUES                  SGS01579
+015800             OR    SOR-V NOT EQUAL WAX-V                          SGS01580
+015810     CLOSE SEQTRA01                                               SGS01581
+015820     OPEN INPUT SEQTRA01                                          SGS01582
+015830     PERFORM 10260-00-LERTRAB                                     SGS01583
+015840     PERFORM 10270-00-CLASSIFICA                                  SGS01584
+015850             UNTIL WCH-FIMTRAB EQUAL HIGH-VALUES                  SGS01585
+015860     CLOSE SEQTRA01                                               SGS01586
+015870     MOVE 0 TO WAX-POSIT                                          SGS01587
+015880     PERFORM 10320-00-GRAVA                                       SGS01588
+015890             VARYING WAX-POSIT FROM 1 BY 1                        SGS01589
+015900             UNTIL WAX-POSIT EQUAL 4002.                          SGS01590
+015910                                                                  SGS01591
+015920                                                                  SGS01592
+015930                                                                  SGS01593
+015940 10250-00-QUEBRAV.                                                SGS01594
+015950*C                                                                SGS01595
+015960*C  PERFORMED BY:                                                 SGS01596
+015970*C                                                                SGS01597
+015980*C      10240-00-ARQ-TRAB                                         SGS01598
+015990*C                                                                SGS01599
+016000                                                                  SGS01600
+016010*----------------------------------------------------------------*SGS01601
+016020*  OCORRENCIA TABELA   *   COD.PROPRIO DO REGISTRO LIDO (SORT)   *SGS01602
+016030*    -  DESOCUPADA , LANCAR REGISTRO NESSA OCORRENCIA            *SGS01603
+016040*    -  OCUPADA    , GRAVAR REGISTRO NO ARQUIVO DE TRABALHO      *SGS01604
+016050*----------------------------------------------------------------*SGS01605
+016060     IF  WTB-REG (SOR-CODPRO) EQUAL SPACES                        SGS01606
+016070         MOVE SOR-REG37 TO WTB-REG (SOR-CODPRO)                   SGS01607
+016080     ELSE                                                         SGS01608
+016090         WRITE WAX-TRAB FROM SOR-REG37                            SGS01609
+016100     END-IF                                                       SGS01610
+016110     PERFORM 10230-00-LER-SORT.                                   SGS01611
+016120                                                                  SGS01612
+016130                                                                  SGS01613
+016140                                                                  SGS01614
+016150 10260-00-LERTRAB.                                                SGS01615
+016160*C                                                                SGS01616
+016170*C  PERFORMED BY:                                                 SGS01617
+016180*C                                                                SGS01618
+016190*C      10240-00-ARQ-TRAB                                         SGS01619
+016200*C      10270-00-CLASSIFICA                                       SGS01620
+016210*C      10330-00-FILE38                                           SGS01621
+016220*C                                                                SGS01622
+016230     READ SEQTRA01                                                SGS01623
+016240          AT END                                                  SGS01624
+016250         MOVE HIGH-VALUES TO WCH-FIMTRAB                          SGS01625
+016260     END-READ.                                                    SGS01626
+016270                                                                  SGS01627
+016280                                                                  SGS01628
+016290                                                                  SGS01629
+016300 10270-00-CLASSIFICA.                                             SGS01630
+016310*C                                                                SGS01631
+016320*C  PERFORMED BY:                                                 SGS01632
+016330*C                                                                SGS01633
+016340*C      10240-00-ARQ-TRAB                                         SGS01634
+016350*C      10330-00-FILE38                                           SGS01635
+016360*C                                                                SGS01636
+016370                                                                  SGS01637
+016380*----------------------------------------------------------------*SGS01638
+016390* - SE COD-SINONIMO IGUAL 0 A CHAVE SERA O COD.PROPRIO           *SGS01639
+016400* - SE COD-SINONIMO DIF.  0 PROCURAR ATE ACHAR REG. COM          *SGS01640
+016410*   COD.SINONIMO EQUAL 0 , ESTE SERA A CHAVE DE PESQUISA.        *SGS01641
+016420* - EFETUAR A PESQUISA VERIFICANDO ALTERNADAMENTE:               *SGS01642
+016430*        - ( CHAVE + N , N=1,2,3,... )                           *SGS01643
+016440*        - ( CHAVE - N , N=1,2,3,... )                           *SGS01644
+016450*    ATE ENCONTRAR UMA OCORRENCIA DESOCUPADA.                    *SGS01645
+016460*----------------------------------------------------------------*SGS01646
+016470     MOVE WAX-CODPRO TO WAX-PESQ                                  SGS01647
+016480     PERFORM 10280-00-PESQUISA                                    SGS01648
+016490             UNTIL WTB-CODSIN (WAX-PESQ) EQUAL 0                  SGS01649
+016500     MOVE WAX-PESQ TO WAX-POSIT WAX-NEGAT                         SGS01650
+016510     PERFORM 10290-00-REG-VAZIO                                   SGS01651
+016520             UNTIL WAX-ACHOU EQUAL 'SIM'                          SGS01652
+016530     PERFORM 10260-00-LERTRAB                                     SGS01653
+016540     MOVE SPACES TO WAX-ACHOU.                                    SGS01654
+016550                                                                  SGS01655
+016560                                                                  SGS01656
+016570                                                                  SGS01657
+016580 10280-00-PESQUISA.                                               SGS01658
+016590*C                                                                SGS01659
+016600*C  PERFORMED BY:                                                 SGS01660
+016610*C                                                                SGS01661
+016620*C      10270-00-CLASSIFICA                                       SGS01662
+016630*C                                                                SGS01663
+016640     MOVE WTB-CODSIN (WAX-PESQ) TO WAX-PESQ.                      SGS01664
+016650                                                                  SGS01665
+016660                                                                  SGS01666
+016670                                                                  SGS01667
+016680 10290-00-REG-VAZIO.                                              SGS01668
+016690*C                                                                SGS01669
+016700*C  PERFORMED BY:                                                 SGS01670
+016710*C                                                                SGS01671
+016720*C      10270-00-CLASSIFICA                                       SGS01672
+016730*C                                                                SGS01673
+016740     COMPUTE WAX-POSIT = WAX-POSIT + 1                            SGS01674
+016750     EVALUATE TRUE                                                SGS01675
+016760     WHEN WAX-POSIT EQUAL 4002                                    SGS01676
+016770         PERFORM 10300-00-NEGATIVO                                SGS01677
+016780                 UNTIL WAX-ACHOU EQUAL 'SIM'                      SGS01678
+016790     WHEN WTB-REG (WAX-POSIT) EQUAL SPACES                        SGS01679
+016800         MOVE WAX-TRAB  TO WTB-REG    (WAX-POSIT)                 SGS01680
+016810         MOVE WAX-POSIT TO WTB-CODSIN (WAX-PESQ)                  SGS01681
+016820                           WTB-CODPRO (WAX-POSIT)                 SGS01682
+016830         MOVE 'SIM' TO WAX-ACHOU                                  SGS01683
+016840     WHEN OTHER                                                   SGS01684
+016850         COMPUTE WAX-NEGAT = WAX-NEGAT - 1                        SGS01685
+016860         IF  WAX-NEGAT EQUAL 0                                    SGS01686
+016870             PERFORM 10310-00-POSITIVO                            SGS01687
+016880                     UNTIL WAX-ACHOU EQUAL 'SIM'                  SGS01688
+016890         ELSE                                                     SGS01689
+016900             IF  WTB-REG (WAX-NEGAT) EQUAL SPACES                 SGS01690
+016910                 MOVE WAX-TRAB TO WTB-REG (WAX-NEGAT)             SGS01691
+016920                 MOVE WAX-NEGAT TO WTB-CODSIN (WAX-PESQ)          SGS01692
+016930                                   WTB-CODPRO (WAX-NEGAT)         SGS01693
+016940                 MOVE 'SIM' TO WAX-ACHOU                          SGS01694
+016950             END-IF                                               SGS01695
+016960         END-IF                                                   SGS01696
+016970     END-EVALUATE.                                                SGS01697
+016980                                                                  SGS01698
+016990                                                                  SGS01699
+017000                                                                  SGS01700
+017010 10300-00-NEGATIVO.                                               SGS01701
+017020*C                                                                SGS01702
+017030*C  PERFORMED BY:                                                 SGS01703
+017040*C                                                                SGS01704
+017050*C      10290-00-REG-VAZIO                                        SGS01705
+017060*C                                                                SGS01706
+017070                                                                  SGS01707
+017080*----------------------------------------------------------------*SGS01708
+017090*  QDO PESQUISA CHEGAR NO REG 4002 ,DEVE PROSSEGUIR  SOMENTE     *SGS01709
+017100*  PELO  REGISTRO           ( CHAVE - N , N=1,2,3..... )         *SGS01710
+017110*----------------------------------------------------------------*SGS01711
+017120     COMPUTE WAX-NEGAT = WAX-NEGAT - 1                            SGS01712
+017130     IF  WTB-REG (WAX-NEGAT) EQUAL SPACES                         SGS01713
+017140         MOVE WAX-TRAB  TO WTB-REG    (WAX-NEGAT)                 SGS01714
+017150         MOVE WAX-NEGAT TO WTB-CODSIN (WAX-PESQ)                  SGS01715
+017160                           WTB-CODPRO (WAX-NEGAT)                 SGS01716
+017170         MOVE 'SIM' TO WAX-ACHOU                                  SGS01717
+017180     END-IF.                                                      SGS01718
+017190                                                                  SGS01719
+017200                                                                  SGS01720
+017210                                                                  SGS01721
+017220 10310-00-POSITIVO.                                               SGS01722
+017230*C                                                                SGS01723
+017240*C  PERFORMED BY:                                                 SGS01724
+017250*C                                                                SGS01725
+017260*C      10290-00-REG-VAZIO                                        SGS01726
+017270*C                                                                SGS01727
+017280                                                                  SGS01728
+017290*----------------------------------------------------------------*SGS01729
+017300*  QDO PESQUISA CHEGAR NO REG 0 ,DEVE PROSSEGUIR  SOMENTE        *SGS01730
+017310*  PELOS REGISTROS          ( CHAVE + N , N=1,2,3..... )         *SGS01731
+017320*----------------------------------------------------------------*SGS01732
+017330     COMPUTE WAX-POSIT = WAX-POSIT + 1                            SGS01733
+017340     IF  WTB-REG (WAX-POSIT) EQUAL SPACES                         SGS01734
+017350         MOVE WAX-TRAB  TO WTB-REG    (WAX-POSIT)                 SGS01735
+017360         MOVE WAX-POSIT TO WTB-CODSIN (WAX-PESQ)                  SGS01736
+017370                           WTB-CODPRO (WAX-POSIT)                 SGS01737
+017380         MOVE 'SIM' TO WAX-ACHOU                                  SGS01738
+017390     END-IF.                                                      SGS01739
+017400                                                                  SGS01740
+017410                                                                  SGS01741
+017420                                                                  SGS01742
+017430 10320-00-GRAVA.                                                  SGS01743
+017440*C                                                                SGS01744
+017450*C  PERFORMED BY:                                                 SGS01745
+017460*C                                                                SGS01746
+017470*C      10240-00-ARQ-TRAB                                         SGS01747
+017480*C      10330-00-FILE38                                           SGS01748
+017490*C                                                                SGS01749
+017500     IF  WTB-REG (WAX-POSIT) NOT EQUAL SPACES                     SGS01750
+017510         WRITE S01-REG FROM WTB-REG (WAX-POSIT)                   SGS01751
+017520         ADD 1 TO WRC-VALS1                                       SGS01752
+017530     END-IF.                                                      SGS01753
+017540                                                                  SGS01754
+017550                                                                  SGS01755
+017560                                                                  SGS01756
+017570 10330-00-FILE38.                                                 SGS01757
+017580*C                                                                SGS01758
+017590*C  PERFORMED BY:                                                 SGS01759
+017600*C                                                                SGS01760
+017610*C      CSF-MAIN                                                  SGS01761
+017620*C                                                                SGS01762
+017630     OPEN  OUTPUT   SEQTRA01                                      SGS01763
+017640     MOVE   0    TO WAX-POSIT WAX-NEGAT                           SGS01764
+017650     MOVE SPACES TO WCH-FIMTRAB                                   SGS01765
+017660                    WTB-TRAB1   WTB-TRAB2  WTB-TRAB3  WTB-TRAB4   SGS01766
+017670     MOVE  26    TO WAX-TAMAN                                     SGS01767
+017680     MOVE  4001  TO WAX-DIVIS                                     SGS01768
+017690     PERFORM 10340-00-FORMATA38                                   SGS01769
+017700             UNTIL WCH-FIMARQ38 EQUAL HIGH-VALUES                 SGS01770
+017710     CLOSE  SEQTRA01                                              SGS01771
+017720     OPEN   INPUT   SEQTRA01                                      SGS01772
+017730     PERFORM 10260-00-LERTRAB                                     SGS01773
+017740     PERFORM 10270-00-CLASSIFICA                                  SGS01774
+017750             UNTIL WCH-FIMTRAB EQUAL HIGH-VALUES                  SGS01775
+017760     CLOSE   SEQTRA01                                             SGS01776
+017770     MOVE 0 TO WAX-POSIT                                          SGS01777
+017780     PERFORM 10320-00-GRAVA                                       SGS01778
+017790             VARYING WAX-POSIT FROM 1 BY 1                        SGS01779
+017800             UNTIL WAX-POSIT EQUAL 4002.                          SGS01780
+017810                                                                  SGS01781
+017820                                                                  SGS01782
+017830                                                                  SGS01783
+017840 10340-00-FORMATA38.                                              SGS01784
+017850*C                                                                SGS01785
+017860*C  PERFORMED BY:                                                 SGS01786
+017870*C                                                                SGS01787
+017880*C      10330-00-FILE38                                           SGS01788
+017890*C                                                                SGS01789
+017900     PERFORM 10350-2SQL-90110-C041-FETCH                          SGS01790
+017910     MOVE R041-A-0038SGS02-P1   TO   R041-A-0038SGS02-AJUSTE-P1   SGS01791
+017920     MOVE R041-A-0038SGS02-P2   TO   R041-A-0038SGS02-AJUSTE-P2   SGS01792
+017930     MOVE R041-A-0038SGS02-CYC  TO   R041-A-0038SGS02-AJUSTE-CYC  SGS01793
+017940     MOVE R041-A-0038SGS02-AJUSTADO TO WBD-RBUF38                 SGS01794
+017950     MOVE 2SQL-RESPONSE-CODE TO                                   SGS01795
+017960         WBD-RCODE                                                SGS01796
+017970     IF  WBD-RCODE EQUAL -1                                       SGS01797
+017980         MOVE HIGH-VALUES TO WCH-FIMARQ38                         SGS01798
+017990     ELSE                                                         SGS01799
+018000         IF  WBD-RCODE NOT EQUAL 0                                SGS01800
+018010             MOVE '  ERRO LEITURA ARQ.38' TO WAX-OBS1             SGS01801
+018020             MOVE     WBD-RCODE           TO WAX-OBS2             SGS01802
+018030             PERFORM 10020-00-ERRO                                SGS01803
+018040         END-IF                                                   SGS01804
+018050         ADD 1 TO WRC-VALE3                                       SGS01805
+018060         MOVE  21  TO  WIN-IND                                    SGS01806
+018070         INITIALIZE WAX-TAB38-XX                                  SGS01807
+018080         PERFORM 10370-00-OCORR-38OK                              SGS01808
+018090                 UNTIL WAC-OCORR  EQUAL 2  OR                     SGS01809
+018100                 WIN-IND  EQUAL  0                                SGS01810
+018110         IF  WIN-IND  EQUAL  0  AND  WAC-OCORR  EQUAL  0          SGS01811
+018120             CONTINUE                                             SGS01812
+018130         ELSE                                                     SGS01813
+018140             IF  WIN-IND  EQUAL  0                                SGS01814
+018150                 PERFORM 10380-00-ACERTA-OCORR38-39               SGS01815
+018160             END-IF                                               SGS01816
+018170             MOVE    0    TO WAC-OCORR                            SGS01817
+018180             PERFORM 10390-00-SERVICOS                            SGS01818
+018190             PERFORM 10410-00-ARQ-TRAB38                          SGS01819
+018200         END-IF                                                   SGS01820
+018210     END-IF.                                                      SGS01821
+018220                                                                  SGS01822
+018230                                                                  SGS01823
+018240                                                                  SGS01824
+018250 10350-2SQL-90110-C041-FETCH.                                     SGS01825
+018260*C                                                                SGS01826
+018270*C  PERFORMED BY:                                                 SGS01827
+018280*C                                                                SGS01828
+018290*C      10340-00-FORMATA38                                        SGS01829
+018300*C                                                                SGS01830
+018310     EXEC ADABAS                                                  SGS01831
+018320       FETCH C041                                                 SGS01832
+018330     END-EXEC                                                     SGS01833
+018340     IF  RESPONSE-CODE OF C041-A-0038SGS02 = 0                    SGS01834
+018350         AND ADACODE = 0                                          SGS01835
+018360         MOVE CORR RECORD-BUFC041 TO RECORD-BUFR041               SGS01836
+018370         PERFORM 10360-2SQL-90120-C041-MOVE-PEG                   SGS01837
+018380            VARYING 2SQL-S1 FROM 1 BY 1                           SGS01838
+018390            UNTIL 2SQL-S1 > 0020                                  SGS01839
+018400     END-IF                                                       SGS01840
+018410     MOVE RESPONSE-CODE OF C041-A-0038SGS02                       SGS01841
+018420       TO 2SQL-RESPONSE-CODE                                      SGS01842
+018430     IF  2SQL-RESPONSE-CODE = 3                                   SGS01843
+018440         MOVE -1 TO 2SQL-RESPONSE-CODE                            SGS01844
+018450     END-IF                                                       SGS01845
+018460     MOVE ISN OF C041-A-0038SGS02                                 SGS01846
+018470       TO 2SQL-DBS277-CURRENT-ISN.                                SGS01847
+018480                                                                  SGS01848
+018490                                                                  SGS01849
+018500                                                                  SGS01850
+018510 10360-2SQL-90120-C041-MOVE-PEG.                                  SGS01851
+018520*C                                                                SGS01852
+018530*C  PERFORMED BY:                                                 SGS01853
+018540*C                                                                SGS01854
+018550*C      10350-2SQL-90110-C041-FETCH                               SGS01855
+018560*C                                                                SGS01856
+018570     MOVE VR-TARI-SERVI-PRST-TARIF       OF                       SGS01857
+018580       C041-A-0038SGS02                     (2SQL-S1)             SGS01858
+018590         TO VR-TARI-SERVI-PRST-TARIF       OF                     SGS01859
+018600       R041-A-0038SGS02                     (2SQL-S1).            SGS01860
+018610                                                                  SGS01861
+018620                                                                  SGS01862
+018630                                                                  SGS01863
+018640 10370-00-OCORR-38OK.                                             SGS01864
+018650*C                                                                SGS01865
+018660*C  PERFORMED BY:                                                 SGS01866
+018670*C                                                                SGS01867
+018680*C      10340-00-FORMATA38                                        SGS01868
+018690*C                                                                SGS01869
+018700                                                                  SGS01870
+018710*----------------------------------------------------------------*SGS01871
+018720*     SELECIONAR REG38 DUAS OCORRENCIAS COM DT-VIG-INIC          *SGS01872
+018730*      (FILE38)  MENOR/IGUAL DT-TERM-PER (SEQENT01).             *SGS01873
+018740*----------------------------------------------------------------*SGS01874
+018750     SUBTRACT  1  FROM  WIN-IND                                   SGS01875
+018760     IF  WIN-IND  EQUAL  0                                        SGS01876
+018770         CONTINUE                                                 SGS01877
+018780     ELSE                                                         SGS01878
+018790         IF  WBD-INIC-38X (WIN-IND)  EQUAL  SPACES                SGS01879
+018800             CONTINUE                                             SGS01880
+018810         ELSE                                                     SGS01881
+018820             MOVE WBD-INIC-38 (WIN-IND) TO WAX-DDMMAA             SGS01882
+018830             MOVE WAX-DD-I  TO  WAX-I-DD                          SGS01883
+018840             MOVE WAX-MM-I  TO  WAX-I-MM                          SGS01884
+018850             MOVE WAX-AA-I  TO  WAX-I-AA                          SGS01885
+018860             COMPUTE WAX-BUG1 = (WAX-AAMMDD + 500000)             SGS01886
+018870             COMPUTE WAX-BUG2 = (E01-TERM-PER + 500000)           SGS01887
+018880             IF  ( WAX-BUG1 NOT GREATER WAX-BUG2 ) AND            SGS01888
+018890                 WBD-STAT-38 (WIN-IND) EQUAL 0                    SGS01889
+018900                 ADD 1 TO WAC-OCORR                               SGS01890
+018910                 MOVE WBD-VALOR-N38 (WIN-IND) TO WAX-VAL-N        SGS01891
+018920                     (WAC-OCORR)                                  SGS01892
+018930                 MOVE WBD-VALOR-R38 (WIN-IND) TO WAX-VAL-R        SGS01893
+018940                     (WAC-OCORR)                                  SGS01894
+018950                 MOVE WAX-AAMMDD              TO WAX-INIC-38-39   SGS01895
+018960                     (WAC-OCORR)                                  SGS01896
+018970                 MOVE WBD-FIM-38 (WIN-IND)    TO WAX-DDMMAA       SGS01897
+018980                 MOVE WAX-DD-I                TO WAX-I-DD         SGS01898
+018990                 MOVE WAX-MM-I                TO WAX-I-MM         SGS01899
+019000                 MOVE WAX-AA-I                TO WAX-I-AA         SGS01900
+019010                 MOVE WAX-AAMMDD              TO WAX-FIM-38-39    SGS01901
+019020                     (WAC-OCORR)                                  SGS01902
+019030             END-IF                                               SGS01903
+019040         END-IF                                                   SGS01904
+019050     END-IF.                                                      SGS01905
+019060                                                                  SGS01906
+019070                                                                  SGS01907
+019080                                                                  SGS01908
+019090 10380-00-ACERTA-OCORR38-39.                                      SGS01909
+019100*C                                                                SGS01910
+019110*C  PERFORMED BY:                                                 SGS01911
+019120*C                                                                SGS01912
+019130*C      10340-00-FORMATA38                                        SGS01913
+019140*C      10430-00-FORMATA39                                        SGS01914
+019150*C                                                                SGS01915
+019160     IF  WAX-TAB38-39 (2)  EQUAL SPACES OR LOW-VALUES             SGS01916
+019170         MOVE   WAX-TAB38-39 (1)  TO  WAX-TAB38-39 (2)            SGS01917
+019180     END-IF.                                                      SGS01918
+019190                                                                  SGS01919
+019200                                                                  SGS01920
+019210                                                                  SGS01921
+019220 10390-00-SERVICOS.                                               SGS01922
+019230*C                                                                SGS01923
+019240*C  PERFORMED BY:                                                 SGS01924
+019250*C                                                                SGS01925
+019260*C      10340-00-FORMATA38                                        SGS01926
+019270*C                                                                SGS01927
+019280                                                                  SGS01928
+019290*----------------------------------------------------------------*SGS01929
+019300*   -  FORMATAR REGISTRO SERVICO                                 *SGS01930
+019310*   -  CALCULAR CODIGO PROPRIO ATRAVES DA ROTINA SGS99010        *SGS01931
+019320*----------------------------------------------------------------*SGS01932
+019330     MOVE WBD-NATUREZA        TO WAX-NATUREZA                     SGS01933
+019340     MOVE WBD-LINHA-38        TO WAX-LINHA-38                     SGS01934
+019350     MOVE WBD-ADIC-38         TO WAX-ADIC-38                      SGS01935
+019360     MOVE WBD-EQUIP-38        TO WAX-EQUIP-38                     SGS01936
+019370     MOVE WBD-CPCC-38         TO WAX-CPCC-38                      SGS01937
+019380     MOVE WBD-DEB-N38         TO WAX-DEB-N38                      SGS01938
+019390     MOVE WBD-CRED-N38        TO WAX-CRED-N38                     SGS01939
+019400     MOVE WBD-DEB-R38         TO WAX-DEB-R38                      SGS01940
+019410     MOVE WBD-CRED-R38        TO WAX-CRED-R38                     SGS01941
+019420     IF  WBD-FNT-38  NOT NUMERIC                                  SGS01942
+019430         MOVE 0 TO WAX-FNT-38                                     SGS01943
+019440     ELSE                                                         SGS01944
+019450         MOVE WBD-FNT-38       TO WAX-FNT-38                      SGS01945
+019460     END-IF                                                       SGS01946
+019470     MOVE WBD-CONTAB-38       TO WAX-CONTAB-38                    SGS01947
+019480     MOVE WAX-VAL-N       (2) TO WAX-VAL38-N1                     SGS01948
+019490     MOVE WAX-VAL-R       (2) TO WAX-VAL38-R1                     SGS01949
+019500     MOVE WAX-INIC-38-39  (2) TO WAX-INIC38-1                     SGS01950
+019510     MOVE WAX-FIM-38-39   (2) TO WAX-FIM38-1                      SGS01951
+019520     MOVE WAX-VAL-N       (1) TO WAX-VAL38-N2                     SGS01952
+019530     MOVE WAX-VAL-R       (1) TO WAX-VAL38-R2                     SGS01953
+019540     MOVE WAX-INIC-38-39  (1) TO WAX-INIC38-2                     SGS01954
+019550     MOVE WAX-FIM-38-39   (1) TO WAX-FIM38-2                      SGS01955
+019560     MOVE WAX-DADOS-38        TO WAX-DIVID2                       SGS01956
+019570     CALL 'SGS99010' USING WAX-DIVID2 WAX-TAMAN WAX-DIVIS         SGS01957
+019580                           WAX-REST                               SGS01958
+019590     IF  RETURN-CODE EQUAL 100                                    SGS01959
+019600         MOVE ' WAX-TAMAN MAIOR QUE 26' TO WRC-OBS                SGS01960
+019610         PERFORM 10400-00-SERVICOS-1                              SGS01961
+019620     ELSE                                                         SGS01962
+019630         IF  RETURN-CODE EQUAL 300                                SGS01963
+019640             MOVE ' WAX-DIVID C/ BRANCOS OU ZEROS' TO WRC-OBS     SGS01964
+019650             PERFORM 10400-00-SERVICOS-1                          SGS01965
+019660         ELSE                                                     SGS01966
+019670             IF  RETURN-CODE EQUAL 200                            SGS01967
+019680                 MOVE ' WAX-DIVIS NAO NUMERICO' TO WRC-OBS        SGS01968
+019690                 PERFORM 10400-00-SERVICOS-1                      SGS01969
+019700             ELSE                                                 SGS01970
+019710                 MOVE WAX-REST           TO WAX-CODPRO-38         SGS01971
+019720                 MOVE   0                 TO WAX-CODSIN-38        SGS01972
+019730                 ADD 1 TO WRC-VALS5                               SGS01973
+019740             END-IF                                               SGS01974
+019750         END-IF                                                   SGS01975
+019760     END-IF.                                                      SGS01976
+019770                                                                  SGS01977
+019780                                                                  SGS01978
+019790                                                                  SGS01979
+019800 10400-00-SERVICOS-1.                                             SGS01980
+019810*C                                                                SGS01981
+019820*C  PERFORMED BY:                                                 SGS01982
+019830*C                                                                SGS01983
+019840*C      10390-00-SERVICOS                                         SGS01984
+019850*C                                                                SGS01985
+019860     CALL 'CPD0016S' USING WRC-REDE                               SGS01986
+019870     CALL 'ABENDAR'  USING WAX-ABENDAR.                           SGS01987
+019880                                                                  SGS01988
+019890                                                                  SGS01989
+019900                                                                  SGS01990
+019910 10410-00-ARQ-TRAB38.                                             SGS01991
+019920*C                                                                SGS01992
+019930*C  PERFORMED BY:                                                 SGS01993
+019940*C                                                                SGS01994
+019950*C      10340-00-FORMATA38                                        SGS01995
+019960*C                                                                SGS01996
+019970                                                                  SGS01997
+019980*----------------------------------------------------------------*SGS01998
+019990*   OCORRENCIA TABELA  *  CODIGO PROPRIO REGISTRO SERVICO        *SGS01999
+020000*   -  DESOCUPADA , LANCAR REGISTRO NESSA OCORRENCIA             *SGS02000
+020010*   -  OCUPADA    , GRAVAR REGISTRO NO ARQUIVO DE TRABALHO       *SGS02001
+020020*----------------------------------------------------------------*SGS02002
+020030     IF  WTB-REG (WAX-CODPRO-38) EQUAL SPACES                     SGS02003
+020040         MOVE WAX-REG38 TO WTB-REG (WAX-CODPRO-38)                SGS02004
+020050     ELSE                                                         SGS02005
+020060         WRITE WAX-TRAB FROM WAX-REG38                            SGS02006
+020070     END-IF.                                                      SGS02007
+020080                                                                  SGS02008
+020090                                                                  SGS02009
+020100                                                                  SGS02010
+020110 10420-00-FILE39.                                                 SGS02011
+020120*C                                                                SGS02012
+020130*C  PERFORMED BY:                                                 SGS02013
+020140*C                                                                SGS02014
+020150*C      CSF-MAIN                                                  SGS02015
+020160*C                                                                SGS02016
+020170     MOVE  1  TO  WAX-W3                                          SGS02017
+020180     MOVE SPACES TO WCH-FIMSORT                                   SGS02018
+020190     PERFORM 10430-00-FORMATA39                                   SGS02019
+020200             UNTIL WCH-FIMARQ39 EQUAL HIGH-VALUES                 SGS02020
+020210     CALL 'CLASTAB' USING WAX-TAB WAX-PARAM                       SGS02021
+020220     MOVE 1010 TO S01-CODPECA                                     SGS02022
+020230     MOVE 0 TO S01-DEB  S01-CRED  S01-CONTAB  S01-FNT             SGS02023
+020240     MOVE  WAX-VALOR2-39 (36)  TO  S01-VALOR-N2                   SGS02024
+020250     MOVE  WAX-INIC-39   (36)  TO  S01-INIC-N2                    SGS02025
+020260     MOVE  WAX-FIM-39    (36)  TO  S01-FIM-N2                     SGS02026
+020270     MOVE  WAX-VALOR2-39 (35)  TO  S01-VALOR-N1                   SGS02027
+020280     MOVE  WAX-INIC-39   (35)  TO  S01-INIC-N1                    SGS02028
+020290     MOVE  WAX-FIM-39    (35)  TO  S01-FIM-N1                     SGS02029
+020300     WRITE S01-REG FROM WAX-REG39                                 SGS02030
+020310     ADD 1 TO WRC-VALS1  WRC-VALS6.                               SGS02031
+020320                                                                  SGS02032
+020330                                                                  SGS02033
+020340                                                                  SGS02034
+020350 10430-00-FORMATA39.                                              SGS02035
+020360*C                                                                SGS02036
+020370*C  PERFORMED BY:                                                 SGS02037
+020380*C                                                                SGS02038
+020390*C      10420-00-FILE39                                           SGS02039
+020400*C                                                                SGS02040
+020410     PERFORM 10440-2SQL-90160-C042-FETCH                          SGS02041
+020420     MOVE R042-A-0039SGS03-P1   TO   R042-A-0039SGS03-AJUSTE-P1   SGS02042
+020430     MOVE R042-A-0039SGS03-P2   TO   R042-A-0039SGS03-AJUSTE-P2   SGS02043
+020440     MOVE R042-A-0039SGS03-P3   TO   R042-A-0039SGS03-AJUSTE-P3   SGS02044
+020450     MOVE R042-A-0039SGS03-DGC  TO   R042-A-0039SGS03-AJUSTE-DGC  SGS02045
+020460     MOVE R042-A-0039SGS03-DHC  TO   R042-A-0039SGS03-AJUSTE-DHC  SGS02046
+020470     MOVE R042-A-0039SGS03-AJUSTADO TO WBD-RBUF39                 SGS02047
+020480     MOVE 2SQL-RESPONSE-CODE TO                                   SGS02048
+020490         WBD-RCODE                                                SGS02049
+020500     IF  WBD-RCODE EQUAL -1                                       SGS02050
+020510         MOVE HIGH-VALUES TO WCH-FIMARQ39                         SGS02051
+020520     ELSE                                                         SGS02052
+020530         IF  WBD-RCODE NOT EQUAL 0                                SGS02053
+020540             MOVE '  ERRO LEITURA ARQ.39' TO WAX-OBS1             SGS02054
+020550             MOVE     WBD-RCODE           TO WAX-OBS2             SGS02055
+020560             PERFORM 10020-00-ERRO                                SGS02056
+020570         END-IF                                                   SGS02057
+020580         ADD 1 TO WRC-VALE4                                       SGS02058
+020590         IF  ( WBD-CODPECA  EQUAL 0 AND                           SGS02059
+020600             WBD-FAT-IND (1) NOT EQUAL 'ORTN' )                   SGS02060
+020610            OR ( WBD-FAT-IND (1) EQUAL 'ORTN' AND ( ( WBD-FLAG-39 SGS02061
+020620             NOT EQUAL 1 AND 0)  OR  (WBD-STAT2-39  NOT  EQUAL    SGS02062
+020630                 '0')))                                           SGS02063
+020640             CONTINUE                                             SGS02064
+020650         ELSE                                                     SGS02065
+020660             IF  WBD-CODPECA NOT EQUAL 0                          SGS02066
+020670                 MOVE  17  TO  WIN-IND                            SGS02067
+020680                 INITIALIZE WAX-TAB38-XX                          SGS02068
+020690                 PERFORM 10470-00-OCORR-39OK                      SGS02069
+020700                      UNTIL WAC-OCORR  EQUAL 2  OR                SGS02070
+020710                      WIN-IND  EQUAL  0                           SGS02071
+020720                 IF  WIN-IND  EQUAL  0                            SGS02072
+020730                     PERFORM 10380-00-ACERTA-OCORR38-39           SGS02073
+020740                     PERFORM 10480-00-PECAS-DIF-0                 SGS02074
+020750                     WRITE  S01-REG  FROM  WAX-REG39              SGS02075
+020760                     ADD    1        TO    WRC-VALS1  WRC-VALS6   SGS02076
+020770                 ELSE                                             SGS02077
+020780                     PERFORM 10480-00-PECAS-DIF-0                 SGS02078
+020790                     WRITE S01-REG FROM WAX-REG39                 SGS02079
+020800                     ADD 1 TO WRC-VALS1 WRC-VALS6                 SGS02080
+020810                 END-IF                                           SGS02081
+020820             ELSE                                                 SGS02082
+020830                 IF  WAX-W3  LESS  37                             SGS02083
+020840                     PERFORM 10490-00-PECAS-ORTN                  SGS02084
+020850                 END-IF                                           SGS02085
+020860             END-IF                                               SGS02086
+020870             MOVE  0  TO  WAC-OCORR                               SGS02087
+020880         END-IF                                                   SGS02088
+020890     END-IF.                                                      SGS02089
+020900                                                                  SGS02090
+020910                                                                  SGS02091
+020920                                                                  SGS02092
+020930 10440-2SQL-90160-C042-FETCH.                                     SGS02093
+020940*C                                                                SGS02094
+020950*C  PERFORMED BY:                                                 SGS02095
+020960*C                                                                SGS02096
+020970*C      10430-00-FORMATA39                                        SGS02097
+020980*C                                                                SGS02098
+020990     EXEC ADABAS                                                  SGS02099
+021000       FETCH C042                                                 SGS02100
+021010     END-EXEC                                                     SGS02101
+021020     IF  RESPONSE-CODE OF C042-A-0039SGS03 = 0                    SGS02102
+021030         AND ADACODE = 0                                          SGS02103
+021040         MOVE CORR RECORD-BUFC042 TO RECORD-BUFR042               SGS02104
+021050         PERFORM 10450-2SQL-90170-C042-MOVE-PEG                   SGS02105
+021060            VARYING 2SQL-S1 FROM 1 BY 1                           SGS02106
+021070            UNTIL 2SQL-S1 > 0016                                  SGS02107
+021080         PERFORM 10460-2SQL-90180-C042-MOVE-PEG                   SGS02108
+021090            VARYING 2SQL-S1 FROM 1 BY 1                           SGS02109
+021100            UNTIL 2SQL-S1 > 0011                                  SGS02110
+021110     END-IF                                                       SGS02111
+021120     MOVE RESPONSE-CODE OF C042-A-0039SGS03                       SGS02112
+021130       TO 2SQL-RESPONSE-CODE                                      SGS02113
+021140     IF  2SQL-RESPONSE-CODE = 3                                   SGS02114
+021150         MOVE -1 TO 2SQL-RESPONSE-CODE                            SGS02115
+021160     END-IF                                                       SGS02116
+021170     MOVE ISN OF C042-A-0039SGS03                                 SGS02117
+021180       TO 2SQL-DBS278-CURRENT-ISN.                                SGS02118
+021190                                                                  SGS02119
+021200                                                                  SGS02120
+021210                                                                  SGS02121
+021220 10450-2SQL-90170-C042-MOVE-PEG.                                  SGS02122
+021230*C                                                                SGS02123
+021240*C  PERFORMED BY:                                                 SGS02124
+021250*C                                                                SGS02125
+021260*C      10440-2SQL-90160-C042-FETCH                               SGS02126
+021270*C                                                                SGS02127
+021280     MOVE VR-EQUIP-ASSIN-PECA            OF                       SGS02128
+021290       C042-A-0039SGS03                     (2SQL-S1)             SGS02129
+021300         TO VR-EQUIP-ASSIN-PECA            OF                     SGS02130
+021310       R042-A-0039SGS03                     (2SQL-S1).            SGS02131
+021320                                                                  SGS02132
+021330                                                                  SGS02133
+021340                                                                  SGS02134
+021350 10460-2SQL-90180-C042-MOVE-PEG.                                  SGS02135
+021360*C                                                                SGS02136
+021370*C  PERFORMED BY:                                                 SGS02137
+021380*C                                                                SGS02138
+021390*C      10440-2SQL-90160-C042-FETCH                               SGS02139
+021400*C                                                                SGS02140
+021410     MOVE SG-FAOR-REAT-TARIF             OF                       SGS02141
+021420       C042-A-0039SGS03                     (2SQL-S1)             SGS02142
+021430         TO SG-FAOR-REAT-TARIF             OF                     SGS02143
+021440       R042-A-0039SGS03                     (2SQL-S1)             SGS02144
+021450     MOVE VR-FAOR-REAT-TARIF             OF                       SGS02145
+021460       C042-A-0039SGS03                     (2SQL-S1)             SGS02146
+021470         TO VR-FAOR-REAT-TARIF             OF                     SGS02147
+021480       R042-A-0039SGS03                     (2SQL-S1).            SGS02148
+021490                                                                  SGS02149
+021500                                                                  SGS02150
+021510                                                                  SGS02151
+021520 10470-00-OCORR-39OK.                                             SGS02152
+021530*C                                                                SGS02153
+021540*C  PERFORMED BY:                                                 SGS02154
+021550*C                                                                SGS02155
+021560*C      10430-00-FORMATA39                                        SGS02156
+021570*C                                                                SGS02157
+021580                                                                  SGS02158
+021590*----------------------------------------------------------------*SGS02159
+021600*   REG-39 COM COD.PECA DIF 0 :                                  *SGS02160
+021610*   -  ARMAZENAR DUAS OCORRENCIAS COM  DT-VIG-INIC (FILE39)      *SGS02161
+021620*      MENOR/IGUAL DT-TERM-PER (SEQENT01) E STATUS2 = 0          *SGS02162
+021630*----------------------------------------------------------------*SGS02163
+021640     SUBTRACT  1  FROM  WIN-IND                                   SGS02164
+021650     IF  WIN-IND  EQUAL  0                                        SGS02165
+021660         CONTINUE                                                 SGS02166
+021670     ELSE                                                         SGS02167
+021680         IF  WBD-INIC1-39X (WIN-IND)  EQUAL SPACES                SGS02168
+021690             CONTINUE                                             SGS02169
+021700         ELSE                                                     SGS02170
+021710             MOVE WBD-INIC1-39 (WIN-IND) TO WAX-DDMMAA            SGS02171
+021720             MOVE WAX-DD-I TO WAX-I-DD                            SGS02172
+021730             MOVE WAX-MM-I TO WAX-I-MM                            SGS02173
+021740             MOVE WAX-AA-I TO WAX-I-AA                            SGS02174
+021750             COMPUTE WAX-BUG1 = (WAX-AAMMDD + 500000)             SGS02175
+021760             COMPUTE WAX-BUG2 = (E01-TERM-PER + 500000)           SGS02176
+021770             IF  ( WAX-BUG1 NOT GREATER WAX-BUG2 ) AND            SGS02177
+021780                 WBD-STAT1-39 (WIN-IND) EQUAL '0'                 SGS02178
+021790                 ADD 1 TO WAC-OCORR                               SGS02179
+021800                 MOVE WBD-VALOR1-39 (WIN-IND) TO WAX-VAL-N        SGS02180
+021810                     (WAC-OCORR)                                  SGS02181
+021820                 MOVE WAX-AAMMDD              TO WAX-INIC-38-39   SGS02182
+021830                     (WAC-OCORR)                                  SGS02183
+021840                 MOVE WBD-FIM1-39 (WIN-IND)   TO WAX-DDMMAA       SGS02184
+021850                 MOVE WAX-DD-I                TO WAX-I-DD         SGS02185
+021860                 MOVE WAX-MM-I                TO WAX-I-MM         SGS02186
+021870                 MOVE WAX-AA-I                TO WAX-I-AA         SGS02187
+021880                 MOVE WAX-AAMMDD              TO WAX-FIM-38-39    SGS02188
+021890                     (WAC-OCORR)                                  SGS02189
+021900             END-IF                                               SGS02190
+021910         END-IF                                                   SGS02191
+021920     END-IF.                                                      SGS02192
+021930                                                                  SGS02193
+021940                                                                  SGS02194
+021950 10480-00-PECAS-DIF-0.                                            SGS02195
+021960*C                                                                SGS02196
+021970*C  PERFORMED BY:                                                 SGS02197
+021980*C                                                                SGS02198
+021990*C      10430-00-FORMATA39                                        SGS02199
+022000*C                                                                SGS02200
+022010                                                                  SGS02201
+022020*----------------------------------------------------------------*SGS02202
+022030*    COM DADOS DOS REGISTROS ARMAZENADOS FORMATAR E GRAVAR       *SGS02203
+022040*              REG.PECAS DO SEQSAI01                             *SGS02204
+022050*----------------------------------------------------------------*SGS02205
+022060     MOVE WBD-CODPECA         TO S01-CODPECA                      SGS02206
+022070     MOVE WBD-DEB-39          TO S01-DEB                          SGS02207
+022080     MOVE WBD-CRED-39         TO S01-CRED                         SGS02208
+022090     MOVE WBD-CONTAB-39       TO S01-CONTAB                       SGS02209
+022100     IF  WBD-FNT-39  NOT NUMERIC                                  SGS02210
+022110         MOVE 0 TO S01-FNT                                        SGS02211
+022120     ELSE                                                         SGS02212
+022130         MOVE WBD-FNT-39       TO S01-FNT                         SGS02213
+022140     END-IF                                                       SGS02214
+022150     MOVE WAX-VAL-N      (2)  TO S01-VALOR-N1                     SGS02215
+022160     MOVE WAX-INIC-38-39 (2)  TO S01-INIC-N1                      SGS02216
+022170     MOVE WAX-FIM-38-39  (2)  TO S01-FIM-N1                       SGS02217
+022180     MOVE WAX-VAL-N      (1)  TO S01-VALOR-N2                     SGS02218
+022190     MOVE WAX-INIC-38-39 (1)  TO S01-INIC-N2                      SGS02219
+022200     MOVE WAX-FIM-38-39  (1)  TO S01-FIM-N2.                      SGS02220
+022210                                                                  SGS02221
+022220                                                                  SGS02222
+022230                                                                  SGS02223
+022240 10490-00-PECAS-ORTN.                                             SGS02224
+022250*C                                                                SGS02225
+022260*C  PERFORMED BY:                                                 SGS02226
+022270*C                                                                SGS02227
+022280*C      10430-00-FORMATA39                                        SGS02228
+022290*C                                                                SGS02229
+022300                                                                  SGS02230
+022310*----------------------------------------------------------------*SGS02231
+022320*         FORMATACAO DOS 6 REGS ORTN QUE SERAO CLASSIFICADOS     *SGS02232
+022330*            DESCENDENTEMENTE PELO CAMPO DATA-INICIO             *SGS02233
+022340*----------------------------------------------------------------*SGS02234
+022350     MOVE WBD-INIC2-39  TO WAX-DDMMAA                             SGS02235
+022360     MOVE WAX-DD-I      TO  WAX-I-DD                              SGS02236
+022370     MOVE WAX-MM-I      TO  WAX-I-MM                              SGS02237
+022380     MOVE WAX-AA-I      TO  WAX-I-AA                              SGS02238
+022390     IF  WAX-I-MM  EQUAL  01  OR  07                              SGS02239
+022400         COMPUTE WAX-BUG1 = (WAX-AAMMDD + 500000)                 SGS02240
+022410         COMPUTE WAX-BUG2 = (E01-TERM-PER + 500000)               SGS02241
+022420         IF  ( WAX-BUG1 NOT GREATER WAX-BUG2 )                    SGS02242
+022430             MOVE WBD-VALOR2-39 (1) TO WAX-VALOR2-39 (WAX-W3)     SGS02243
+022440             MOVE WAX-AAMMDD        TO WAX-INIC-39   (WAX-W3)     SGS02244
+022450             IF  WAX-AAMMDD NOT EQUAL ZEROS                       SGS02245
+022460                 IF  WAX-AAMMDD LESS 500101                       SGS02246
+022470                     MOVE 2 TO WAX-SECU-39(WAX-W3)                SGS02247
+022480                 ELSE                                             SGS02248
+022490                     MOVE 1 TO WAX-SECU-39(WAX-W3)                SGS02249
+022500                 END-IF                                           SGS02250
+022510             END-IF                                               SGS02251
+022520             PERFORM  10500-00-PECAS-ORTN-1                       SGS02252
+022530             MOVE WAX-AAMMDD        TO WAX-FIM-39    (WAX-W3)     SGS02253
+022540             ADD  1                 TO  WAX-W3                    SGS02254
+022550         END-IF                                                   SGS02255
+022560     END-IF.                                                      SGS02256
+022570                                                                  SGS02257
+022580                                                                  SGS02258
+022590                                                                  SGS02259
+022600 10500-00-PECAS-ORTN-1.                                           SGS02260
+022610*C                                                                SGS02261
+022620*C  PERFORMED BY:                                                 SGS02262
+022630*C                                                                SGS02263
+022640*C      10490-00-PECAS-ORTN                                       SGS02264
+022650*C                                                                SGS02265
+022660     IF  WAX-I-MM  EQUAL  01                                      SGS02266
+022670         MOVE  30  TO  WAX-I-DD                                   SGS02267
+022680         MOVE  06  TO  WAX-I-MM                                   SGS02268
+022690     ELSE                                                         SGS02269
+022700         MOVE  31  TO  WAX-I-DD                                   SGS02270
+022710         MOVE  12  TO  WAX-I-MM                                   SGS02271
+022720     END-IF.                                                      SGS02272
+022730                                                                  SGS02273
+022740                                                                  SGS02274
+022750                                                                  SGS02275
+022760 10510-00-FINAL.                                                  SGS02276
+022770*C                                                                SGS02277
+022780*C  PERFORMED BY:                                                 SGS02278
+022790*C                                                                SGS02279
+022800*C      CSF-MAIN                                                  SGS02280
+022810*C                                                                SGS02281
+022820     CALL    'CPD0003S'  USING WDS-DSNAME                         SGS02282
+022830     PERFORM 10520-PESQ-DSN                                       SGS02283
+022840             VARYING WIN-INI FROM 1 BY 1                          SGS02284
+022850               UNTIL WIN-INI GREATER 15 OR                        SGS02285
+022860                 WDS-DSN (WIN-INI) EQUAL HIGH-VALUE               SGS02286
+022870     CLOSE   SEQENT01                                             SGS02287
+022880             SEQSAI01                                             SGS02288
+022890     PERFORM 10020-00-ERRO                                        SGS02289
+022900     CALL 'CPD0017S' USING WRC-NOMJOB                             SGS02290
+022910     CALL 'CPD0016S' USING WRC-REDE                               SGS02291
+022920     STOP RUN.                                                    SGS02292
+022930                                                                  SGS02293
+022940                                                                  SGS02294
+022950                                                                  SGS02295
+022960 10520-PESQ-DSN.                                                  SGS02296
+022970*C                                                                SGS02297
+022980*C  PERFORMED BY:                                                 SGS02298
+022990*C                                                                SGS02299
+023000*C      10510-00-FINAL                                            SGS02300
+023010*C                                                                SGS02301
+023020                                                                  SGS02302
+023030*90-99-FINAL.                                                     SGS02303
+023040*    EXIT.                                                        SGS02304
+023050     IF  WDS-DDN (WIN-INI) EQUAL 'SEQENT01'                       SGS02305
+023060         MOVE WDS-DSN (WIN-INI) TO WRC-CODE1                      SGS02306
+023070     ELSE                                                         SGS02307
+023080         IF  WDS-DDN (WIN-INI) EQUAL 'SEQSAI01'                   SGS02308
+023090             MOVE WDS-DSN (WIN-INI) TO WRC-CODS1                  SGS02309
+023100         END-IF                                                   SGS02310
+023110     END-IF.                                                      SGS02311
+023120                                                                  SGS02312
+023130                                                                  SGS02313
+023140                                                                  SGS02314
+023150 10090-00-INPUT-FILE37 SECTION.                                   SGS02315
+023160*C                                                                SGS02316
+023170*C  PERFORMED BY:                                                 SGS02317
+023180*C                                                                SGS02318
+023190*C      CSF-MAIN                                                  SGS02319
+023200*C                                                                SGS02320
+023210     MOVE '1'    TO SOR-COD1                                      SGS02321
+023220     MOVE SPACES TO WAX-REG37 (1)  WAX-REG37 (2)  WAX-REG37 (3)   SGS02322
+023230     MOVE  21    TO WAX-TAMAN                                     SGS02323
+023240     MOVE  3001  TO WAX-DIVIS                                     SGS02324
+023250     PERFORM 10100-00-FORMATA37                                   SGS02325
+023260             UNTIL WCH-FIMARQ37 EQUAL HIGH-VALUES.                SGS02326
+023270                                                                  SGS02327
+023280                                                                  SGS02328
+023290                                                                  SGS02329
+023300 10220-00-OUTPUT-FILE37 SECTION.                                  SGS02330
+023310*C                                                                SGS02331
+023320*C  PERFORMED BY:                                                 SGS02332
+023330*C                                                                SGS02333
+023340*C      CSF-MAIN                                                  SGS02334
+023350*C                                                                SGS02335
+023360     PERFORM 10230-00-LER-SORT                                    SGS02336
+023370     PERFORM  10240-00-ARQ-TRAB                                   SGS02337
+023380              UNTIL  WCH-FIMSORT EQUAL HIGH-VALUES.               SGS02338
+023390                                                                  SGS02339

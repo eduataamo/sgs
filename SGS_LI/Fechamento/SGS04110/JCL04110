@@ -1,0 +1,19 @@
+//SGS04110  PROC                                                        00000000
+//* *-----------------------------------------------------------------* 00000010
+//* *                 SGS04-1 - BATIMENTO    CAX / TAC                * 00000020
+//* *-----------------------------------------------------------------* 00000030
+//SGS03110  EXEC  PGM=SGS03110                                          00000040
+//* *-----------------------------------------------------------------* 00000010
+//* * FAZER BALANCEAMENTO DE TABELA DE CORRESPONDENCIA DE TELEFONES   * 00000010
+//* * CONTRA CADASTRO AUXILIAR DE FATURAMENTO PARA ALTERAR TERMINAIS  * 00000010
+//* * QUE SOFRERAM MUDANCA DE NUMERO                                  * 00000010
+//* *-----------------------------------------------------------------* 00000010
+//STEPLIB   DD DSN=ADABAS.TELE.ADALOAD,DISP=SHR                         00000050
+//SYSOUT    DD SYSOUT=*                                                 00000060
+//MINTDUMP  DD SYSOUT=U                                                 00000070
+//TSTDMP    DD SYSOUT=U                                                 00000080
+//SYSUDUMP  DD SYSOUT=U                                                 00000090
+//DDCARD    DD DSN=ADABAS.TELE.INSTALL(RUNPROD),DISP=SHR                00000100
+//DDASSO    DD DUMMY                                                    00000110
+//SEQENT01  DD DSN=F.SGS530(0),DISP=SHR                                 00000120
+//DDREDE    DD SYSOUT=P                                                 00000130

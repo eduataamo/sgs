@@ -1,0 +1,39 @@
+      020. TRANSFERIR PROGRAMA DA PRODUCAO PARA DESENVOLVIMENTO :
+ 
+        . no painel 'PRIMARY OPTION MENU', digite opcao 5 e <enter>.
+        . no painel 'PACKAGE LIST PARAMETERS' :
+          . no campo 'PACKAGE ID', digite o numero do pacote e <enter>.
+        . no painel 'CHANGE PACKAGE LIST' :
+          . no campo antes do 'package id', digite C1 e <enter>.
+        . no painel 'CHECKOUT' :
+          . no campo 'OPTION ===>', deixe em branco.
+          . no campo 'COMPONENT NAME', digite o nome do programa.
+          . no campo 'LIBRARY TYPE', digite o tipo da biblioteca, ou
+            deixe em branco para apresentar a lista.
+          . no campo 'LANGUAGE', deixe em branco.
+          . no campo 'SOURCE LIBRARY', digite zero.
+          . no campo 'CHECK OUT TO', digite S.
+          . no campo 'PERSONAL LIBRARY', deixe em branco.
+          . no campo 'LIBRARY DSORG', deixe em branco.
+          . no campo 'CONFIRM REQUEST', digite YES.
+          . no campo 'LOCK COMPONENT', digite NO.
+          . tecle <enter>.
+        . no painel 'Nome do programa.Tipo da biblioteca', onde mostra
+          a informacao de outros pacotes que acessaram este programa,
+          tecle <enter>, para continuar a transferencia.
+        . no painel 'CHECKOUT JOB CARD...', digite os cartoes :
+          . jobname com notify e region.
+          . /*route print mc0000
+          . /*jobparm s=mvsa
+          . exemplo :
+                  //fat012$$ job (rsa3,rddm,0,0),01500.marcia,class=d,
+                  //           msgclass=r,notify=c015002,region=8m
+                  /*route print mc0000
+                  /*jobparm s=mvsa
+          . tecle <enter>.
+        . retorna a mensagem :
+          fat012$$(job15206) submitted cn(internal)
+          ***
+          . tecle <enter>.
+        . retorna o painel 'CHECKOUT', tecle pf3.
+        . retorna o painel 'CHANGE PACKAGE LIST' com o processo OK.

@@ -1,0 +1,467 @@
+000010 IDENTIFICATION              DIVISION.                            00000001
+000030 PROGRAM-ID.                 SGS04070.                            00000003
+000050 AUTHOR.                     DESCONHECIDO.                        00000005
+000070*REMARKS.                                                         00000007
+000080****************************************************              00000009
+000100*   FORMATA ARQUIVOS CAF E CAX REDUZIDOS           *              00000011
+000110*      PROCESSO DE AMOSTRAGEM DIRIGIDA             *              00000012
+000120****************************************************              00000013
+000130*/                                                                00000014
+000270     EJECT                                                        00000028
+000280 ENVIRONMENT            DIVISION.                                 00000029
+000290     SKIP3                                                        00000030
+000300 CONFIGURATION          SECTION.                                  00000031
+000310     SKIP3                                                        00000032
+000320 SPECIAL-NAMES.         DECIMAL-POINT IS COMMA.                   00000033
+000330     SKIP3                                                        00000034
+000340 INPUT-OUTPUT           SECTION.                                  00000035
+000350 FILE-CONTROL.                                                    00000036
+000360     SKIP3                                                        00000037
+000370     SELECT  SEQENT01   ASSIGN  UT-S-SEQENT01.                    00000038
+000380     SELECT  SEQENT02   ASSIGN  UT-S-SEQENT02.                    00000039
+000410     SELECT  SEQSAI01   ASSIGN  UT-S-SEQSAI01.                    00000042
+000420     SELECT  SEQSAI02   ASSIGN  UT-S-SEQSAI02.                    00000043
+000440     EJECT                                                        00000044
+000450 DATA                   DIVISION.                                 00000045
+000460 FILE                   SECTION.                                  00000046
+000990     EJECT                                                        00000113
+001000*---------------------------------------------------------------* 00000114
+001010*         CADASTRO DE FATURAMENTO                               * 00000115
+001020*---------------------------------------------------------------* 00000116
+001030     SKIP3                                                        00000117
+001040 FD          SEQENT01                                             00000118
+001050             DATA RECORD IS E01-REG                                WIZDATA
+001060             BLOCK           0                                    00000127
+001070             RECORD          184 TO 1744                          00000002
+001080             RECORDING       V.                                   00000129
+001090     SKIP3                                                        00000130
+001100 01          E01-REG.                                             00000131
+001110     05      E01-TEL         PIC S9(015)     COMP-3.              00000132
+001120     05      E01-CORR        PIC X.                               00000133
+001130     05      E01-SITCC       PIC X(002).                          00000135
+001170     05      E01-CSL         PIC X(004).                          00000142
+001180     05      E01-CPCC        PIC X(002).                          00000144
+001210     05      FILLER          PIC X(116).                          00000149
+001220     05      E01-V           PIC X(002).                          00000150
+001230     05      FILLER          PIC X(005).                          00000151
+001240     05      E01-CA          PIC X(002).                          00000153
+001270     05      E01-FATB        PIC 9(002).                          00000158
+001280     05      E01-FATEXT      PIC 9(002).                          00000159
+001290     05      FILLER          PIC X(022).                          00000160
+001300     05      E01-DTRET       PIC 9(007)      COMP-3.              00000160
+001310     05      E01-COC         PIC S9(03)      COMP-3.              00000161
+001320     05      E01-NRC         PIC S9(11)      COMP-3.
+001330     05      FILLER          PIC  X(04).
+001340     05      E01-SEREQ       OCCURS  0 TO 39  TIMES               00000164
+001350                             DEPENDING   ON  E01-COC.             00000165
+001360      10     E01-QTD         PIC 9(001).                          00000166
+001370      10     E01-CSA         PIC X(003).                          00000167
+001380      10     E01-TIPO        PIC X(003).                          00000168
+001390      10     E01-COR         PIC X(002).                          00000169
+001400      10     E01-PROP        PIC X(001).                          00000170
+001410      10     FILLER          PIC X(003).                          00000171
+001420      10     E01-MOD         PIC X(006).                          00000172
+001430      10     E01-DTGAR       PIC X(004).                          00000004
+001440      10     E01-FNT         PIC S9(03)      COMP-3.              00000173
+001450      10     E01-DEB         PIC S9(05)      COMP-3.              00000174
+001460      10     E01-CON         PIC S9(09)      COMP-3.              00000175
+001470      10     E01-VAL         PIC S9(09)V99   COMP-3.              00000176
+001480      10     E01-IND         PIC 9(001).                          00000177
+001490     EJECT                                                        00000178
+001500*---------------------------------------------------------------* 00000179
+001510*         CADASTRO AUXILIAR DE FATURAMENTO                      * 00000180
+001520*---------------------------------------------------------------* 00000181
+001530     SKIP3                                                        00000182
+001540 FD          SEQENT02                                             00000183
+001550             DATA RECORD IS E02-REG                                WIZDATA
+001560             BLOCK           0                                    00000192
+001570             RECORD          170                                  00000193
+001580             RECORDING       F.                                   00000194
+001590     SKIP3                                                        00000195
+001600 01          E02-REG.                                             00000196
+009440      10     E02-TEL         PIC S9(15)      COMP-3.              00001005
+009450      10     E02-CORR        PIC X(001).                          00001006
+009460     07      E02-COMUM.                                           00000111
+009470      10     FILLER          PIC X(004).                          00001007
+009480      10     E02-SIT         PIC X(001).                          00001008
+009490      10     E02-DCO         PIC S9(07)      COMP-3.              00001009
+009500      10     E02-IC          PIC S9(07)      COMP-3.              00001010
+009510      10     E02-FC          PIC S9(07)      COMP-3.              00001011
+009520      10     E02-SER         PIC X(007).                          00001012
+009530      10     E02-CSL         PIC X(004).                          00001013
+009540      10     E02-CSA         PIC X(003).                          00001014
+009550      10     E02-TIPO        PIC X(003).                          00001015
+009560      10     E02-PROP        PIC X(001).                          00001016
+009570      10     E02-MOD         PIC X(006).                          00001017
+009580      10     E02-CPCC        PIC 9(002).                          00001018
+009590      10     E02-EQPTO       PIC 9(003)      COMP-3.              00001020
+009600      10     E02-FAT         PIC S9(05)      COMP-3.              00001021
+009610      10     E02-QTD         PIC S9(05)      COMP-3.              00001022
+009620      10     E02-VAL         PIC S9(09)V99   COMP-3.              00001023
+009630      10     E02-MUL         PIC S9(05)V9(8) COMP-3.              00001024
+009640      10     FILLER          PIC X(004).                          00000113
+009640      10     E02-SERV        PIC X(004).                          00000113
+009650      10     E02-DTREAJ      PIC S9(007)     COMP-3.              00000114
+009660      10     E02-FNT         PIC S9(03)      COMP-3.              00001026
+009670      10     E02-CON         PIC S9(13)      COMP-3.              00001027
+009680      10     E02-TEXTO.                                           00001028
+009690       15    FILLER          PIC X(012).                          00001029
+009700       15    E02-FILTEX      PIC X(007).                          00001030
+009710      10     FILLER          PIC X(011).                          00001031
+009720      10     E02-PARSAL      PIC S9(03)      COMP-3.              00001032
+009730      10     E02-PARTOT      PIC S9(03)      COMP-3.              00001033
+009740      10     E02-ITR         PIC X(001).                          00001034
+009750      10     E02-TAR         PIC X(001).                          00001035
+009760      10     FILLER          PIC X(008).                          00001036
+009770      10     E02-COR         PIC X(002).                          00001037
+009780      10     E02-CSLA        PIC X(004).                          00001038
+009790      10     FILLER          PIC X(008).                          00001039
+009800      10     E02-FATB        PIC 9(002).                          00001040
+009810      10     E02-FATEXT      PIC 9(002).                          00001041
+009820      10     E02-MOVIM       PIC X(001).                          00001042
+009830      10     FILLER          PIC X(004).                          00001043
+009840     07      E02-FIM.                                             00000116
+009850      10     E02-NRC         PIC S9(11)      COMP-3.              00001043
+009860      10     E02-V           PIC  X(002).                         00000118
+009870      10     E02-SITANT      PIC  X(001).                         00000119
+002330     EJECT                                                        00000266
+002340*---------------------------------------------------------------* 00000267
+002350*    CADASTRO  DE  FATURAMENTO  -  REDUZIDO                     * 00000268
+002360*---------------------------------------------------------------* 00000269
+002370     SKIP3                                                        00000270
+002380 FD          SEQSAI01                                             00000271
+002390             DATA RECORD IS S01-REG                                WIZDATA
+002400             BLOCK           0                                    00000280
+002410             RECORD          40                                   00000006
+002420             RECORDING       F.                                   00000282
+002430     SKIP3                                                        00000283
+002440 01          S01-REG.                                             00000284
+002450     05      S01-TEL         PIC 9(15).                           00000285
+002470     05      S01-CSL         PIC X(04).
+002470     05      S01-QTD         PIC 9(02).
+002480     05      S01-DEB         PIC 9(05).                           00000008
+002480     05      S01-VAL         PIC 9(09)V99.                        00000008
+002480     05      FILLER          PIC X(03).                           00000008
+002500     EJECT                                                        00000291
+002510*---------------------------------------------------------------* 00000292
+002520*         CADASTRO AUXILIAR DE FATURAMENTO - REDUZIDO           * 00000293
+002530*---------------------------------------------------------------* 00000294
+002540     SKIP3                                                        00000295
+002550 FD          SEQSAI02                                             00000296
+002560             DATA RECORD IS S02-REG                                WIZDATA
+002570             BLOCK           0                                    00000307
+002580             RECORD          60                                   00000308
+002590             RECORDING       F.                                   00000309
+002600     SKIP3                                                        00000310
+002610 01          S02-REG.                                             00000311
+002450     05      S02-TEL         PIC 9(15).                           00000285
+002460     05      S02-DCO         PIC 9(06).                           00000286
+002450     05      S02-CSL         PIC X(04).                           00000285
+002470     05      S02-FAT         PIC 9(05).
+002480     05      S02-QTD         PIC 9(05).                           00000008
+002480     05      S02-VAL         PIC 9(09)V99.                        00000008
+002480     05      S02-SERV        PIC X(04).                           00000008
+002620     05      S02-FIL         PIC X(10).                           00000312
+002630     EJECT                                                        00000018
+002950 WORKING-STORAGE        SECTION.                                  00000314
+002960     SKIP2                                                        00000315
+002970 01          WRK-AREAS.                                           00000316
+002980     05      FILLER          PIC X(050)             VALUE         00000317
+002990             '*SGS04070 - INICIO DA WORKING-STORAGE SECTION.'.    00000318
+003000     SKIP1                                                        00000319
+003010*---------------------------------------------------------------* 00000320
+003020*            A U X I L I A R E S   D I V E R S A S              * 00000321
+003030*---------------------------------------------------------------* 00000322
+003040     SKIP3                                                        00000323
+003140     05      WAX-ABEND.                                           00000333
+003150      10     WAX-AB          PIC X.                               00000334
+003160      10     WAX-COD         PIC S9(04)      COMP.                00000335
+003830     SKIP3                                                        00000417
+003840     05      WAX-DATA.                                            00000418
+003850      10     WAX-MES         PIC XX.                              00000429
+003860      10     FILLER          PIC X.                               00000430
+003870      10     WAX-DIA         PIC XX.                              00000431
+003880      10     FILLER          PIC X.                               00000432
+003890      10     WAX-ANO         PIC XX.                              00000433
+003900     SKIP1                                                        00000434
+004930*---------------------------------------------------------------* 00000527
+004940*                  M E N S A G E N S                            * 00000528
+004950*---------------------------------------------------------------* 00000529
+005030     SKIP1                                                        00000537
+005040     05      WA1-MEN.                                             00000538
+005050      10     FILLER          PIC X(022)             VALUE         00000539
+005060             '0100 - SEQENT01 VAZIO'.                             00000540
+005110     SKIP1                                                        00000545
+005120     05      WA2-MEN.                                             00000546
+005130      10     FILLER          PIC X(022)             VALUE         00000547
+005140             '0200 - SEQENT02 VAZIO'.                             00000548
+005510     EJECT                                                        00000591
+005520*---------------------------------------------------------------* 00000592
+005530*                C  H  A  V  E  S                               * 00000593
+005540*---------------------------------------------------------------* 00000594
+005550     SKIP3                                                        00000595
+005560     05      WCH-ARQ1        PIC X                  VALUE ' '.    00000596
+005570     SKIP1                                                        00000597
+005580     05      WCH-ARQ2        PIC X                  VALUE ' '.    00000598
+006190     EJECT                                                        00000659
+006010*---------------------------------------------------------------* 00000641
+006020*            I  N  D  E  X  A  D  O  R  E  S                    * 00000642
+006030*---------------------------------------------------------------* 00000643
+006040     SKIP3                                                        00000644
+006050     05      WIN-DDN         PIC S9(004)     COMP SYNC.           00000645
+006100     05      WIN-OCE         PIC S9(004)     COMP SYNC.           00000650
+006190     EJECT                                                        00000659
+006970*/****************************************************************00000744
+006980*                 R E D E   D E   C O N T R O L E                *00000813
+006990******************************************************************00000814
+007000     SKIP1                                                        00000815
+007010     05      WRC-REDE.                                            00000816
+007020      10     WRC-TAM         PIC S9(009)     COMP-3 VALUE +634.   00000052
+007030      10     WRC-NOMJOB      PIC X(008).                          00000818
+007040      10     WRC-PGR         PIC X(008)             VALUE         00000819
+007050             'SGS04070'.                                          00000820
+007060      10     WRC-RED         PIC X(010)             VALUE         00000821
+007070             'SGS0407-R'.                                         00000822
+007080      10     WRC-CND         PIC XX                 VALUE 'NV'.   00000823
+007090      10     WRC-DTPROC.                                          00000824
+007100       15    WRC-DIA         PIC XX.                              00000825
+007110       15    WRC-MES         PIC XX.                              00000826
+007120       15    WRC-ANO         PIC XX.                              00000827
+007130      10     WRC-HORA        PIC 99.99.99.                        00000828
+007140      10     WRC-ETAPA       PIC X(004)             VALUE '****'. 00000829
+007150      10     WRC-PAGINA      PIC X(003)             VALUE '***'.  00000830
+007160     SKIP2                                                        00000831
+007170      10     WRC-ENTR1.                                           00000832
+007180       15    WRC-CODE1       PIC X(018)             VALUE SPACES. 00000833
+007190       15    WRC-NOME1       PIC X(027)             VALUE         00000834
+007200             'SEQENT01 - CAF DO PER ODO'.                         00000835
+007210       15    WRC-INDE1       PIC XX                 VALUE SPACES. 00000836
+007220       15    WRC-VALE1       PIC S9(011)     COMP-3 VALUE +0.     00000837
+007230     SKIP1                                                        00000838
+007240       15    WRC-CODE2       PIC X(018)             VALUE SPACES. 00000839
+007250       15    WRC-NOME2       PIC X(027)             VALUE         00000840
+007260             'SEQENT02 - CAX DO PER ODO'.                         00000841
+007270       15    WRC-INDE2       PIC XX                 VALUE SPACES. 00000842
+007280       15    WRC-VALE2       PIC S9(011)     COMP-3 VALUE +0.     00000843
+007530     SKIP1                                                        00000868
+007540       15    WRC-FIMENT      PIC X                  VALUE         00000869
+007550             LOW-VALUES.                                          00000870
+007560     SKIP2                                                        00000871
+007570      10     WRC-SAID.                                            00000872
+007580       15    WRC-CODS1       PIC X(018)             VALUE SPACES. 00000873
+007590       15    WRC-NOMS1       PIC X(027)             VALUE         00000874
+007600             'SEQSAI01 - CAF REDUZIDO'.                           00000875
+007610       15    WRC-INDS1       PIC XX                 VALUE SPACES. 00000876
+007620       15    WRC-VALS1       PIC S9(011)     COMP-3 VALUE +0.     00000877
+007630     SKIP1                                                        00000878
+007640       15    WRC-CODS2       PIC X(018)             VALUE SPACES. 00000879
+007650       15    WRC-NOMS2       PIC X(027)             VALUE         00000880
+007660             'SEQSAI02 - CAX REDUZIDO'.                           00000881
+007670       15    WRC-INDS2       PIC XX                 VALUE SPACES. 00000882
+007680       15    WRC-VALS2       PIC S9(011)     COMP-3 VALUE +0.     00000883
+007790     SKIP1                                                        00000064
+007800       15    WRC-FIMSAI      PIC X                  VALUE         00000885
+007810             LOW-VALUES.                                          00000886
+007820     SKIP2                                                        00000887
+007830      10     WRC-OBS         PIC X(100)             VALUE SPACES. 00000888
+007840     SKIP1                                                        00000889
+007850      10     WRC-FIMRED      PIC X                  VALUE         00000890
+007860             HIGH-VALUES.                                         00000891
+007870     EJECT                                                        00000892
+010010*---------------------------------------------------------------* 00001057
+010020*            T    A    B    E    L    A    S                    * 00001058
+010030*---------------------------------------------------------------* 00001059
+010040     SKIP3                                                        00001060
+010050*---------------------------------------------------------------* 00001061
+010060*            DSN - ENTRADA E SAIDA                              * 00001062
+010070*---------------------------------------------------------------* 00001063
+010080     SKIP3                                                        00001064
+010090     05      WT5-DSNAME.                                          00001065
+010100      10     FILLER          OCCURS  15  TIMES.                   00001066
+010110       15    WT5-DDN         PIC X(008).                          00001067
+010120       15    WT5-DSN         PIC X(044).                          00001068
+010130     SKIP3                                                        00001069
+011330     EJECT                                                        00001302
+011340 01        WIZ-AREAS-ESPECIAIS.                                    WIZDATA
+011350     05   WIZ-DATA-ACCEPT.                                         WIZDATA
+011360       10  WIZ-DATA-ANO         PIC  9(002).                       WIZDATA
+011370       10  WIZ-DATA-MES         PIC  9(002).                       WIZDATA
+011380       10  WIZ-DATA-DIA         PIC  9(002).                       WIZDATA
+011390     05    WIZ-CUR-DATE.                                           WIZDATA
+011400       10  WIZ-DATA-MES         PIC  9(002).                       WIZDATA
+011410       10  FILLER               PIC  X(001) VALUE '/'.             WIZDATA
+011420       10  WIZ-DATA-DIA         PIC  9(002).                       WIZDATA
+011430       10  FILLER               PIC  X(001) VALUE '/'.             WIZDATA
+011440       10  WIZ-DATA-ANO         PIC  9(002).                       WIZDATA
+011450     05    WIZ-TIME-ACCEPT      PIC  9(008).                       WIZDATA
+011460     05    FILLER     REDEFINES WIZ-TIME-ACCEPT.                   WIZDATA
+011470       10  WIZ-TIMEDAY          PIC  9(006).                       WIZDATA
+011480       10  FILLER               PIC  X(002).                       WIZDATA
+013300
+013310 PROCEDURE        DIVISION.                                       00001303
+013320     SKIP3                                                        00001304
+013330 000-000-SGS04050 SECTION.                                        00001305
+013340                                                                  00001306
+013350     PERFORM 003-000-INICIO                                       00001307
+013360                                                                  00001308
+013470     ACCEPT  WIZ-DATA-ACCEPT  FROM DATE                           00002065
+013480     MOVE    CORR WIZ-DATA-ACCEPT TO WIZ-CUR-DATE                  WIZPROC
+013490     MOVE    WIZ-CUR-DATE    TO  WAX-DATA                         00001329
+013500     ACCEPT  WIZ-TIME-ACCEPT FROM TIME                             WIZPROC
+013510     MOVE    WIZ-TIMEDAY     TO  WRC-HORA                         00001330
+013520     MOVE    WAX-DIA         TO  WRC-DIA.                         00001331
+013530     MOVE    WAX-MES         TO  WRC-MES.                         00001332
+013540     MOVE    WAX-ANO         TO  WRC-ANO.                         00001333
+013550                                                                  00001334
+013920     IF  WCH-ARQ1 NOT EQUAL  HIGH-VALUES                          00001371
+013370         PERFORM 018-000-TRATA-CAF                                00001309
+013390                 UNTIL   WCH-ARQ1    EQUAL   HIGH-VALUES.         00001311
+013360                                                                  00001308
+013920     IF  WCH-ARQ2 NOT EQUAL  HIGH-VALUES                          00001371
+013370         PERFORM 020-000-TRATA-CAX                                00001309
+013400                 UNTIL   WCH-ARQ2    EQUAL   HIGH-VALUES.         00001312
+013410     SKIP1                                                        00001313
+013420     PERFORM                   132-000-FINALIZA.                        14
+013430     STOP    RUN.                                                 00001315
+013440     EJECT                                                        00001316
+013450 003-000-INICIO SECTION.                                          00001317
+013460     SKIP3                                                        00001328
+013560     OPEN    INPUT   SEQENT01                                     00001335
+013570                     SEQENT02                                     00001336
+013600             OUTPUT  SEQSAI01                                     00001339
+013610                     SEQSAI02.                                    00000122
+013630                                                                  00001341
+013640     CALL    'CPD0003S'  USING   WT5-DSNAME                       00001342
+013650     PERFORM 006-000-PESQ-DSN                                     00001343
+013660             VARYING WIN-DDN FROM 1 BY 1                          00001344
+013670             UNTIL   WIN-DDN GREATER 15                           00001345
+013680             OR      WT5-DSN (WIN-DDN) EQUAL HIGH-VALUES.         00001346
+013690     CALL    'CPD0017S'  USING   WRC-NOMJOB.                      00001347
+013780                                                                  00001357
+013910     PERFORM 024-000-LER-SEQENT01                                 00001370
+013920     IF  WCH-ARQ1 EQUAL  HIGH-VALUES                              00001371
+013930         MOVE    100     TO  WAX-COD                              00001372
+013940         MOVE    WA1-MEN TO  WRC-OBS                              00001373
+013950         GO  TO  003-999-INICIO.                                  00001374
+014360                                                                  00001419
+014370     PERFORM 025-000-LER-SEQENT02                                 00001420
+014410     IF  WCH-ARQ2 EQUAL  HIGH-VALUES                              00001424
+015830         MOVE  ZEROS         TO  S02-TEL                          00000035
+015840                                 S02-DCO                          00000036
+015850                                 S02-FAT                          00000037
+015860                                 S02-QTD                          00000038
+015870                                 S02-VAL                          00000039
+015830         MOVE  SPACES        TO  S02-CSL                          00000035
+015880         MOVE  'PER.'        TO  S02-SERV                         00000040
+015880         MOVE  'SEM MOVIM.'  TO  S02-FIL                          00000040
+015890                                                                  00000041
+015910         WRITE S02-REG                                            00000043
+016690         ADD   +1       TO  WRC-VALS2                             00001589
+014440         MOVE    WA2-MEN TO  WRC-OBS.                             00001427
+014580     SKIP1                                                        00000132
+014590 003-999-INICIO.                                                  00001435
+014600     EXIT.                                                        00001436
+014610     EJECT                                                        00001437
+014620 006-000-PESQ-DSN SECTION.                                        00001438
+014630     SKIP3                                                        00001439
+014640     IF  WT5-DDN (WIN-DDN)   EQUAL   'SEQENT01'                   00001440
+014650         MOVE    WT5-DSN (WIN-DDN)   TO  WRC-CODE1                00001441
+014660     ELSE                                                         00001442
+014670         IF  WT5-DDN (WIN-DDN)   EQUAL   'SEQENT02'               00001443
+014680             MOVE    WT5-DSN (WIN-DDN)   TO  WRC-CODE2            00001444
+014690         ELSE                                                     00001445
+014760             IF  WT5-DDN (WIN-DDN) EQUAL 'SEQSAI01'               00001452
+014770                 MOVE WT5-DSN (WIN-DDN)  TO  WRC-CODS1            00001453
+014780             ELSE                                                 00001454
+014790                 IF  WT5-DDN (WIN-DDN) EQUAL 'SEQSAI02'           00001455
+014800                     MOVE WT5-DSN (WIN-DDN) TO WRC-CODS2.         00000134
+015160     EJECT                                                        00001493
+015170 018-000-TRATA-CAF SECTION.                                       00001494
+015180                                                                  00001495
+016270     PERFORM 019-000-TRATA-OCOR                                         72
+016280             VARYING WIN-OCE FROM 1 BY 1                                73
+016290             UNTIL   WIN-OCE GREATER E01-COC.                           74
+015390                                                                  00000151
+015400     PERFORM 024-000-LER-SEQENT01.                                00000152
+015420     SKIP1                                                        00000154
+015430 018-999-TRATA-CAF.                                               00000155
+015440     EXIT.                                                        00000156
+015730     EJECT                                                        00000185
+016570 019-000-TRATA-OCOR SECTION.                                      00001587
+016580     SKIP3                                                        00001588
+016590     IF (E01-DEB(WIN-OCE) EQUAL 00000  OR  99999)  OR
+016590         E01-VAL(WIN-OCE) EQUAL ZEROS
+               NEXT  SENTENCE
+           ELSE
+016590         IF E01-IND(WIN-OCE) EQUAL 0
+016690            MOVE  E01-TEL           TO  S01-TEL                   00001589
+016690            MOVE  E01-CSL           TO  S01-CSL                   00001589
+016690            MOVE  E01-QTD(WIN-OCE)  TO  S01-QTD                   00001589
+016690            MOVE  E01-DEB(WIN-OCE)  TO  S01-DEB                   00001589
+016690            MOVE  E01-VAL(WIN-OCE)  TO  S01-VAL                   00001589
+016690                                                                  00001589
+016690            WRITE S01-REG                                         00001589
+016690            ADD   +1                TO  WRC-VALS1.                00001589
+016690                                                                  00001589
+015740 020-000-TRATA-CAX SECTION.                                       00000026
+015750     SKIP1                                                        00000027
+016590     IF  E02-VAL  NOT  EQUAL  ZEROS
+015760         IF  E02-SERV  EQUAL  'EXEC'                              00000028
+015770                          OR  'FRA'                               00000029
+015780                          OR  'TOCA'                              00000030
+015790                          OR                                      00000031
+015800             (E02-SERV EQUAL  'DCA'  AND                          00000032
+015810              E02-VAL  GREATER 1000,00)                           00000033
+015820                                                                  00000034
+015830             MOVE  E02-TEL  TO  S02-TEL                           00000035
+015840             MOVE  E02-DCO  TO  S02-DCO                           00000036
+015830             MOVE  E02-CSL  TO  S02-CSL                           00000035
+015850             MOVE  E02-FAT  TO  S02-FAT                           00000037
+015860             MOVE  E02-QTD  TO  S02-QTD                           00000038
+015870             MOVE  E02-VAL  TO  S02-VAL                           00000039
+015880             MOVE  E02-SERV TO  S02-SERV                          00000040
+015880             MOVE  SPACES   TO  S02-FIL                           00000040
+015890                                                                  00000041
+015910             WRITE S02-REG                                        00000043
+016690             ADD   +1       TO  WRC-VALS2.                        00001589
+016030                                                                  00000055
+015400     PERFORM 025-000-LER-SEQENT02.                                00000152
+015420     SKIP1                                                        00000154
+015430 020-999-TRATA-CAX.                                               00000155
+015440     EXIT.                                                        00000156
+016130     EJECT                                                        00001557
+016140 024-000-LER-SEQENT01 SECTION.                                    00001558
+016150     SKIP3                                                        00001559
+016160     READ    SEQENT01                                             00001560
+016170             AT      END                                          00001561
+016180             MOVE    HIGH-VALUES TO  WCH-ARQ1                     00001562
+016180             GO      TO              024-999-LER-SEQENT01.        00001562
+016690     ADD   +1       TO  WRC-VALE1.                                00001589
+015420     SKIP1                                                        00000154
+015430 024-999-LER-SEQENT01.                                            00000155
+015440     EXIT.                                                        00000156
+016130     EJECT                                                        00001557
+016140 025-000-LER-SEQENT02 SECTION.                                    00001558
+016150     SKIP3                                                        00001559
+016160     READ    SEQENT02                                             00001560
+016170             AT      END                                          00001561
+016180             MOVE    HIGH-VALUES TO  WCH-ARQ2                     00001562
+016180             GO      TO              025-999-LER-SEQENT02.        00001562
+016690     ADD   +1       TO  WRC-VALE2.                                00001589
+015420     SKIP1                                                        00000154
+015430 025-999-LER-SEQENT02.                                            00000155
+015440     EXIT.                                                        00000156
+052780     EJECT                                                        00004801
+052790 132-000-FINALIZA SECTION.                                        00004802
+052800     SKIP3                                                        00004803
+052810     CALL    'CPD0017S'  USING   WRC-NOMJOB                       00004804
+052820     CALL    'CPD0016S'  USING   WRC-REDE                         00004808
+052830     SKIP1                                                        00004809
+052840     CLOSE   SEQENT01                                             00004810
+052850             SEQENT02                                             00004811
+052880             SEQSAI01                                             00004814
+052890             SEQSAI02.                                            00000325
+052910     SKIP1                                                        00004816
+052920     MOVE    WAX-COD   TO    RETURN-CODE.                         00004817
+052930     IF  WAX-COD NOT EQUAL   ZEROS                                00004818
+052980         CALL    'ABENDAR'   USING   WAX-ABEND.

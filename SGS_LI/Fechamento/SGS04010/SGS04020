@@ -1,0 +1,91 @@
+0010 ************************************************************************
+0020 **                                                                    **
+0030 **      PROGRAMA : SGS04020                                           **
+0040 **                                                                    **
+0050 **      OBJETIVO : EMITIR RELATORIO DE TERMINAIS SEM EXTRATO DO       **
+0060 **                 SERVICO MEDIDO                                     **
+0070 **                                                                    **
+0080 ************************************************************************
+0090 DEFINE DATA LOCAL
+0100 1 SMD                 (A110)
+0110 1 REDEFINE    SMD
+0120   2  E01-TIPREG        (A03)
+0130   2  E01-NATUREZA      (A07)
+0140   2  E01-TELASS        (A15)
+0150   2  E01-TELRET        (N15)
+0160   2  E01-TIPASS        (N02)
+0170   2  E01-NUMOCS        (N11)
+0180   2  E01-DATADE        (N06)
+0190   2  E01-DATATE        (N06)
+0200   2  E01-DATRET        (N06)
+0210   2  E01-DATOCS        (N06)
+0220   2  REDEFINE  E01-DATOCS
+0230      3 E01-ANO-OCS     (N02)
+0240      3 E01-MES-OCS     (N02)
+0250      3 E01-DIA-OCS     (N02)
+0260   2  E01-CLIGADO       (P09)
+0270   2  E01-CDESLIG       (P09)
+0280   2  E01-PERIODO       (N02)
+0290   2  E01-CODOPE        (N01)
+0300   2  E01-UCMMAA        (A04)
+0310   2  FILLER            (A06)
+0320   2  E01-NRC           (P11)
+0330   2  E01-FILLER        (A04)
+0340 *
+0350 1 #LIDOS                         (P07)
+0360 1 #IMPRESSOS                     (P07)
+0370 *
+0380 1 #AX-CONTADOR                   (N09)
+0390 1 #AX-DATOCS                     (N06)
+0400 1 REDEFINE  #AX-DATOCS
+0410   2 #AX-DIA-OCS                  (N02)
+0420   2 #AX-MES-OCS                  (N02)
+0430   2 #AX-ANO-OCS                  (N02)
+0440 END-DEFINE
+0450 *
+0460 FORMAT (1) LS=132 PS=60
+0470 WRITE (1)  TITLE 'SISTEMA - FATURAMENTO' 34X 'SUBSISTEMA - SERVICOS'
+0480          'GERAIS' 28X 'I PAGINA  -  ' *PAGE-NUMBER (1) (EM=Z.ZZZ.ZZ9)
+0490     / 93X 'I'
+0500     / 'REFERENCIA -     TERMINAIS SEM EXTRATO DE SERVICO MEDIDO    '
+0510        33X 'I'
+0520     / 111X 'I DATA   - ' *DATE
+0530     / 110X 'I' 19X /
+0540       108X  '***I CODIGO - SGS0402-A' ///
+0550         3X  'COD.OPE'  5X 'T E L E F O N E'
+0560         3X  'TELEF. RETIRADO'   4X '-- N  R  C --'
+0570         3X  'DT OCS' 4X 'NUMERO OCS' 4X 'TIPO ASS' 4X 'PERIODO'
+0580         3X  'CONTADOR' /
+0590 *
+0600 READ WORK 1 SMD
+0610   ADD  1  TO  #LIDOS
+0620 *
+0630   IF  E01-CODOPE  EQ  3
+0640       MOVE  E01-CLIGADO  TO  #AX-CONTADOR
+0650   ELSE
+0660       MOVE  E01-CDESLIG  TO  #AX-CONTADOR
+0670   END-IF
+0680       MOVE   E01-DIA-OCS   TO  #AX-DIA-OCS
+0690       MOVE   E01-MES-OCS   TO  #AX-MES-OCS
+0700       MOVE   E01-ANO-OCS   TO  #AX-ANO-OCS
+0710       WRITE  (1) 10X E01-CODOPE
+0720                   7X E01-TELASS
+0730                   2X E01-TELRET
+0740                   3X E01-NRC    (EM=ZZ.ZZZ.ZZZ.ZZ9)
+0750                   2X #AX-DATOCS (EM=99/99/99)
+0760                   1X E01-NUMOCS (EM=ZZ.ZZZ.ZZZ.ZZ9)
+0770                   5X E01-TIPASS
+0780                   8X E01-PERIODO
+0790                   3X #AX-CONTADOR
+0800       ADD +1  TO  #IMPRESSOS
+0810 END-WORK
+0820 *
+0830 WRITE (1) ////// 15X 'REGISTROS LIDOS .............. ' #LIDOS
+0840              /// 15X 'REGISTROS IMPRESSOS .......... ' #IMPRESSOS
+0850 *
+0860 ON ERROR
+0870    WRITE  '   ERRO   '  *ERROR  '    LINHA   '  *ERROR-LINE
+0880           '   REG.LIDOS   ' #LIDOS
+0890 END-ERROR
+0900 *
+0910 END

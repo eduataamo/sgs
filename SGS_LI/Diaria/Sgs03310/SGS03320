@@ -1,0 +1,212 @@
+0010 **--------------------------------------------------------**
+0020 **                                                        **
+0030 **       PROGRAMA.......SGS03320.                         **
+0040 **                                                        **
+0050 **       AUTOR..........RICARDO.                          **
+0060 **                                                        **
+0070 **       ESCRITO  EM....ABR/99                            **
+0080 **       ALTERADO EM....             POR....              **
+0090 **                                                        **
+0100 **       OBJETIVOS......LISTAR MOVIMENTO DE INTERRUPCAO   **
+0110 **                      DE LINHAS INDIVIDUAIS INCLUIDO NO **
+0120 **                      ARQUIVO DE SERVICOS ESPECIAIS     **
+0130 **                                                        **
+0140 **       MODULOS CHAMADOS                                 **
+0150 **       VIA FETCH......                                  **
+0160 **       VIA CALL....... CPD10170 CPD10030 CPD10740       **
+0170 **                                                        **
+0180 **       ARQUIVOS ENT..-MOVIMENTO INTERUPCOES LI          **
+0190 **                                                        **
+0200 **       ARQUIVOS SAI..-RELATORIO                         **
+0210 **                                                        **
+0220 **--------------------------------------------------------**
+0230 ** BUG2000                                                **
+0240 **    SEM TRATAMENTO DE DATAS                             **
+0250 **--------------------------------------------------------**
+0260 DEFINE DATA LOCAL
+0270 **--------------------------------------------------------**
+0280 ** MOVIMENTO DE INTERRUPCOES P/SERVICOS ESPECIAIS -  CMFWK03
+0290 **--------------------------------------------------------**
+0300 1 #REG-E1
+0310   2 #F01-SERVICO                   (A005)
+0320   2 #F01-NUMERO-REG
+0330     3 #F01-NUM-REG                 (P011)
+0340     3 #F01-NUM-REGX                (A003)
+0350   2 #F01-ZONA                      (N003)
+0360   2 REDEFINE #F01-ZONA
+0370     3 #F01-REGI                    (N001)
+0380     3 #F01-DIST                    (N002)
+0390   2 #F01-TEL-DEB                   (N015)
+0400   2 REDEFINE #F01-TEL-DEB
+0410     3 #F01-TEL-LOC                 (N005)
+0420     3 #F01-TEL-NUM                 (N010)
+0430   2 #F01-TEL-ANT                   (N015)
+0440   2 #F01-COD-FAT                   (P007)
+0450   2 #F01-TEXTO-COMPLEMENTAR        (A019)
+0460   2 #F01-NUM-CONTRATO              (N007)
+0470   2 #F01-QTDE                      (N004)
+0480   2 #F01-VALOR                     (P9,2)
+0490   2 #F01-ICMS                      (P005)
+0500   2 #F01-COD-LISTA                 (A006)
+0510   2 #F01-DT-SERVICO                (N006)
+0520   2 #F01-STATUS                    (N001)
+0530   2 #F01-COD-SERVICO               (N003)
+0540   2 #F01-COD-LINHA                 (N003)
+0550   2 #F01-PERIODO                   (N002)
+0560   2 #F01-COD-CONTABIL              (N009)
+0570   2 #F01-DT-VAL-EDITORA            (N006)
+0580   2 #F01-DT-INCL                   (N008)
+0590   2 #F01-NRC                       (P011)
+0600   2 #F01-SEQ-AFO-FCT               (N005)
+0610   2 #F01-RESERVA                   (A004)
+0620   2 #F01-COD-MOVIMENTO             (A001)
+0630 **--------------------------------------------------------**
+0640 **  REDE DE CONTROLE                   ==>> 157 + (N * 53)
+0650 **--------------------------------------------------------**
+0660 1 #REDE
+0670   2 #FILLER1                       (P009)  INIT <263>
+0680   2 #JOB                           (A008)
+0690   2 #FILLER2                       (A018)
+0700     INIT     <'SGS03320SGS0332-R'>
+0710   2 #DATA                          (A008)
+0720   2 #HORA                          (A008)
+0730   2 #FILLER5                       (A007)  INIT <'*******'>
+0740   2 #ENTRADAS
+0750     3 #CODIE1                      (A024)  INIT <' '>
+0760     3 #FILLER6                     (A022)
+0770       INIT   <'REGISTROS LIDOS   '>
+0780     3 #VALORE1                     (P013)  INIT <0>
+0790     3 #FILLER14                    (A001)  INIT <H'00'>
+0800   2 #SAIDAS
+0810     3 #CODIS1                      (A024)  INIT <' '>
+0820     3 #FILLER16                    (A022)
+0830       INIT   <'PAGINAS GERADAS   '>
+0840     3 #VALORS1                     (P013)  INIT <0>
+0850     3 #FILLER20                    (A001)  INIT <H'00'>
+0860   2 #MENSAGEM                      (A100)  INIT <'FIM NORMAL'>
+0870   2 #FILLER21                      (A001)  INIT <H'FF'>
+0880 **--------------------------------------------------------**
+0890 **  AREA PARA A PESQUISA DE DSNAME
+0900 **--------------------------------------------------------**
+0910 1 #TAB
+0920   2 #DDSDSN                        (1:20)
+0930     3 #DDN                         (A008)
+0940     3 #DSN                         (A044)
+0950 **--------------------------------------------------------**
+0960 **  AREAS AUXILIARES
+0970 **--------------------------------------------------------**
+0980 1 #DATA8                           (N008)
+0990 1 #PAGE                            (P006)
+1000 1 #VAL-TOT                         (P13,2)
+1010 1 #IND                             (P003)
+1020 *
+1030 1 #XV-ATU
+1040   2 #XV-ATU-PER                    (N002)
+1050   2 #XV-ATU-ZON                    (N003)
+1060   2 REDEFINE #XV-ATU-ZON
+1070     3 #XV-ATU-REG                  (N001)
+1080     3 #XV-ATU-DISTR                (N002)
+1090   2 #XV-ATU-LOC                    (N005)
+1100 1 #XV-ANT
+1110   2 #XV-ANT-PER                    (N002)
+1120   2 #XV-ANT-ZON                    (N003)
+1130   2 REDEFINE #XV-ANT-ZON
+1140     3 #XV-ANT-REG                  (N001)
+1150     3 #XV-ANT-DISTR                (N002)
+1160   2 #XV-ANT-LOC                    (N005)
+1170 *
+1180 END-DEFINE
+1190 *
+1200 ************************************************************
+1210 **                                          PROCEDIMENTOS **
+1220 **--------------------------------------------------------**
+1230 MOVE  *DATE                        TO   #DATA
+1240 MOVE  *TIME                        TO   #HORA
+1250 MOVE  *DATN                        TO   #DATA8
+1260 **----------- CARREGA TABELAS DE DSNAMES E NOME JOB-------**
+1270 SET CONTROL 'P=S'
+1280 CALL  'CPD10170'   USING     #JOB
+1290 *
+1300 SET CONTROL 'P=S'
+1310 CALL  'CPD10030'   USING     #TAB
+1320 FOR #IND 1 TO 20
+1330   IF #DDN (#IND)  EQ 'CMWKF01'
+1340     MOVE  #DSN (#IND)  TO   #CODIE1
+1350   END-IF
+1360 END-FOR
+1370 *
+1380 FORMAT(1) LS=133 PS=70
+1390 ADD 1 TO #PAGE
+1400 *
+1410 WRITE(1) TITLE LEFT
+1420   001T 'SISTEMA    - SERVICOS GERAIS'
+1430   050T 'SUBSISTEMA - LINHAS INDIVIDUAIS'
+1440   106T *PAGE-NUMBER(1)
+1450   113T 'I PAGINA -  ' #PAGE  /
+1460   113T 'I' /
+1470   001T 'REFERENCIA - PESQUISA DIARIA DE REPAROS'
+1480   050T 'PER =' #F01-PERIODO (EM=99)
+1490   060T '- ZONA =' #F01-ZONA (EM=999)
+1500   107T *TIME (AL=5)
+1510   113T 'I   DATA - ' *DATE (AL=8) /
+1520   113T 'I' /
+1530   001T '***'
+1540   031T 'MOVIMENTO DIARIO DE REPAROS EM LINHAS INDIVIDUAIS'
+1550   109T '***'
+1560   113T 'I CODIGO - SGS0332-A' //
+1570 *
+1580   010T 'TERMINAL'
+1590   033T 'NRC'
+1600 * 044T 'CL.SERV'
+1610   055T 'DT-COMPL'
+1620   066T 'DIAS'
+1630   075T 'VALOR RESSARC.' /
+1640 *
+1650 READ WORK FILE 1 #REG-E1
+1660 *
+1670   AT BREAK OF #F01-PERIODO
+1680      MOVE 1 TO #PAGE
+1690      NEWPAGE(1)
+1700   END-BREAK
+1710 *
+1720   AT BREAK OF #F01-ZONA
+1730      IF #PAGE NE 1
+1740         ADD 1 TO #PAGE
+1750         NEWPAGE(1)
+1760      END-IF
+1770   END-BREAK
+1780 *
+1790   IF *LINE-COUNT(1) GT 56
+1800      ADD 1 TO #PAGE
+1810      NEWPAGE(1)
+1820   END-IF
+1830 *
+1840   ADD 1 TO #VALORE1
+1850   ADD #F01-VALOR  TO #VAL-TOT
+1860   WRITE(1)
+1870     005T #F01-TEL-DEB (EM=ZZZZZ.ZZZZ.ZZZZ.Z.Z)
+1880     028T #F01-NRC (EM=ZZZZZZZZZZZ)
+1890 *   045T #F01-CLA-SERV
+1900     055T #F01-DT-SERVICO (EM=99/99/99)
+1910     065T #F01-QTDE
+1920     074T #F01-VALOR (EM=ZZZ.ZZZ.ZZ9,99-)
+1930 END-WORK
+1940 *
+1950 ADD 1 TO #PAGE
+1960 NEWPAGE(1)
+1970 WRITE(1)
+1980     056T 'TOTAL DO DIA'
+1990     069T #VAL-TOT (EM=ZZZZ.ZZZ.ZZZ.ZZ9,99-)
+2000 *
+2010 MOVE *PAGE-NUMBER(1) TO #VALORS1
+2020 CALL 'CPD10740' USING #REDE
+2030 *
+2040 *
+2050 ON ERROR
+2060    COMPRESS 'ERRO ' *ERROR-NR ' NA LINHA ' *ERROR-LINE
+2070             ' - ABRIR REGISTRO OCORRENCIA' INTO #MENSAGEM
+2080    MOVE *PAGE-NUMBER(1) TO #VALORS1
+2090    CALL 'CPD10740' USING #REDE
+2100    TERMINATE 12
+2110 END-ERROR
+2120 END

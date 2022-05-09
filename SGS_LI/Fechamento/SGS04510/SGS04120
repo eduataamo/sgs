@@ -1,0 +1,2315 @@
+000010*****************************************************************
+000020*         I D E N T I F I C A T I O N   D I V I S I O N         *
+000030*****************************************************************
+000040
+000060 ID  DIVISION.
+000070
+000080
+000090 PROGRAM-ID.                 SGS04120.
+000100
+000110 AUTHOR.                     NELSON ARIMITSU - 66176.
+000120
+000130 DATE-WRITTEN.               FEVEREIRO/89.
+000140
+000150
+000160*REMARKS.                    *************************************
+000170*                            *                                   *
+000180*                            *   ESTE PROGRAM TEM POR OBJETIVO:  *
+000190*                            *                                   *
+000200*                            *   GERAR A FITA DO  CAF DO PERIODO *
+000210*                            * ATRAVES DA  LOCALIDADE  E CENTRAL *
+000220*                            * DO SEQENT01 - TABELA DE LOCALIDA- *
+000230*                            * DES DO PERIODO DO FILE 29         *
+000240*                            *                                   *
+000250*                            *       ANALISTA:   Y A S U O       *
+000260*                            *                                   *
+000270*                            ************************************.
+000280*****************************************************************
+000290*---------------------------------------------------------------*
+000300*                   WIZ SYSTEMS DO BRASIL                       *
+000310*    ADAPTACAO DAS CENTRAIS TELEFONICAS DE 3 PARA 4 DIGITOS     *
+000320*                                                               *
+000330*            WIZ26  -------------->   06/06/95                  *
+000340*                                                               *
+000350*---------------------------------------------------------------*
+000360                   **********************************************
+000370                   *     SANEADO EM 13/06/96      -  GILMAR     *
+000380                   *     FASE 2   (VIACENTER)     -   DTS       *
+000390                   **********************************************
+000400*****************************************************************
+000410*
+000420*
+000430 ENVIRONMENT DIVISION.
+000440
+000450
+000460 CONFIGURATION SECTION.
+000470
+000480 SPECIAL-NAMES.              DECIMAL-POINT IS COMMA.
+000490
+000500
+000510 INPUT-OUTPUT SECTION.
+000520
+000530 FILE-CONTROL.
+000540
+000550
+000560     SELECT  SEQENT01        ASSIGN  UT-S-SEQENT01.
+000560     SELECT  SEQSAI01        ASSIGN  UT-S-SEQSAI01.
+000570     SELECT  SEQSAI02        ASSIGN  UT-S-SEQSAI02.
+000580     SELECT  SEQSAI03        ASSIGN  UT-S-SEQSAI03.
+000590     SELECT  SEQSAI04        ASSIGN  UT-S-SEQSAI04.
+000600     SELECT  SEQSAI05        ASSIGN  UT-S-SEQSAI05.
+000610     SELECT  SEQSAI06        ASSIGN  UT-S-SEQSAI06.
+000620*****************************************************************
+000630*                    D A T A   D I V I S I O N                  *
+000640*****************************************************************
+000650
+000660
+000670 DATA DIVISION.
+000680
+000690
+000700 FILE SECTION.
+000710
+000720*****************************************************************
+000730*            DESCRICAO DO SEQENT01 - ARQ. DE PARAMETROS         *
+000740*****************************************************************
+000760
+000770 FD          SEQENT01
+000780             RECORDING   F
+000790             BLOCK       0
+000800             RECORD     210
+000810     DATA RECORD IS E01-REGIN.
+000820
+000830 01    E01-REGIN.
+000840
+               10 E01-LOW-HEAD           PIC  X(026).
+               10 FILLER                 PIC  X(005).
+               10 E01-PERIODO-HEAD       PIC  9(002).
+               10 E01-DT-INIPER-HEAD.
+                  15 E01-ANO-INIPER-MI   PIC  9(002).
+                  15 E01-ANO-INIPER-HEAD PIC  9(002).
+                  15 E01-MES-INIPER-HEAD PIC  9(002).
+                  15 E01-DIA-INIPER-HEAD PIC  9(002).
+               10 E01-DT-FIMPER-HEAD     PIC  X(008).
+               10 E01-DT-VENCIM-HEAD     PIC  X(008).
+               10 E01-DT-CONTA.
+                  15 E01-DT-MES-CONTA    PIC  9(002).
+                  15 E01-DT-ANO-CONTA    PIC  9(002).
+               10 FILLER                 PIC  X(139).
+000710
+000720*****************************************************************
+000730*            DESCRICAO DO SEQSAI01 - ARQ. CAF TERTEL            *
+000740*****************************************************************
+000760
+000770 FD          SEQSAI01
+000780             RECORDING   F
+000790             BLOCK       0
+000800             RECORD      700
+000810             DATA RECORD IS S01-REGOUT.
+000820
+000830 01          S01-REGOUT.
+000840
+000850     05      S01-V           PIC  X(001).
+000860     05      S01-SIGEST      PIC  X(004).
+000870     05      S01-TIPEQT      PIC  X(002).
+000880     05      FILLER          PIC  X(006).
+000890     05      S01-CAF.
+000900      10     S01-TERTEL.
+000910       15    FILLER          PIC  X(018).
+000920       15    S01-PAC         PIC  X(001).
+000930       15    FILLER          PIC  X(657).
+000940      10     FILLER          REDEFINES  S01-TERTEL.
+000950       15    S01-PARTEA      PIC X(088).
+000960       15    S01-ENDERC      PIC X(055).
+000970       15    S01-PARTEB      PIC X(004).
+000980       15    S01-EQUIP       OCCURS 19 TIMES.
+000990        20   S01-PARTEBX     PIC X(019).
+001000        20   FILLER          REDEFINES  S01-PARTEBX.
+001010         25  S01-QTDE        PIC X(001).
+001020         25  S01-CLAADI      PIC X(003).
+001030         25  S01-TIPO        PIC X(003).
+001040         25  S01-COR         PIC 9(002).
+001050         25  S01-PROP        PIC X(001).
+001060         25  S01-MARCA       PIC X(003).
+001070         25  S01-MODELO      PIC X(006).
+001080        20   S01-DTGAR       PIC X(004).
+001090       15    S01-PARTEB1     PIC X(024).
+001100       15    S01-PARTEC      PIC X(068).
+001110      10     S01-PLANO       PIC 9(03).
+001120      10     S01-NR-PER-ATU  PIC 9(02).
+001130      10     S01-NR-PER-ANT  PIC 9(02).
+001140      10     S01-DT-ALT-PER  PIC X(04).
+001190
+001150*****************************************************************
+001160*            DESCRICAO DO SEQSAI02 - ARQ. CAF TELPROV           *
+001170*****************************************************************
+001180
+001200 FD          SEQSAI02
+001210             RECORDING   F
+001220             BLOCK       0
+001230             RECORD      700
+001240     DATA RECORD IS S02-REGOUT.
+001250
+001260 01          S02-REGOUT.
+001270
+001280     05      S02-V           PIC  X(001).
+001290     05      S02-SIGEST      PIC  X(004).
+001300     05      S02-TIPEQT      PIC  X(002).
+001310     05      FILLER          PIC  X(006).
+001320     05      S02-CAF.
+001330      10     S02-TELPROV.
+001340       15    S02-PARTEA      PIC X(088).
+001350       15    S02-ENDERC      PIC X(055).
+001360       15    S02-PARTEB      PIC X(004).
+001370       15    S02-EQUIP       OCCURS 19 TIMES.
+001380        20   S02-PARTEBX     PIC X(019).
+001390        20   FILLER          REDEFINES  S02-PARTEBX.
+001400         25  S02-QTDE        PIC X(001).
+001410         25  S02-CLAADI      PIC X(003).
+001420         25  S02-TIPO        PIC X(003).
+001430         25  S02-COR         PIC 9(002).
+001440         25  S02-PROP        PIC X(001).
+001450         25  S02-MARCA       PIC X(003).
+001460         25  S02-MODELO      PIC X(006).
+001470        20   S02-DTGAR       PIC X(004).
+001480       15    S02-PARTEB1     PIC X(024).
+001490       15    S02-PARTEC      PIC X(068).
+001500      10     S02-PLANO       PIC 9(03).
+001510      10     S02-NR-PER-ATU  PIC 9(02).
+001520      10     S02-NR-PER-ANT  PIC 9(02).
+001530      10     S02-DT-ALT-PER  PIC X(04).
+001540******************************************************************
+001550*      SEQSAI03 - MESTRE  CSO/TAR - ENDERECO CORRESPONDENCIA     *
+001560******************************************************************
+001570
+001580 FD          SEQSAI03
+001590             RECORDING       F
+001600             BLOCK           0
+001610             RECORD          300
+001620     DATA RECORD IS S03-REGOUT.
+001630
+001640 01          S03-REGOUT.
+001650     05      S03-ASSINA      PIC 9(015).
+001660     05      S03-ASSINA-R  REDEFINES  S03-ASSINA.
+001670      10     S03-TELCON.
+001680       15    S03-TEL         PIC 9(013).
+001690       15    S03-CONJUG      PIC 9(001).
+001700      10     S03-DIGITO      PIC 9(01).
+001710     05      S03-LOGRAD.
+001720      10     S03-LOCALC      PIC 9(005).
+001730      10     S03-CODLOG      PIC 9(006).
+001740     05      S03-ENDCOR.
+001750      10     S03-TIPLOG      PIC X(003).
+001760      10     S03-NOMLOG      PIC X(026).
+001770      10     S03-NUMLOG      PIC 9(005).
+001780      10     S03-COMPLE      PIC X(020).
+001790      10     S03-BAIRRO      PIC X(020).
+001800      10     S03-CEP         PIC 9(009)      COMP-3.
+001810      10     S03-NOMLOC      PIC X(022).
+001820     05      S03-NUMREG      PIC S9(011)     COMP-3.
+001830     05      FILLER          PIC X(001).
+001840     05      S03-APOS        PIC  X(002).
+001850     05      S03-INDTAR      PIC  X(003).
+001860     05      S03-LOCDIP      PIC  9(005).
+001870     05      S03-NUMGA       PIC  9(005)     COMP-3.
+001880     05      S03-OPCOBR      PIC  X(001).
+001890     05      S03-TIPNRF      PIC  X(002).
+001900     05      S03-NUMNRF      PIC  9(015)     COMP-3.
+001910     05      S03-NUMCPCT     PIC  9(015)     COMP-3.
+001920     05      S03-ORGDDG      PIC  X(005).
+001930     05      S03-CODCLI      PIC  X(010).
+001940     05      S03-CODCON      PIC  X(014).
+001950     05      S03-CODRENP     PIC  X(011).
+001960     05      S03-CODAGL      PIC  X(001).
+001970     05      S03-NRCFAT      PIC  9(011)     COMP-3.
+001980     05      S03-QTDFIO      PIC  9(003)     COMP-3.
+001990     05      S03-CODCOF      PIC  X(001).
+002000     05      S03-INSCREST    PIC  X(014).
+002010     05      S03-NRC-TAR     PIC S9(011)   COMP-3.
+002020     05      S03-LOCINS      PIC S9(005)   COMP-3.
+002030     05      S03-DT-INST     PIC S9(007)   COMP-3.
+002040     05      S03-PER-ATU     PIC  9(002).
+002050     05      S03-INDRUR      PIC  X(001).
+002060     05      S03-CLSERV      PIC  X(004).
+002070     05      S03-DT-ATU      PIC S9(007)  COMP-3.
+002080     05      S03-STA-HARD    PIC  X(001).
+002090     05      S03-RESTR       PIC  X(008).
+002100     05      REDEFINES S03-RESTR.
+002110      10     S03-RESTRI  OCCURS   8
+002120                             PIC  X(01).
+002130     05      S03-MALA-SEGURO PIC  X(01).
+002140     05      S03-FILLER      PIC  X(036).
+002150*****************************************************************
+002160*            DESCRICAO DO SEQSAI04 - ARQ. SINERGIA              *
+002170*****************************************************************
+002180
+002190
+002200 FD          SEQSAI04
+002210             RECORDING   F
+002220             BLOCK       0
+002230             RECORD      300
+002240     DATA RECORD IS S04-REGOUT.
+002250
+002260 01          S04-REGOUT.
+002270
+002280     05      S04-TEL         PIC  9(015).
+002290     05      FILLER          REDEFINES S04-TEL.
+002300      10     S04-TELCON      PIC  9(014).
+002310      10     FILLER          PIC  X.
+002320     05      FILLER          REDEFINES S04-TEL.
+002330      10     FILLER          PIC  9(013).
+002340      10     S04-CONJUG      PIC  9(001).
+002350      10     S04-DIGITO      PIC  9(001).
+002360     05      S04-NRC         PIC  9(011).
+002370     05      S04-CGC         PIC  9(015).
+002380     05      S04-XY          PIC  9(015).
+002390     05      S04-TLG         PIC  X(003).
+002400     05      S04-NLG         PIC  X(026).
+002410     05      S04-RLG         PIC  9(005).
+002420     05      S04-CLG         PIC  X(020).
+002430     05      S04-BLG         PIC  X(020).
+002440     05      S04-XY          PIC  9(005).
+002450     05      S04-XY          PIC  X(003).
+002460     05      S04-XY          PIC  X(026).
+002470     05      S04-XY          PIC  9(005).
+002480     05      S04-XY          PIC  X(020).
+002490     05      S04-XY          PIC  X(020).
+002500     05      S04-XXX         PIC  9(002).
+002510     05      S04-INS         PIC  9(006).
+002520     05      FILLER  REDEFINES  S04-INS.
+002530       10    S04-AA          PIC  9(002).
+002540       10    S04-MM          PIC  9(002).
+002550       10    S04-DD          PIC  9(002).
+002560     05      S04-XY          PIC  X(005).
+002570     05      S04-XY          PIC  9(002).
+002580     05      S04-XY          PIC  X(001).
+002590     05      S04-XY          PIC  X(014).
+002600     05      S04-CG          PIC  X(002).
+002610     05      S04-CH          PIC  X(004).
+002620     05      S04-CT          PIC  9(002).
+002630     05      S04-EH          PIC  9(008).
+002640     05      S04-EJ          PIC  9(005).
+002650     05      S04-FA          PIC  9(015).
+002660     05      S04-IM          PIC  X(002).
+002670     05      S04-IJ          PIC  X(001).
+002680     05      S04-SECATU      PIC  9(002).
+002690     05      S04-CC          PIC  9(006).
+002700     05      FILLER          PIC  X(004).
+002710
+002720*****************************************************************
+002730*            DESCRICAO DO SEQSAI05 - ARQ. TERMINAIS DO PERIODO  *
+002740*            DE FATUR. CAF RET LI (STF04.A125)                  *
+002750*****************************************************************
+002770
+002780 FD          SEQSAI05
+002790             RECORDING   F
+002800             BLOCK       0
+002810             RECORD      900
+002820     DATA RECORD IS S05-REGOUT.
+002830
+002840 01          S05-REGOUT.
+002850
+002860     05 S05-NUM-TAB           PIC  X(001).
+002870     05 S05-SIG-EST           PIC  X(004).
+002880     05 S05-TP-EQP            PIC  X(002).
+002890     05 FILLER                PIC  X(006).
+002900     05 S05-NRC               PIC  9(011)       COMP-3.
+002910     05 S05-TEL               PIC  9(015)       COMP-3.
+002920     05 S05-CLA-SERV          PIC  X(004).
+002930     05 S05-PAC               PIC  X(001).
+002940     05 S05-DT-SIT-COM        PIC  X(003).
+002950     05 S05-CPCC              PIC  X(001).
+002960     05 S05-CLA-ASS           PIC  X(001).
+002970     05 S05-NM-ASS            PIC  X(064).
+002980     05 S05-ENDERECO.
+002990        10 S05-TP-LOGR        PIC  X(003).
+003000        10 S05-NM-LOGR        PIC  X(026).
+003010        10 S05-NR-LOGR        PIC  9(005)       COMP-3.
+003020        10 S05-COMP-LOGR      PIC  X(020).
+003030        10 S05-CEP-LOGR       PIC  9(005)       COMP-3.
+003040     05 S05-FTAB-INS          PIC  X(001).
+003050     05 S05-DT-INS            PIC  X(003).
+003060     05 S05-SERV-EQP                            OCCURS 19.
+003070        10 S05-QT-SE          PIC  X(001).
+003080        10 S05-CLA-ADI        PIC  X(003).
+003090        10 S05-EQP            PIC  X(003).
+003100        10 S05-COR            PIC  X(002).
+003110        10 S05-PROP           PIC  X(001).
+003120        10 S05-MARCA          PIC  X(003).
+003130        10 S05-MODELO         PIC  X(006).
+003140        10 S05-DT-GAR         PIC  X(004).
+003150     05 S05-TEL-ANT           PIC  9(015)       COMP-3.
+003160     05 S05-TEL-PROV          PIC  9(015)       COMP-3.
+003170     05 S05-DT-ULT-ALT-NUM    PIC  X(003).
+003180     05 S05-END-BCO           PIC  9(008)       COMP.
+003190     05 S05-OP-COBR           PIC  X(001).
+003200     05 S05-FATB-EXT          PIC  X(001).
+003210     05 S05-NM-ASS-TEMP       PIC  X(064).
+003220     05 S05-DT-RET            PIC  X(003).
+003230     05 S05-ID-PL-ATU         PIC  9(003).
+003240     05 S05-NR-PER-ATU        PIC  9(002).
+003250     05 S05-NR-PER-ANT        PIC  9(002).
+003260     05 S05-DT-ALT-PER        PIC  X(004).
+003270     05 S05-COBRANCA          PIC  X(001).
+003280     05 S05-QT-LT-VINC        PIC  9(005)     COMP-3.
+003290     05 S05-TERM-TCHV         PIC  9(015)     COMP-3.
+003300     05 S05-QT-RAM-CDN        PIC  9(005)     COMP-3.
+003310     05 S05-NUM-GA            PIC  9(005)     COMP-3.
+003320     05 S05-MAC               PIC  9(003).
+003330     05 S05-DEPTO             PIC  X(008).
+003340     05 RS05-DEPTO REDEFINES S05-DEPTO.
+003350        09 RS05-NUM-GA        PIC 9(5).
+003360        09 RS05-FILLER        PIC XXX.
+003370     05 S05-INSC-EST          PIC  X(014).
+003380     05 S05-NRC-TRONCO-CHAVE  PIC  9(011)     COMP-3.
+003390     05 S05-EQUIP-DDR         PIC  9(015)     COMP-3.
+003400     05 S05-PL-CONTR          PIC  X(003).
+003410     05 S05-DT-ALT-PL-CONTR   PIC  9(008)     COMP-3.
+003420     05 S05-IND-TRAT-MANUAL   PIC  X(001).
+003430     05 S05-ZONA              PIC  9(003)     COMP-3.
+003440     05 S05-DT-ULT-ALTER      PIC  9(008)     COMP-3.
+003450     05 S05-BAIRRO            PIC  X(020).
+003460     05 S05-CEP-COMPL         PIC  9(003).
+003470     05 S05-CD-LOGRADOURO     PIC  9(006).
+003480     05 S05-CD-LOC-CORRES     PIC  9(005).
+003490     05 S05-NRC-FAT           PIC  9(011)     COMP-3.
+003500     05 S05-AGLUTINADOR       PIC  X(001).
+003510     05 S05-CD-CLIENTE        PIC  X(010).
+003520     05 S05-TPO-DCTO-ASSIN    PIC  X(002).
+003530     05 S05-NRO-DCTO-ASSIN    PIC  9(015)     COMP-3.
+003540     05 S05-RESTR-V.
+003550        10 S05-RESTRICAO      PIC X OCCURS 8.
+003560     05 S05-FILLER            PIC X(058).
+003570
+003580*****************************************************************
+003590*            DESCRICAO DO SEQSAI06 - ARQ. TERMINAIS DO PERIODO  *
+003600*            DE FATUR. CAF RET NAO LI (STF04.A126)              *
+003610*****************************************************************
+003620
+003640 FD          SEQSAI06
+003650             RECORDING   F
+003660             BLOCK       0
+003670             RECORD      900
+003680     DATA RECORD IS S06-REGOUT.
+003690
+003700 01          S06-REGOUT.
+003710
+003720     05 S06-FILLER1           PIC  X(700).
+003730     05 S06-COBRANCA          PIC  X(001).
+003740     05 S06-QT-LT-VINC        PIC  9(005)     COMP-3.
+003750     05 S06-TERM-TCHV         PIC  9(015)     COMP-3.
+003760     05 S06-QT-RAM-CDN        PIC  9(005)     COMP-3.
+003770     05 S06-NUM-GA            PIC  9(005)     COMP-3.
+003780     05 S06-MAC               PIC  9(003).
+003790     05 S06-DEPTO             PIC  X(008).
+003800     05 RS06-DEPTO REDEFINES S06-DEPTO.
+003810        09 RS06-NUM-GA        PIC 9(5).
+003820        09 RS06-FILLER        PIC XXX.
+003830     05 S06-INSC-EST          PIC  X(014).
+003840     05 S06-NRC-TRONCO-CHAVE  PIC  9(011)     COMP-3.
+003850     05 S06-EQUIP-DDR         PIC  9(015)     COMP-3.
+003860     05 S06-PL-CONTR          PIC  X(003).
+003870     05 S06-DT-ALT-PL-CONTR   PIC  9(008)     COMP-3.
+003880     05 S06-IND-TRAT-MANUAL   PIC  X(001).
+003890     05 S06-ZONA              PIC  9(003)     COMP-3.
+003900     05 S06-DT-ULT-ALTER      PIC  9(008)     COMP-3.
+003910     05 S06-BAIRRO            PIC  X(020).
+003920     05 S06-CEP-COMPL         PIC  9(003).
+003930     05 S06-CD-LOGRADOURO     PIC  9(006).
+003940     05 S06-CD-LOC-CORRES     PIC  9(005).
+003950     05 S06-NRC-FAT           PIC  9(011)     COMP-3.
+003960     05 S06-AGLUTINADOR       PIC  X(001).
+003970     05 S06-CD-CLIENTE        PIC  X(010).
+003980     05 S06-TPO-DCTO-ASSIN    PIC  X(002).
+003990     05 S06-NRO-DCTO-ASSIN    PIC  9(015)     COMP-3.
+004000     05 S06-RESTR-V.
+004010        10 S06-RESTRICAO      PIC X OCCURS 8.
+004020     05 S06-FILLER            PIC X(058).
+004030
+004040*****************************************************************
+004050*          W O R K I N G  -  S T O R A G E  S E C T I O N       *
+004060*****************************************************************
+004070
+004090 WORKING-STORAGE SECTION.
+004100
+004110 77          WAX-CHAVE-LER   PIC 9 VALUE ZEROS.
+004120 77          WAD-CONT        PIC 99 VALUE ZEROS.
+004100
+004130 01          WAX-CC          PIC  9(05)             VALUE ZEROS.
+004140 01          FILLER          REDEFINES WAX-CC.
+004150     05      WAX-CC1         PIC  9(01).
+004100
+004160 01  WAD-ABRE-36TERTEL PIC S9(15).
+004170 01  RWAD-ABRE-36TERTEL REDEFINES WAD-ABRE-36TERTEL.
+004180     02  WAD-1A5-36TERTEL     PIC 9(005).
+004190     02  WAD-6A9-36TERTEL     PIC X(004).
+004200     02  FILLER               PIC X(006).
+ 
+004210 01          WRK-AREAS.
+004220     05      FILLER          PIC  X(044)            VALUE
+004230             'SGS04120 - INICIO DA WORKING-STORAGE SECTION'.
+004280
+004240*****************************************************************
+004250*            A R E A S    A U X I L I A R E S                   *
+004260*****************************************************************
+004270
+004290     05      WAX-AUXILIARES.
+004300
+004310      10     WAX-TELCB       PIC  9(015).
+004320      10     FILLER          REDEFINES       WAX-TELCB.
+004330       15    FILLER          PIC  X(013).
+004340       15    WAX-CONJCB      PIC  X(001).
+004350       15    FILLER          PIC  X(001).
+004360
+004370      10     WS-EOF-ENT      PIC  9(001) VALUE ZERO.
+004360
+004370      10     WAX-DTCURR.
+004380       15    WAX-MM          PIC  X(002).
+004390       15    FILLER          PIC  X(001).
+004400       15    WAX-DD          PIC  X(002).
+004410       15    FILLER          PIC  X(001).
+004420       15    WAX-AA          PIC  X(002).
+004430
+004440      10     WAX-DATA        PIC  9(006).
+004450      10     FILLER          REDEFINES              WAX-DATA.
+004460       15    WAX-ANO         PIC  X(002).
+004470       15    WAX-MES         PIC  X(002).
+004480       15    WAX-DIA         PIC  X(002).
+004490
+004500      10     WAX-SPEED       PIC  X(001)            VALUE SPACES.
+004510
+004520      10     WAX-DT-BUG1     PIC  9(006).
+004530      10     WAX-DT-BUG2     PIC  9(006).
+004540      10     WAX-FBUF.
+004550       15    FILLER          PIC X(54)              VALUE
+004560       'CA,CB,CH,CL,CR,CS,CT,CX,DC,DD,DE,DF,DG,DH,DJ,DK,DN,DV,'.
+004570       15    FILLER          PIC X(037)             VALUE
+004580      'DX1-19,EG,EJ,EL,GT,EM,ET,EX,FH,GF,GL,'.
+004590       15    FILLER          PIC X(049)             VALUE
+004600      'IA,II1-35,IM,IN,IS,IV,JK,LA,LB,LE,LG,LK,LP,LU,LV,'.
+004610       15    FILLER          PIC X(049)             VALUE
+004620      'CG,EH,FA,CC,ME1-19,MA,L7,L8,L9,JS,CV,CW,JT,FE1-8,'.
+004630       15    FILLER          PIC X(012)             VALUE
+004640      'L3,L4,MC,MM.'.
+004650
+004660      10     WAX-TELEFN-R.
+004670       15    WAX-PREFCT      PIC  X(004)            VALUE ZEROS.
+004680       15    WAX-MILHAR      PIC  9(006)            VALUE ZEROS.
+004690      10     WAX-TELEFN      REDEFINES              WAX-TELEFN-R
+004700                             PIC  9(010).
+004710
+004720      10     WAX-VBUF-R.
+004730       15    WAX-LOCALD      PIC  9(005)            VALUE ZEROS.
+004740       15    WAX-CENTRL      PIC  X(004)            VALUE ZEROS.
+004750       15    WAX-MILHA       PIC  X(006)            VALUE ZEROS.
+004760      10     WAX-VBUF        REDEFINES              WAX-VBUF-R
+004770                             PIC  9(0015).
+004780
+004790      10     WAX-ABEND.
+004800       15    FILLER          PIC  X(001)            VALUE
+004810             LOW-VALUES.
+004820       15    WAX-CODABE      PIC S9(004)     COMP   VALUE +0.
+004830
+004840      10     WAX-FORPAC      PIC  X(001).
+004850
+004860      10     WAX-CEP          PIC 9(008).
+004870      10     FILLER           REDEFINES              WAX-CEP.
+004880       15    WAX-CEPANT       PIC 9(005).
+004890       15    WAX-CEPNOV       PIC 9(003).
+004900      10     WAX-36-EM-ET-AX  PIC 9(008).
+004910      10     FILLER REDEFINES WAX-36-EM-ET-AX.
+004920       15    WAX-36-EM-ET-SS  PIC 9(002).
+004930       15    WAX-36-EM-ET-AA  PIC 9(002).
+004940       15    WAX-36-EM-ET-MM  PIC 9(002).
+004950       15    WAX-36-EM-ET-DD  PIC 9(002).
+004960
+004970      10     WAX-OCORRE      OCCURS                 19  TIMES.
+004980       15    WAX-PARTEBX     PIC  X(019).
+004990       15    FILLER          REDEFINES              WAX-PARTEBX.
+005000        20   WAX-QTDE        PIC  X(001).
+005010        20   WAX-CLAADI      PIC  X(003).
+005020        20   WAX-TIPO        PIC  X(003).
+005030        20   WAX-COR         PIC  9(002).
+005040        20   WAX-PROP        PIC  X(001).
+005050        20   WAX-MARCA       PIC  X(003).
+005060        20   WAX-MODELO      PIC  X(006).
+005070       15    WAX-DTGAR       PIC  X(004).
+005080     EJECT
+005090**********   A R E A    P / R O T I N A    N E W D A Y   *********
+005100
+005110      10     WAX-DIAS        PIC S9(005)     COMP-3 VALUE +0.
+005120      10     WAX-DATNEW      PIC  9(006)            VALUE ZEROS.
+005130      10     FILLER          REDEFINES              WAX-DATNEW.
+005140       15    WAX-DIANEW      PIC  9(002).
+005150       15    WAX-MESNEW      PIC  9(002).
+005160       15    WAX-ANONEW      PIC  9(002).
+005170      10     WAX-NEWDAT      PIC  9(006)            VALUE ZEROS.
+005180      10     FILLER          REDEFINES              WAX-NEWDAT.
+005190       15    WAX-NEWDIA      PIC  9(002).
+005200       15    WAX-NEWMES      PIC  9(002).
+005210       15    WAX-NEWANO      PIC  9(002).
+005220
+005230***  A R E A S   P / T R A T A M .   N U M .   B I N A R I O S  **
+005240
+005250      10     WAX-PAC-R.
+005260       15    FILLER          PIC  X(001)            VALUE
+005270             LOW-VALUES.
+005280       15    WAX-PACBIN      PIC  X(001)            VALUE SPACE.
+005290      10     WAX-PAC         REDEFINES              WAX-PAC-R
+005300                             PIC S9(004)     COMP.
+005310
+005320      10     WAX-BIN2.
+005330       15    FILLER          PIC  X(001)            VALUE
+005340             LOW-VALUES.
+005350       15    WAX-BIN2-X      PIC  X(001)            VALUE SPACE.
+005360      10     WAX-BINA2       REDEFINES              WAX-BIN2
+005370                             PIC S9(004)     COMP.
+005380
+005390      10     WAX-BIN3.
+005400       15    FILLER          PIC  X(001)            VALUE
+005410             LOW-VALUES.
+005420       15    WAX-BIN3-X      PIC  X(003)            VALUE SPACE.
+005430      10     WAX-BINA3       REDEFINES              WAX-BIN3
+005440                             PIC S9(008)     COMP.
+005450
+005460      10     WAX-CPCC-R.
+005470       15    FILLER          PIC  X(001)            VALUE
+005480             LOW-VALUES.
+005490       15    WAX-CPCCBI      PIC  X(001)            VALUE SPACE.
+005500      10     WAX-CPCC        REDEFINES              WAX-CPCC-R
+005510                             PIC S9(004)     COMP.
+005520
+005530      10     WAX-DATABI-R.
+005540       15    FILLER          PIC  X(001)            VALUE
+005550             LOW-VALUES.
+005560       15    WAX-DATBIN      PIC  X(003)            VALUE SPACE.
+005570      10     WAX-DATABI      REDEFINES              WAX-DATABI-R
+005580                             PIC S9(008)     COMP.
+005590      10     WAX-DATGAR      PIC  X(004)            VALUE SPACE.
+005600      10     WAX-DATGAR-R    REDEFINES              WAX-DATGAR
+005610                             PIC S9(008)     COMP.
+005620      10     WAX-DATAGAR     PIC  9(008)            VALUE ZEROS.
+005630      10     WAX-LOGINS-R.
+005640       15    FILLER          PIC X(001)             VALUE
+005650             LOW-VALUES.
+005660       15    WAX-LOGIBI      PIC X(003)             VALUE SPACES.
+005670      10     WAX-LOGINS      REDEFINES  WAX-LOGINS-R
+005680                             PIC S9(009)     COMP.
+005690      10     WAX-LOGCOR-R.
+005700       15    FILLER          PIC X(001)             VALUE
+005710             LOW-VALUES.
+005720       15    WAX-LOGCBI      PIC X(003)             VALUE SPACES.
+005730      10     WAX-LOGCOR      REDEFINES  WAX-LOGCOR-R
+005740                             PIC S9(009)     COMP.
+005750      10     WAX-RESTR-R.
+005760       15    FILLER          PIC  X(001)   VALUE  LOW-VALUES.
+005770       15    WAX-RESTRBI     PIC  X(001)   VALUE  SPACES.
+005780      10     WAX-RESTR  REDEFINES   WAX-RESTR-R
+005790                             PIC  S9(004)  COMP.
+005800*****************************************************************
+005810*            A R E A S    P A R A    A D A B A S                *
+005820*****************************************************************
+005830
+005840
+005850     05      WAD-ADABAS.
+005860
+005870      10     WAD-CBLOCK.
+005880       15    WAD-HOSTID      PIC  X(001)            VALUE 'C'.
+005890       15    FILLER          PIC  X(001).
+005900       15    WAD-CMDCOD      PIC  X(002).
+005910       15    WAD-CMDID       PIC  X(004).
+005920       15    WAD-FILENU      PIC S9(003)     COMP   VALUE +36.
+005930       15    WAD-REPCOD      PIC S9(003)     COMP.
+005940       15    WAD-ISNDEF      COMP.
+005950        20   WAD-ISN         PIC S9(007).
+005960        20   WAD-ISNLOW      PIC S9(007).
+005970        20   WAD-ISNQTD      PIC S9(007).
+005980       15    WAD-BUFLEN      COMP.
+005990        20   WAD-FORLEN      PIC S9(003).
+006000        20   WAD-RECLEN      PIC S9(003).
+006010        20   WAD-SEALEN      PIC S9(003).
+006020        20   WAD-VALLEN      PIC S9(003).
+006030        20   WAD-ISNLEN      PIC S9(003).
+006040       15    WAD-COPT1       PIC  X(001).
+006050       15    WAD-COPT2       PIC  X(001).
+006060       15    WAD-ADDIT1      PIC  X(008).
+006070       15    WAD-ADDIT2      PIC  X(008).
+006080       15    WAD-ADDIT3      PIC  X(008).
+006090       15    WAD-ADDIT4      PIC  X(008).
+006100       15    WAD-ADDIT5      PIC  X(008).
+006110       15    WAD-CMTIME      PIC S9(007)     COMP.
+006120       15    WAD-USERAR      PIC  X(004).
+006130
+006140      10     WAD-SEABUF      PIC  X(003).
+006150
+006160      10     WAD-FORBUF      PIC  X(210).
+006170
+006180
+006190      10     WAD-VALBUF      PIC  9(002).
+006200
+006210      10     WAD-RECBUF      PIC  X(957).
+006220
+006230
+006240      10     WAD-ISNBUF.
+006250       15    WAD-ISNB        PIC S9(007)     COMP   OCCURS  100.
+006260*******      A R E A S   P / A C E S S O   F I L E  3 6   ********
+006270
+006280      10     WAD-VBUF36      PIC  9(002)            VALUE  0.
+006290
+006300      10     WAD-RBUF36.
+006310*----------- PARTEA
+006320       15    WAD-36NUMREG    PIC S9(011)     COMP-3 VALUE +0.
+006330       15    WAD-36TERTEL    PIC S9(015)     COMP-3 VALUE +0.
+006340       15    WAD-36CLSRVP    PIC  X(004).
+006350             88 SGSLI VALUE 'LIRA' 'LIRC' 'LINA' 'LINC' 'LINL'
+006360                            'LIDG' 'LEJN' 'DSIB' 'DSIP' 'LICR'
+006370                            'TPUA' 'LTNM' 'LIVE' 'RDSI' 'DSIR'
+006380                            'DSIT' 'LIRL' 'TSCE' 'DSIN'
+006390                            'DSIC'.
+006400       15    FILLER          REDEFINES WAD-36CLSRVP.
+006410        20   WAD-36CLSERV    PIC  X(002).
+006420        20   WAD-36CLSERV2   PIC  X(002).
+006430       15    WAD-36PAC       PIC  X(001)            VALUE SPACE.
+006440       15    WAD-36DTALT     PIC  X(003)            VALUE SPACES.
+006450       15    WAD-36CPCC      PIC  X(001)            VALUE SPACE.
+006460       15    WAD-CLAASS      PIC  X(001)            VALUE SPACES.
+006470       15    WAD-NOM         PIC  X(064)            VALUE SPACES.
+006480       15    FILLER          REDEFINES              WAD-NOM.
+006490        20   FILLER          PIC  X(063).
+006500        20   WAD-INDLI       PIC  X(001).
+006510*----------- FILLER
+006520       15    WAD-LOCINS      PIC S9(005)     COMP-3.
+006530       15    WAD-LOGINS      PIC X(003).
+006540*----------- DIFER4
+006550       15    WAD-TPLOGI      PIC X(003).
+006560       15    WAD-NOMLGI      PIC X(026).
+006570       15    WAD-NUMINS      PIC S9(005)     COMP-3.
+006580       15    WAD-COMPIN      PIC X(020).
+006590       15    WAD-CEPINS      PIC S9(005)     COMP-3.
+006600*----------- FILLER
+006610       15    WAD-BAIRIN      PIC X(020).
+006620*----------- PARTEB
+006630       15    FILLER          PIC X(001).
+006640       15    WAD-DATINS      PIC X(003).
+006650*----------- PARTEBX
+006660       15    WAD-OCORRE.
+006670        20   FILLER          OCCURS                 19  TIMES.
+006680         25  WAD-QTDE        PIC  X(001).
+006690         25  WAD-CLAADI      PIC  X(003).
+006700         25  WAD-TIPO        PIC  X(003).
+006710         25  WAD-RESTO       PIC  X(012).
+006720         25  WAD-RESTO-R     REDEFINES   WAD-RESTO.
+006730          30 WAD-COR         PIC  9(02).
+006740          30 WAD-PROP        PIC  X(01).
+006750          30 WAD-MARCA       PIC  X(03).
+006760          30 WAD-MODELO      PIC  X(06).
+006770*----------- FILLER
+006780       15    WAD-CSCOM       PIC  X(001).
+006790       15    WAD-NUMGA       PIC  9(005)     COMP-3.
+006800*----------- PARTEB1
+006810       15    WAD-36EL        PIC S9(015)     COMP-3 VALUE +0.
+006820       15    WAD-36TELPRV    PIC S9(015)     COMP-3 VALUE +0.
+006830       15    WAD-36-EM-ET    PIC X(007)             VALUE SPACES.
+006840       15    WAD-36-EM-ET-R REDEFINES WAD-36-EM-ET.
+006850        20    WAD-36-EM-ET-3  PIC X(003).
+006860        20    WAD-36-EM-ET-4  PIC X(004).
+006870       15    WAD-OPCOBR      PIC X(001).
+006880*----------- FILLER
+006890       15    WAD-LOCCOR      PIC S9(005)     COMP-3.
+006900       15    WAD-LOGCOR      PIC X(003).
+006910*----------- IGUAL4
+006920       15    WAD-TPLOGC      PIC X(003).
+006930       15    WAD-NOMLGC      PIC X(026).
+006940       15    WAD-NUMCOR      PIC S9(005)     COMP-3.
+006950       15    WAD-COMPCO      PIC X(020).
+006960       15    WAD-CEPCOR      PIC S9(005)     COMP-3.
+006970*----------- PARTEC
+006980       15    FILLER          PIC X(001).
+006990       15    WAD-NOMTEM      PIC X(064).
+007000       15    FILLER          REDEFINES              WAD-NOMTEM.
+007010        20   WAD-NOMTEM-R    PIC X(063).
+007020        20   WAD-INOMTE      PIC X(001).
+007030       15    FILLER          PIC X(003).
+007040       15    WAD-EX-SIT-ESP  PIC X(35).
+007050       15    FILLER          REDEFINES    WAD-EX-SIT-ESP.
+007060        20   WAD-SIT-ESP     PIC X        OCCURS 35.
+007070*----------- FILLER
+007080       15    WAD-TIPNRF      PIC X(002).
+007090       15    WAD-NUMNRF      PIC 9(015)     COMP-3.
+007100       15    WAD-NUMCPCT     PIC 9(015)     COMP-3.
+007110       15    WAD-APOS        PIC X(002).
+007120       15    WAD-ORGDDG      PIC X(005).
+007130       15    WAD-BAIRCO      PIC X(020).
+007140       15    WAD-CODCLI      PIC 9(010).
+007150       15    WAD-CEPINS2     PIC 9(003)     COMP-3.
+007160       15    WAD-CEPCOR2     PIC 9(003)     COMP-3.
+007170       15    WAD-CODCON      PIC  X(014).
+007180       15    WAD-CODRENP     PIC  X(011).
+007190       15    WAD-CODAGL      PIC  X(001).
+007200       15    WAD-NRCFAT      PIC  9(011)     COMP-3.
+007210       15    WAD-ESTEL       PIC  X(002).
+007220       15    WAD-LISCLA      PIC  X(003).
+007230       15    WAD-TCHV        PIC  9(015)     COMP-3.
+007240       15    WAD-36DTATU     PIC  X(003).
+007250       15    WAD-36DTGAR     PIC  X(004)            OCCURS 19.
+007260       15    WAD-PLANO       PIC  9(003).
+007270       15    WAD-NR-PER-ATU  PIC  9(002).
+007280       15    WAD-NR-PER-ANT  PIC  9(002).
+007290       15    WAD-DT-ALT-PER  PIC  X(004).
+007300       15    WAD-CD-COF-LP   PIC  X(001).
+007310       15    WAD-TP-DOC-ASS  PIC  X(002).
+007320       15    WAD-NUM-DOC-ASS PIC  X(014).
+007330       15    WAD-STATUS-HARD PIC  X(001).
+007340       15    WAD-RESTR-V.
+007350             20  WAD-RESTR   PIC X(001)    OCCURS  8.
+007360       15    FILLER          PIC X(010).
+007370       15    WAD-STA-TOP-NEG PIC X(001).
+007380      10     FILLER          REDEFINES WAD-RBUF36.
+007390       15    WAD-PARTEA      PIC X(088).
+007400       15    FILLER          PIC X(006).
+007410       15    WAD-DIFER4      PIC X(055).
+007420       15    FILLER          PIC X(020).
+007430       15    WAD-PARTEB      PIC X(004).
+007440       15    WAD-PARTEBX     PIC X(019)      OCCURS 19 TIMES.
+007450       15    FILLER          PIC X(004).
+007460       15    WAD-PARTEB1     PIC X(024).
+007470       15    FILLER          PIC X(006).
+007480       15    WAD-IGUAL4      PIC X(055).
+007490       15    WAD-PARTEC      PIC X(068).
+007500       15    FILLER          PIC X(035).
+007510       15    FILLER          PIC X(220).
+007520       15    WAD-QT-LT-VINC  PIC 9(005) COMP-3.
+007530       15    WAD-QT-RAM-CDN  PIC 9(005) COMP-3.
+007540       15    WAD-DT-ALT-PLANO PIC X(004).
+007550       15    FILLER          PIC X(001).
+007560*
+007570****   AREA AUXILIAR PARA SEPARAR LOCAL E O RESTO (LLLLLMMMMCD).
+007580****   FINAL AREA AUXILIAR                            WIZ26 06/06
+007590*****************************************************************
+007600*            A R E A S    D E     M E N S A G E N S             *
+007610*****************************************************************
+007630
+007640     05      WMG-MENSAGENS.
+007650
+007660      10     WMG-VAZIO       PIC  X(100)            VALUE
+007670             '  SEQENT01  VAZIO'.
+007680
+007690      10     WMG-ADABAS.
+007700       15    FILLER          PIC  X(034)            VALUE
+007710             '  ERRO  NO  ADABAS /  COMANDO  -'.
+007720       15    WMG-CID         PIC  X(015)            VALUE SPACES.
+007730       15    FILLER          PIC  X(019)            VALUE
+007740             'RESPONSE  CODE  -'.
+007750       15    WMG-REPCOD      PIC  9(004)            VALUE ZEROS.
+007790
+007760*****************************************************************
+007770*            A R E A S    D E    C H A V E S                    *
+007780*****************************************************************
+007800
+007810     05      WCH-CHAVES.
+007820
+007830      10     WCH-TERTEL      PIC  9(015)            VALUE ZEROS.
+007840      10     WCH-TERTEL-R    REDEFINES              WCH-TERTEL.
+007850       15    WCH-LOCCEN.
+007860        20   WCH-LOCALD      PIC  9(005).
+007870        20   WCH-TELEFN      PIC  9(010).
+007880        20   FILLER          REDEFINES              WCH-TELEFN.
+007890         25  WCH-CENTRL      PIC  X(004).
+007900         25  FILLER          PIC  X(006).
+007910
+007920      10     WCH-PERIODO     PIC  X(002)            VALUE ZEROS.
+007930
+007940     05      WCH-FIM         PIC  X(001).
+007950     05      WRK-NUMERO      PIC  X(014).
+007960     05      WRK-DIGITO      PIC  X(001).
+007970     05      WRK-TAMANHO     PIC  9(002)            VALUE 14.
+008010
+007980*****************************************************************
+007990*            I  N  D  E  X  A  D  O  R  E  S                    *
+008000*****************************************************************
+008020
+008030     05      WIN-INDEXADORES.
+008040
+008050      10     IND             PIC S9(008)  COMP SYNC VALUE +0.
+008060      10     IND1            PIC S9(008)  COMP SYNC VALUE +0.
+008070      10     WIN-DSN         PIC S9(008)  COMP SYNC VALUE +0.
+008080      10     WIN-EQP         PIC S9(008)  COMP SYNC VALUE +0.
+008090      10     WIN-OCOR1       PIC S9(008)  COMP SYNC VALUE +0.
+008100      10     WIN-OCOR2       PIC S9(008)  COMP SYNC VALUE +0.
+008140
+008110*****************************************************************
+008120*            A R E A S    D E    T A B E L A S                  *
+008130*****************************************************************
+008150
+008160     05      WTB-TABELAS.
+008170
+008180******       T A B E L A     D E      D  S  N            *********
+008190
+008200      10     WTB-DSNAME.
+008210       15    FILLER          OCCURS                 15  TIMES.
+008220        20   WTB-DDN         PIC  X(008).
+008230        20   WTB-DSN         PIC  X(044).
+008170
+008240*****************************************************************
+008250*            R E D E    D E    C O N T R O L E                  *
+008260*****************************************************************
+008270
+008280 01          FILLER.
+008290     05      WRC-REDE.
+008300*     10     WRC-LNGT        PIC S9(09)      COMP-3 VALUE +532.
+008310      10     WRC-LNGT        PIC S9(09)      COMP-3 VALUE +687.
+008320      10     WRC-JOBN        PIC X(08)              VALUE SPACES.
+008330      10     WRC-PROG        PIC X(08)              VALUE
+008340             'SGS04120'.
+008350      10     WRC-CODR        PIC X(10)              VALUE
+008360             'SGS0412-R'.
+008370      10     WRC-COND        PIC X(02)              VALUE 'NV'.
+008380      10     WRC-DATA.
+008390       15    WRC-DIA         PIC X(02).
+008400       15    WRC-MES         PIC X(02).
+008410       15    WRC-ANO         PIC X(02).
+008420      10     WRC-HRS         PIC 99.99.99.
+008430      10     WRC-ETAP        PIC X(04)              VALUE '****'.
+008440      10     WRC-PAGI        PIC X(03)              VALUE '***'.
+008450
+008460      10     WRC-ENTR.
+008470       15    WRC-DSNE1       PIC X(24)              VALUE
+008480             'FILE 36 - COMERCIAL-TC '.
+008490       15    WRC-NOME1       PIC X(19)              VALUE
+008500             'REGISTROS LIDOS'.
+008510       15    WRC-INDE1       PIC X(02)              VALUE ' '.
+008520       15    WRC-VALE1       PIC S9(15)      COMP-3 VALUE +0.
+008530       15    WRC-DSNE2       PIC X(24)              VALUE
+008540             'ATIVO DESPREZ'.
+008550       15    WRC-NOME2       PIC X(19)              VALUE
+008560             'REGISTROS LIDOS'.
+008570       15    WRC-INDE2       PIC X(02)              VALUE '  '.
+008580       15    WRC-VALE2       PIC S9(15)      COMP-3 VALUE +0.
+008590       15    WRC-DSNE3       PIC X(24)              VALUE
+008600             'RETIR DESPREZ'.
+008610       15    WRC-NOME3       PIC X(19)              VALUE
+008620             'REGISTROS LIDOS'.
+008630       15    WRC-INDE3       PIC X(02)              VALUE '  '.
+008640       15    WRC-VALE3       PIC S9(15)      COMP-3 VALUE +0.
+008650       15    WRC-FIMENT      PIC X(01)              VALUE
+008660             LOW-VALUES.
+008670      10     WRC-SAIDAS.
+008680       15    WRC-DSNS1       PIC X(24)              VALUE SPACES.
+008690       15    WRC-NOMS1       PIC X(19)              VALUE
+008700             'RG.GRV-TERTEL-CAF'.
+008710       15    WRC-INDS1       PIC X(02)              VALUE '  '.
+008720       15    WRC-VALS1       PIC S9(15)      COMP-3 VALUE +0.
+008730
+008740       15    WRC-DSNS2       PIC X(24)              VALUE SPACES.
+008750       15    WRC-NOMS2       PIC X(19)              VALUE
+008760             'RG.GRV-TELPROV-CAF'.
+008770       15    WRC-INDS2       PIC X(02)              VALUE '  '.
+008780       15    WRC-VALS2       PIC S9(15)      COMP-3 VALUE +0.
+008790       15    WRC-DSNS3       PIC X(24)              VALUE SPACES.
+008800       15    WRC-NOMS3       PIC X(19)              VALUE
+008810       'REG. GRAV-SEQSAI03'.
+008820       15    WRC-INDS3       PIC X(02)              VALUE '  '.
+008830       15    WRC-VALS3       PIC S9(15)      COMP-3 VALUE +0.
+008840       15    WRC-DSNS4       PIC X(24)              VALUE SPACES.
+008850       15    WRC-NOMS4       PIC X(19)              VALUE
+008860       'REG. GRAV-SEQSAI04'.
+008870       15    WRC-INDS4       PIC X(02)              VALUE '  '.
+008880       15    WRC-VALS4       PIC S9(15)      COMP-3 VALUE +0.
+008890
+008900       15    WRC-DSNS5       PIC X(24)              VALUE SPACES.
+008910       15    WRC-NOMS5       PIC X(19)              VALUE
+008920       'REG. GRAV-SEQSAI05'.
+008930       15    WRC-INDS5       PIC X(02)              VALUE '  '.
+008940       15    WRC-VALS5       PIC S9(15)      COMP-3 VALUE +0.
+008950
+008960       15    WRC-DSNS6       PIC X(24)              VALUE SPACES.
+008970       15    WRC-NOMS6       PIC X(19)              VALUE
+008980       'REG. GRAV-SEQSAI06'.
+008990       15    WRC-INDS6       PIC X(02)              VALUE '  '.
+009000       15    WRC-VALS6       PIC S9(15)      COMP-3 VALUE +0.
+009010      10     WRC-FIM-SAI     PIC X(001)             VALUE
+009020             LOW-VALUES.
+009030
+009040      10     WRC-OBS          PIC X(100)            VALUE SPACES.
+009050      10     WRC-FIMREDE     PIC  X(001)            VALUE
+009060             HIGH-VALUES.
+009070
+009080
+009090 01        WIZ-AREAS-ESPECIAIS.
+009100     05   WIZ-DATA-ACCEPT.
+009110       10  WIZ-DATA-ANO         PIC  9(002).
+009120       10  WIZ-DATA-MES         PIC  9(002).
+009130       10  WIZ-DATA-DIA         PIC  9(002).
+009140
+009150     05    WIZ-CUR-DATE.
+009160       10  WIZ-DATA-MES         PIC  9(002).
+009170       10  FILLER               PIC  X(001) VALUE '/'.
+009180       10  WIZ-DATA-DIA         PIC  9(002).
+009190       10  FILLER               PIC  X(001) VALUE '/'.
+009200       10  WIZ-DATA-ANO         PIC  9(002).
+009210
+009220     05    WIZ-TIME-ACCEPT      PIC  9(008).
+009230     05    FILLER     REDEFINES WIZ-TIME-ACCEPT.
+009240       10  WIZ-TIMEDAY          PIC  9(006).
+009250       10  FILLER               PIC  X(002).
+009260
+009270       EXEC ADABAS
+009280            BEGIN DECLARE SECTION
+009290       END-EXEC.
+009300
+009400*****************************************************************
+009410*                P R O C E D U R E   D I V I S I O N            *
+009420*****************************************************************
+009430 PROCEDURE DIVISION.
+009440
+009450******************************************************************
+009460*                      S G S 0 4 1 2 0                           *
+009470******************************************************************
+009480
+009490 00-00-PRINCIPAL SECTION.
+009500
+009510     PERFORM 05-00-INICIALIZA
+009520
+009530     PERFORM 15-00-PROCESSAMENTO
+009540         UNTIL WCH-FIM = 'S'.
+009550
+009560     PERFORM 35-00-FINALIZA.
+009580
+009590 00-99-PRINCIPAL.
+009600     STOP RUN.
+009610******************************************************************
+009620*            I N I C I A L I Z A C A O                           *
+009630******************************************************************
+009640
+009650 05-00-INICIALIZA SECTION.
+ 
+009670     PERFORM 08-00-CONSISTE-PARM
+009680
+009690     OPEN    OUTPUT          SEQSAI01
+009700                             SEQSAI02
+009710                             SEQSAI03
+009720                             SEQSAI04
+009730                             SEQSAI05
+009740                             SEQSAI06
+009750
+009760     ACCEPT WIZ-DATA-ACCEPT FROM DATE
+009770     MOVE   CORR WIZ-DATA-ACCEPT TO WIZ-CUR-DATE
+009780     MOVE    WIZ-CUR-DATE    TO          WAX-DTCURR
+009790     MOVE    WAX-DD          TO          WRC-DIA
+009800                                         WAX-DIANEW
+009810     MOVE    WAX-MM          TO          WRC-MES
+009820                                         WAX-MESNEW
+009830     MOVE    WAX-AA          TO          WRC-ANO
+009840                                         WAX-ANONEW
+009850     ACCEPT WIZ-TIME-ACCEPT FROM TIME
+009860     MOVE    WIZ-TIMEDAY     TO          WRC-HRS
+009870
+009880     CALL    'CPD10170'      USING       WRC-JOBN
+009890     CALL    'CPD0003S'      USING       WTB-DSNAME
+009900     PERFORM 10-00-PESQUISA-DSN
+009910             VARYING         WIN-DSN
+009920             FROM            1           BY         1
+009930             UNTIL           WIN-DSN     GREATER    15
+009940             OR              WTB-DSN (WIN-DSN)  EQUAL HIGH-VALUES
+009950
+009960
+009970     MOVE    +4              TO          WAX-PAC
+009980     MOVE    WAX-PACBIN      TO          WAX-FORPAC
+009990     MOVE    -120            TO          WAX-DIAS
+010000     CALL    'NEWDAY'        USING       WAX-DATNEW
+010010                                         WAX-DIAS
+010020                                         WAX-NEWDAT
+010030     MOVE    WAX-NEWDIA      TO          WAX-DIA
+010040     MOVE    WAX-NEWMES      TO          WAX-MES
+010050     MOVE    WAX-NEWANO      TO          WAX-ANO.
+010060
+010070     MOVE    'OP'            TO          WAD-CMDCOD
+010080                                         WMG-CID
+010090     MOVE    1               TO          WAD-FORLEN
+010100     MOVE    8               TO          WAD-RECLEN
+010110     MOVE    'ACC=36.'       TO          WAD-RECBUF
+010120     MOVE    SPACES          TO          WAD-COPT1
+010130                                         WAD-COPT2
+010140                                         WAD-ADDIT1
+010150                                         WAD-ADDIT2
+010160                                         WAD-ADDIT3
+010170                                         WAD-ADDIT4
+010180                                         WAD-ADDIT5
+010190
+010200     PERFORM 40-00-CALL-ADABAS
+010210
+010220     MOVE    E01-PERIODO-HEAD TO         WAD-VALBUF
+010230                                         WAD-VBUF36.
+010240
+010250     MOVE    LOW-VALUES      TO          WAD-CBLOCK
+010260     MOVE    'L3'            TO          WAD-CMDCOD
+010270     MOVE    'L3 - PERIOD'   TO          WMG-CID
+010280     MOVE    '1F36'          TO          WAD-CMDID
+010290     MOVE    36              TO          WAD-FILENU
+010300     MOVE    957             TO          WAD-RECLEN
+010310     MOVE    3               TO          WAD-SEALEN
+010320     MOVE    201             TO          WAD-FORLEN
+010330     MOVE    2               TO          WAD-VALLEN
+010340     MOVE    'L7.'           TO          WAD-SEABUF
+010350     MOVE    'V'             TO          WAD-COPT2
+010360     MOVE    'L7'            TO          WAD-ADDIT1
+010370     MOVE    WAX-FBUF        TO          WAD-FORBUF.
+010380
+010390 05-99-INICIALIZA.
+010400     EXIT.
+010410*****************************************************************
+010420*            ROTINA DE CONSISTENCIA DO PARAMETRO                *
+010430*****************************************************************
+010440
+010450 08-00-CONSISTE-PARM SECTION.
+010460
+           OPEN INPUT SEQENT01.
+           READ SEQENT01
+                AT END   MOVE 1  TO WS-EOF-ENT
+                   DISPLAY '*************************************'
+                   DISPLAY '**      ARQUIVO PARAMETRO VAZIO    **'
+                   DISPLAY '*************************************'
+                   CLOSE SEQENT01
+010530             PERFORM         50-00-ABENDAR.
+ 
+           DISPLAY '** PERIODO  ' E01-PERIODO-HEAD.
+010490     IF      E01-PERIODO-HEAD  LESS     01      AND
+010500             E01-PERIODO-HEAD  GREATER  80
+010510             MOVE        +0110            TO    WAX-CODABE
+010520             MOVE        E01-PERIODO-HEAD TO    WRC-OBS
+                   DISPLAY '*************************************'
+                   DISPLAY '** PERIODO INVALIDO ' E01-PERIODO-HEAD
+                   DISPLAY '*************************************'
+                   CLOSE       SEQENT01
+010530             PERFORM     50-00-ABENDAR
+            END-IF.
+010540
+010540
+010550 08-99-CONSISTE-PARM.
+010560     EXIT.
+010570*****************************************************************
+010580*            P E S Q U I S A       D S N                        *
+010590*****************************************************************
+010610
+010620 10-00-PESQUISA-DSN SECTION.
+010640
+010650         IF WTB-DDN (WIN-DSN)     EQUAL  'SEQENT01'
+010660            MOVE WTB-DSN (WIN-DSN) TO     WRC-DSNE1
+010670         ELSE
+010680           IF  WTB-DDN(WIN-DSN)     EQUAL  'SEQSAI01'
+010690               MOVE WTB-DSN(WIN-DSN) TO     WRC-DSNS1
+010700            ELSE
+010710             IF  WTB-DDN(WIN-DSN)    EQUAL   'SEQSAI02'
+010720                 MOVE WTB-DSN(WIN-DSN) TO     WRC-DSNS2
+010730             ELSE
+010740               IF WTB-DDN(WIN-DSN)     EQUAL   'SEQSAI03'
+010750                  MOVE WTB-DSN(WIN-DSN) TO      WRC-DSNS3
+010760               ELSE
+010770                 IF WTB-DDN(WIN-DSN)     EQUAL   'SEQSAI04'
+010780                    MOVE WTB-DSN(WIN-DSN) TO      WRC-DSNS4
+010790                 ELSE
+010800                   IF WTB-DDN(WIN-DSN)     EQUAL   'SEQSAI05'
+010810                      MOVE WTB-DSN(WIN-DSN) TO      WRC-DSNS5
+010820                   ELSE
+010830                     IF WTB-DDN(WIN-DSN)     EQUAL   'SEQSAI06'
+010840                        MOVE WTB-DSN(WIN-DSN) TO      WRC-DSNS6.
+010850
+010860 10-99-PESQUISA-DSN.
+010870     EXIT.
+010880
+010890*****************************************************************
+010900*            F O R M A T A   S05                                *
+010910*****************************************************************
+010930
+010940 10090-01-FORMATA-S05-COMPL SECTION.
+010950
+010960     MOVE WAD-CD-COF-LP  TO  S05-COBRANCA
+010970     MOVE WAD-QT-LT-VINC TO  S05-QT-LT-VINC
+010980     MOVE WAD-TCHV       TO  S05-TERM-TCHV
+010990     MOVE WAD-QT-RAM-CDN TO  S05-QT-RAM-CDN
+011000     MOVE WAD-NUMGA      TO  S05-NUM-GA
+011010
+011020     MOVE  WAD-CLAASS    TO  WAX-BIN2-X
+011030     IF    WAX-BINA2     EQUAL 30 OR 31 OR 32 OR 33 OR 34 OR 35
+011040           MOVE 31       TO  S05-MAC
+011050     ELSE
+011060      IF    WAX-BINA2    EQUAL 50
+011070            MOVE 43      TO  S05-MAC
+011080      ELSE
+011090            MOVE 21      TO  S05-MAC.
+011100
+011110     MOVE S05-NUM-GA     TO  RS05-NUM-GA
+011120     MOVE SPACES         TO  RS05-FILLER
+011130
+011140     IF  WAD-TP-DOC-ASS  EQUAL  '23'
+011150         MOVE  WAD-NUM-DOC-ASS  TO    S05-INSC-EST
+011160     ELSE
+011170         MOVE  ZEROS            TO    S05-INSC-EST
+011180     END-IF
+011190     MOVE WAD-NUMGA        TO  RS05-NUM-GA
+011200     MOVE WAD-PLANO        TO  S05-PL-CONTR
+011210     MOVE WAD-DT-ALT-PLANO TO  S05-DT-ALT-PL-CONTR
+011220     MOVE ZEROS TO S05-NRC-TRONCO-CHAVE
+011230                   S05-EQUIP-DDR
+011240     IF WAD-TCHV = WAD-36TERTEL
+011250        MOVE WAD-36NUMREG     TO  S05-NRC-TRONCO-CHAVE
+011260        MOVE WAD-NUMCPCT      TO  S05-EQUIP-DDR
+011270        MOVE WAD-NUMGA        TO  RS05-NUM-GA
+011280        MOVE WAD-PLANO        TO  S05-PL-CONTR
+011290        MOVE WAD-DT-ALT-PLANO TO  S05-DT-ALT-PL-CONTR
+011300        ELSE
+011310        IF WAD-TCHV NOT = ZEROS
+011320           PERFORM 60-00-ACESSA-ADABAS.
+011330
+011340     MOVE WAD-NUMCPCT      TO  S05-EQUIP-DDR
+011350     MOVE WAD-PLANO        TO  S05-PL-CONTR
+011360     MOVE WAD-DT-ALT-PLANO TO S05-DT-ALT-PL-CONTR
+011380
+011390     MOVE SPACES         TO  S05-IND-TRAT-MANUAL
+011400
+011410     PERFORM 10130-LE-CENTRAL
+011420     MOVE ZONA OF C002-A-0029SGS01 TO S05-ZONA
+011430     MOVE WAD-36-EM-ET-3           TO WAX-DATBIN
+011440     MOVE WAX-DATABI               TO WAX-36-EM-ET-AX
+011450     IF   WAX-36-EM-ET-AX NOT EQUAL ZEROS
+011460     IF   WAX-36-EM-ET-AA  LESS  50
+011470         MOVE  20   TO   WAX-36-EM-ET-SS
+011480     ELSE
+011490         MOVE  19   TO   WAX-36-EM-ET-SS.
+011500
+011510     MOVE WAX-36-EM-ET-AX  TO S05-DT-ULT-ALTER
+011520
+011530     IF  WAD-OPCOBR    EQUAL   4  OR  6
+011540         MOVE  WAD-BAIRCO   TO  S05-BAIRRO
+011550         MOVE  WAD-CEPCOR2  TO  S05-CEP-COMPL
+011560         MOVE  WAX-LOGCOR   TO  S05-CD-LOGRADOURO
+011570         MOVE  WAD-LOCCOR   TO  S05-CD-LOC-CORRES
+011580     ELSE
+011590         MOVE  WAD-BAIRIN   TO  S05-BAIRRO
+011600         MOVE  WAD-CEPINS2  TO  S05-CEP-COMPL
+011610         MOVE  WAX-LOGINS   TO  S05-CD-LOGRADOURO
+011620         MOVE  WAD-LOCINS   TO  S05-CD-LOC-CORRES.
+ 
+011630     MOVE WAD-RESTR-V    TO  S05-RESTR-V
+011640     MOVE WAD-NRCFAT     TO  S05-NRC-FAT
+011650     MOVE WAD-CODAGL     TO  S05-AGLUTINADOR
+011660     MOVE WAD-CODCLI     TO  S05-CD-CLIENTE
+011670     MOVE WAD-TIPNRF     TO  S05-TPO-DCTO-ASSIN
+ 
+011680     IF  WAD-NUMNRF      IS NUMERIC
+011690         MOVE WAD-NUMNRF      TO S05-NRO-DCTO-ASSIN
+011700     ELSE
+011710         MOVE ZERO TO S05-NRO-DCTO-ASSIN.
+011720
+011730*    PARA RAMAIS EM CONDOMINIO COM CONTA DADOS TRONCO CHAVE
+011740
+011750     IF  S05-COBRANCA = 'R'
+011760         PERFORM 80-00-DADOS-TCHV-EM-RAMAL.
+011770
+011780 10090-99-FORMATA-S05-COMPL.
+011790     EXIT.
+011800
+011810*****************************************************************
+011820*            F O R M A T A   S06                                *
+011830*****************************************************************
+011840
+011850 10120-00-FORMATA-S06-COMPL SECTION.
+011860
+011870     MOVE WAD-CD-COF-LP   TO S06-COBRANCA
+011880     MOVE WAD-QT-LT-VINC  TO S06-QT-LT-VINC
+011890     MOVE WAD-TCHV        TO S06-TERM-TCHV
+011900     MOVE WAD-QT-RAM-CDN  TO S06-QT-RAM-CDN
+011910     MOVE WAD-NUMGA       TO S06-NUM-GA
+011920
+011930     MOVE  WAD-CLAASS    TO  WAX-BIN2-X
+ 
+011940     IF    WAX-BINA2     EQUAL 30 OR 31 OR 32 OR 33 OR 34 OR 35
+011950           MOVE 31       TO  S06-MAC
+011960     ELSE
+011970        IF    WAX-BINA2    EQUAL 50
+011980              MOVE 43      TO  S06-MAC
+011990        ELSE
+012000              MOVE 21      TO  S06-MAC.
+012010
+012020     MOVE S06-NUM-GA     TO  RS06-NUM-GA
+012030     MOVE SPACES         TO  RS06-FILLER
+012040
+012050     IF  WAD-TP-DOC-ASS  EQUAL  '23'
+012060         MOVE  WAD-NUM-DOC-ASS  TO    S06-INSC-EST
+012070     ELSE
+012080         MOVE  ZEROS            TO    S06-INSC-EST
+012090     END-IF
+012100
+012110     MOVE WAD-NUMGA        TO  RS06-NUM-GA.
+012120     MOVE WAD-PLANO        TO  S06-PL-CONTR
+012130     MOVE WAD-DT-ALT-PLANO TO  S06-DT-ALT-PL-CONTR
+012140     MOVE ZEROS            TO  S06-NRC-TRONCO-CHAVE
+012150                               S06-EQUIP-DDR
+012160     MOVE WAD-NUMCPCT      TO  S06-EQUIP-DDR
+012170     MOVE WAD-PLANO        TO  S06-PL-CONTR
+012180     MOVE WAD-DT-ALT-PLANO TO  S06-DT-ALT-PL-CONTR
+012200
+012210     MOVE SPACES           TO  S06-IND-TRAT-MANUAL
+012220
+012230     PERFORM 10130-LE-CENTRAL
+012240
+012250     MOVE ZONA OF C002-A-0029SGS01 TO S06-ZONA
+012260     MOVE WAD-36-EM-ET-3           TO WAX-DATBIN
+012270     MOVE WAX-DATABI               TO WAX-36-EM-ET-AX
+ 
+012280     IF   WAX-36-EM-ET-AX NOT EQUAL ZEROS
+012290          IF   WAX-36-EM-ET-AA  LESS  50
+012300               MOVE  20   TO   WAX-36-EM-ET-SS
+012310          ELSE
+012320               MOVE  19   TO   WAX-36-EM-ET-SS.
+012330
+012340     MOVE WAX-36-EM-ET-AX  TO S06-DT-ULT-ALTER
+012350
+012360     IF  WAD-OPCOBR    EQUAL   4  OR  6
+012370         MOVE  WAD-BAIRCO   TO  S06-BAIRRO
+012380         MOVE  WAD-CEPCOR2  TO  S06-CEP-COMPL
+012390         MOVE  WAX-LOGCOR   TO  S06-CD-LOGRADOURO
+012400         MOVE  WAD-LOCCOR   TO  S06-CD-LOC-CORRES
+012410     ELSE
+012420         MOVE  WAD-BAIRIN   TO  S06-BAIRRO
+012430         MOVE  WAD-CEPINS2  TO  S06-CEP-COMPL
+012440         MOVE  WAX-LOGINS   TO  S06-CD-LOGRADOURO
+012450         MOVE  WAD-LOCINS   TO  S06-CD-LOC-CORRES.
+012460
+012470     MOVE WAD-NRCFAT     TO  S06-NRC-FAT
+012480     MOVE WAD-RESTR-V    TO  S06-RESTR-V
+012490     MOVE WAD-CODAGL     TO  S06-AGLUTINADOR
+012500     MOVE WAD-CODCLI     TO  S06-CD-CLIENTE
+012510     MOVE WAD-TIPNRF     TO  S06-TPO-DCTO-ASSIN
+012520     IF   WAD-NUMNRF      IS NUMERIC
+012530          MOVE WAD-NUMNRF      TO S06-NRO-DCTO-ASSIN
+012540     ELSE
+012550          MOVE ZERO TO S06-NRO-DCTO-ASSIN.
+012560 10120-90-FORMATA-S06-COMPL.
+012570     EXIT.
+012580*****************************************************************
+012590* LE CADASTRO DE CENTRAIS
+012600*****************************************************************
+012610 10130-LE-CENTRAL SECTION.
+012620
+012630     EXEC ADABAS
+012640            FIND
+012650            SELECT   ZONA
+012660              FROM   A-0029SGS01 C002-A-0029SGS01
+012670             WHERE   CODIGO-NUMERICO-LOCALIDADE =
+012680                    :WAD-1A5-36TERTEL
+012690               AND   PREFIXO-CENTRAL-TELEFONICA =
+012700                    :WAD-6A9-36TERTEL
+012710           END-EXEC
+012720
+012730     IF RESPONSE-CODE OF C002-A-0029SGS01 NOT EQUAL ZERO
+012740        MOVE            +140        TO         WAX-CODABE
+012740        DISPLAY 'ERRO NA ROTINA 10130-LE-CENTRAL'
+012750        MOVE            WAD-REPCOD  TO         WMG-REPCOD
+012760        MOVE            WMG-ADABAS  TO         WRC-OBS
+012770        PERFORM         50-00-ABENDAR
+012780     END-IF.
+012790
+012800*****************************************************************
+012810*            ROTINA DE TRATAMENTO DO  FILE   36                 *
+012820*****************************************************************
+012830
+012840 15-00-PROCESSAMENTO SECTION.
+012850
+012860     PERFORM 40-00-CALL-ADABAS
+012870
+012880     MOVE  WAD-RECBUF  TO  WAD-RBUF36.
+012890
+012900     IF      WAD-REPCOD      EQUAL       3  OR
+012910             WAD-NR-PER-ATU  NOT EQUAL  E01-PERIODO-HEAD
+012920             MOVE  'S'  TO   WCH-FIM
+012930             GO  TO  15-99-PROCESSAMENTO.
+012940
+012950     ADD  1            TO WRC-VALE1.
+012960     MOVE WAD-36TERTEL TO WAD-ABRE-36TERTEL
+012970     IF  WAD-36TELPRV  EQUAL  0
+012980         PERFORM 20-00-TRATA-CAF-TERTEL
+012990     ELSE
+013000         PERFORM 25-00-TRATA-CAF-TELPROV.
+013010
+013020     PERFORM 28-00-TRATA-S03-S04.
+013030
+013040 15-99-PROCESSAMENTO.
+013050     EXIT.
+013060*****************************************************************
+013070*            ROTINA DE PROCESSAMENTO DO CAF POR TERTEL          *
+013080*****************************************************************
+013090
+013100 20-00-TRATA-CAF-TERTEL SECTION.
+013110
+013120     PERFORM  026-00-MOVIMENTA-CAMPO-BINARIO
+013130
+013140     MOVE    WAD-36TERTEL    TO              WAX-TELCB
+013150
+013160     IF      WAX-CONJCB      EQUAL           '7'
+013170             MOVE  SPACES    TO              S01-TIPEQT
+013180                                             S01-SIGEST
+013190             MOVE  1         TO              S01-V
+013200             MOVE            LOW-VALUES  TO         WAD-OCORRE
+013210             MOVE            '1'         TO         WAD-QTDE  (1)
+013220             MOVE            'PRI'       TO         WAD-CLAADI(1)
+013230             MOVE            'SEQ'       TO         WAD-TIPO  (1)
+013240             MOVE            SPACES      TO         WAD-RESTO (1)
+013250             PERFORM  021-00-FORMATA-S01-TERTEL
+013260             MOVE WAX-FORPAC TO          S01-PAC
+013270             ADD  1          TO              WRC-VALS1
+013280             WRITE           S01-REGOUT
+013290     ELSE
+013300     MOVE  WAX-DATA   TO  WAX-DT-BUG1
+013310     MOVE  WAX-DATABI TO  WAX-DT-BUG2
+013320     ADD   500000     TO  WAX-DT-BUG1  WAX-DT-BUG2
+013330     IF    ( WAD-36NUMREG    EQUAL       ZEROS )               OR
+013340           ( WAX-PAC         EQUAL       01  OR  02  OR  03 )  OR
+013350           ( WAX-PAC-R       EQUAL       LOW-VALUES )          OR
+013360          (( WAX-PAC         EQUAL       31  OR  32  OR  33   OR
+013370                                 34  OR  35  OR  36  OR  37   OR
+013380                                 41  OR  43  OR  44  OR  45 ) AND
+013390           ( WAX-DT-BUG1     GREATER     WAX-DT-BUG2))
+013400             ADD 1 TO WRC-VALE2
+013410             GO   TO   20-99-TRATA-CAF-TERTEL.
+013420
+013430     IF    ( WAX-CPCC        EQUAL       74         OR  77 )
+013440             ADD 1 TO WRC-VALE2
+013450             GO   TO   20-99-TRATA-CAF-TERTEL.
+013460
+013470     IF    ( WAD-36CLSRVP    EQUAL       'TPUA' )  AND
+013480           ( WAX-CPCC   NOT  EQUAL        89  )
+013490             ADD 1 TO WRC-VALE2
+013500             GO   TO   20-99-TRATA-CAF-TERTEL.
+013510
+013520      MOVE  SPACES     TO         S01-TIPEQT
+013530                                  S01-SIGEST
+013540      MOVE  1          TO         S01-V
+013550      PERFORM  021-00-FORMATA-S01-TERTEL.
+013560
+013570      IF SGSLI OR (WAD-36CLSRVP EQUAL 'LEJT' AND
+013580         WAX-CONJCB EQUAL 3)
+013590         ADD   1          TO         WRC-VALS1
+013600         WRITE            S01-REGOUT
+013610      ELSE
+013620*     * SELECAO SGS-DDR
+013630         IF  (WAD-36CLSRVP = 'LTDS' OR 'LTDE' OR 'LTDB'
+013640                OR 'LTDO' OR 'LTDI' OR 'LTDA' OR 'LTDP'
+013650                OR 'LTEI' OR 'LTEP' OR 'LTFI' OR 'DDRP'
+013660                OR 'DDRD' OR 'DDRA' OR 'RDTI' OR 'RDTE'
+013670                OR 'RDIR' OR 'RDIN' OR 'RDIE')
+013680         AND  WAD-36TERTEL NOT EQUAL ZEROS
+013690                   MOVE S01-REGOUT  TO S05-REGOUT
+013700                   PERFORM  10090-01-FORMATA-S05-COMPL
+013710                   WRITE            S05-REGOUT
+013720                   ADD    1         TO WRC-VALS5
+013730         ELSE
+013740              ADD    1         TO WRC-VALS2.
+013750
+013760 20-99-TRATA-CAF-TERTEL.
+013770     EXIT.
+013780******************************************************************
+013790*              ROTINA  PARA   FORMATAR   S01-TERTEL              *
+013800******************************************************************
+013810
+013820 021-00-FORMATA-S01-TERTEL  SECTION.
+013830
+013840     IF  WAD-36CLSRVP  EQUAL  'LIRA'  OR  'LIRC'  OR  'LIRL'
+013850         MOVE  'R'  TO  WAD-INDLI
+013860         IF  WAD-NOMTEM  GREATER  SPACES
+013870             MOVE  'R'  TO  WAD-INOMTE
+013880         END-IF
+013890     ELSE
+013900       IF  WAD-36CLSRVP  EQUAL  'LINA'  OR  'LINC'  OR  'LINL'
+013910           MOVE  'N'  TO  WAD-INDLI
+013920           IF  WAD-NOMTEM  GREATER  SPACES
+013930               MOVE  'N'  TO  WAD-INOMTE
+013940           END-IF
+013950       ELSE
+013960         IF  WAD-36CLSRVP  EQUAL  'LIDG'
+013970             MOVE  '8'  TO  WAD-INDLI
+013980             IF  WAD-NOMTEM  GREATER  SPACES
+013990                 MOVE  '8'  TO  WAD-INOMTE
+014000             END-IF
+014010         ELSE
+014020           IF  WAD-36CLSRVP  EQUAL  'LEJN'
+014030               MOVE  '9'  TO  WAD-INDLI
+014040               IF  WAD-NOMTEM  GREATER  SPACES
+014050                   MOVE  '9'  TO  WAD-INOMTE
+014060               END-IF
+014070           ELSE
+014080             IF  WAD-36CLSRVP(1:3)  EQUAL  'DDR'
+014090                 MOVE  'D'  TO  WAD-INDLI
+014100                 IF  WAD-NOMTEM  GREATER  SPACES
+014110                     MOVE  'D'  TO  WAD-INOMTE
+014120                 END-IF
+014130             ELSE
+014140               IF  WAD-36CLSRVP(1:2)  EQUAL  'RD'
+014150                   MOVE  'L'  TO  WAD-INDLI
+014160                   IF  WAD-NOMTEM  GREATER  SPACES
+014170                       MOVE  'L'  TO  WAD-INOMTE
+014180                   END-IF
+014190               ELSE
+014200                 MOVE  'O'  TO  WAD-INDLI
+014210                 IF  WAD-NOMTEM  GREATER  SPACES
+014220                     MOVE  'O'  TO  WAD-INOMTE
+014230                 END-IF.
+014240
+014250     IF  WAD-OPCOBR  EQUAL  4
+014260         MOVE  WAD-IGUAL4   TO  S01-ENDERC
+014270     ELSE
+014280         MOVE  WAD-DIFER4   TO  S01-ENDERC.
+ 
+014290     MOVE WAD-PARTEA        TO  S01-PARTEA.
+014300     MOVE WAD-PARTEB        TO  S01-PARTEB.
+014310     MOVE WAD-PARTEB1       TO  S01-PARTEB1.
+014320     MOVE WAD-PARTEC        TO  S01-PARTEC.
+014330     MOVE WAD-PLANO         TO  S01-PLANO.
+014340     MOVE WAD-NR-PER-ATU    TO  S01-NR-PER-ATU.
+014350     MOVE WAD-NR-PER-ANT    TO  S01-NR-PER-ANT.
+014360     MOVE WAD-DT-ALT-PER    TO  S01-DT-ALT-PER.
+014370
+014420     PERFORM VARYING WIN-EQP
+014430                FROM 1 BY 1
+014440                   UNTIL WIN-EQP GREATER 19
+014450
+014610            MOVE WAD-PARTEBX(WIN-EQP) TO S01-PARTEBX(WIN-EQP)
+014620            MOVE WAD-36DTGAR(WIN-EQP) TO S01-DTGAR(WIN-EQP)
+014460            IF   WAD-36DTGAR(WIN-EQP)  NOT EQUAL  LOW-VALUES
+014470                 MOVE WAD-36DTGAR(WIN-EQP)   TO    WAX-DATGAR
+014480                 MOVE WAX-DATGAR-R           TO    WAX-DATAGAR
+014490              IF   WAX-DATAGAR           EQUAL  20010301  AND
+014500                   WAD-CLAADI(WIN-EQP)   EQUAL  'DSL'   AND
+014510                   WAD-TIPO(WIN-EQP)     EQUAL  'VLA'   AND
+014520                  (WAD-COR(WIN-EQP)  EQUAL  01 OR 02 OR 04 )  AND
+014530                  (WAD-PROP(WIN-EQP)     EQUAL  'G'  OR  'K' )
+                        MOVE SPACES             TO  S01-DTGAR(WIN-EQP)
+                    END-IF
+                  END-IF
+           END-PERFORM.
+014380**********  TRATAMENTO PARA SPEED COM PROMOCAO ) ****************
+014390*    MOVE   'N'     TO     WAX-SPEED.
+014400*    MOVE   ZEROS   TO     IND1.
+014410*    MOVE   ZEROS   TO     WIN-OCOR1   WIN-OCOR2.
+014420*    PERFORM VARYING WIN-EQP
+014430*               FROM 1 BY 1
+014440*                  UNTIL WIN-EQP GREATER 19
+014450*
+014460*     IF   WAD-36DTGAR(WIN-EQP)  NOT EQUAL  LOW-VALUES
+014470*        MOVE WAD-36DTGAR(WIN-EQP)   TO    WAX-DATGAR
+014480*        MOVE WAX-DATGAR-R           TO    WAX-DATAGAR
+014490*        IF   WAX-DATAGAR           EQUAL  20010301  AND
+014500*             WAD-CLAADI(WIN-EQP)   EQUAL  'DSL'   AND
+014510*             WAD-TIPO(WIN-EQP)     EQUAL  'VLA'   AND
+014520*            (WAD-COR(WIN-EQP)      EQUAL  01 OR 02 OR 04 )  AND
+014530*            (WAD-PROP(WIN-EQP)     EQUAL  'G'  OR  'K' )
+014540*            MOVE   'N'              TO    WAX-SPEED
+014550*            MOVE   WIN-EQP          TO    WIN-OCOR1   WIN-OCOR2
+014560*            ADD    0                    TO WIN-OCOR2
+014570*        END-IF
+014580*     END-IF
+014490*     IF   WAX-DATAGAR           EQUAL  20010301          AND
+014500*          WAD-CLAADI(WIN-EQP)   EQUAL  'DSL'             AND
+014510*          WAD-TIPO(WIN-EQP)     EQUAL  'VLA'             AND
+014520*         (WAD-COR(WIN-EQP)      EQUAL  01 OR 02 OR 04 )  AND
+014530*         (WAD-PROP(WIN-EQP)     EQUAL  'G'  OR  'K' )    AND
+014530*          WAX-SPEED             EQUAL  'N'
+014600*          ADD  1                    TO IND1
+014620*          MOVE ZEROS                TO S01-DTGAR(IND1)
+014570*     ELSE
+014590*        IF  WAX-SPEED          NOT EQUAL  'S'
+014600*            ADD  1                    TO IND1
+014610*            MOVE WAD-PARTEBX(WIN-EQP) TO S01-PARTEBX(IND1)
+014620*            MOVE WAD-36DTGAR(WIN-EQP) TO S01-DTGAR(IND1)
+014630*        END-IF
+014630*     END-IF
+      *
+014640*     IF  WAX-SPEED            EQUAL    'S'        AND
+014650*         WIN-EQP              EQUAL    WIN-OCOR2
+014660*        IF  WAD-CLAADI(WIN-EQP)  NOT EQUAL  'MOD'
+014670*            ADD  1                    TO IND1
+014680*            MOVE WAD-PARTEBX(WIN-EQP) TO S01-PARTEBX(IND1)
+014690*            MOVE WAD-36DTGAR(WIN-EQP) TO S01-DTGAR(IND1)
+014700*        END-IF
+014710*     END-IF
+014720*     IF  WAX-SPEED            EQUAL    'S'        AND
+014730*         WIN-EQP             GREATER   WIN-OCOR2
+014740*         ADD  1                    TO IND1
+014750*         MOVE WAD-PARTEBX(WIN-EQP) TO S01-PARTEBX(IND1)
+014760*         MOVE WAD-36DTGAR(WIN-EQP) TO S01-DTGAR(IND1)
+014770*     END-IF
+014780*    END-PERFORM.
+014790
+014800**********  TRATAMENTO PARA CPCC 39  ****************************
+014810     IF   WAX-CPCC   EQUAL  39
+014820          MOVE   ZEROS   TO     IND1  WIN-EQP
+014830          PERFORM VARYING WIN-EQP
+014840                  FROM 1 BY 1
+014850                       UNTIL WIN-EQP GREATER 19
+014860
+014870             IF  S01-CLAADI(WIN-EQP)   NOT EQUAL  'PRI'
+014880                 ADD  1                    TO IND1
+014890                 MOVE S01-PARTEBX(WIN-EQP) TO WAX-PARTEBX(IND1)
+014900                 MOVE S01-DTGAR(WIN-EQP)   TO WAX-DTGAR(IND1)
+014910             END-IF
+014920          END-PERFORM
+014930          MOVE   ZEROS   TO     IND1 WIN-EQP
+014940          PERFORM VARYING WIN-EQP
+014950                  FROM 1 BY 1
+014960                       UNTIL WIN-EQP GREATER 19
+014970
+014980                 MOVE WAX-PARTEBX(WIN-EQP) TO S01-PARTEBX(WIN-EQP)
+014990                 MOVE WAX-DTGAR(WIN-EQP)   TO S01-DTGAR(WIN-EQP)
+015000          END-PERFORM
+015010     END-IF.
+015020
+015030**********  TRATAMENTO PARA MANUTENCAO ASSIST *******************
+015040     MOVE   ZEROS   TO     IND1  WIN-EQP
+015050     PERFORM VARYING WIN-EQP
+015060             FROM 1 BY 1
+015070                  UNTIL WIN-EQP GREATER 19
+015080
+015090       IF ((S01-DTGAR(WIN-EQP)  NOT EQUAL   LOW-VALUES)  AND
+015100           (S01-CLAADI(WIN-EQP)     EQUAL   'PBM' OR 'PBE')  AND
+015110           (S01-COR(WIN-EQP)        EQUAL   '25')  AND
+015120           (S01-PROP(WIN-EQP)       EQUAL   'G'))
+015130           CONTINUE
+015140       ELSE
+015150           ADD  1                    TO IND1
+015160           MOVE S01-PARTEBX(WIN-EQP) TO WAX-PARTEBX(IND1)
+015170           MOVE S01-DTGAR(WIN-EQP)   TO WAX-DTGAR(IND1)
+015180       END-IF
+015190     END-PERFORM.
+015200     MOVE   ZEROS   TO     IND1 WIN-EQP
+015210     PERFORM VARYING WIN-EQP
+015220            FROM 1 BY 1
+015230                   UNTIL WIN-EQP GREATER 19
+015240
+015250        MOVE WAX-PARTEBX(WIN-EQP) TO S01-PARTEBX(WIN-EQP)
+015260        MOVE WAX-DTGAR(WIN-EQP)   TO S01-DTGAR(WIN-EQP)
+015270     END-PERFORM.
+015280
+015290 021-99-FORMATA-S01-TERTEL.
+015300     EXIT.
+015310*****************************************************************
+015320*            ROTINA DE PROCESSAMENTO DO CAF POR TELPROV         *
+015330*****************************************************************
+015340
+015350 25-00-TRATA-CAF-TELPROV SECTION.
+015360
+015370     PERFORM  026-00-MOVIMENTA-CAMPO-BINARIO
+015380
+015390     MOVE  WAX-DATA   TO  WAX-DT-BUG1
+015400     MOVE  WAX-DATABI TO  WAX-DT-BUG2
+015410     ADD   500000     TO  WAX-DT-BUG1  WAX-DT-BUG2
+015420     IF    ( WAD-36NUMREG    EQUAL       ZEROS )               OR
+015430           ( WAX-PAC         EQUAL       01  OR  02  OR  03 )  OR
+015440           ( WAX-PAC-R       EQUAL       LOW-VALUES )          OR
+015450          (( WAX-PAC         EQUAL       31  OR  32  OR  33   OR
+015460                                 34  OR  35  OR  36  OR  37   OR
+015470                                 41  OR  43  OR  44  OR  45 ) AND
+015480           ( WAX-DT-BUG1     GREATER     WAX-DT-BUG2))
+015490             ADD 1 TO WRC-VALE3
+015500             GO   TO   25-99-TRATA-CAF-TELPROV.
+015510
+015520     IF    ( WAX-CPCC        EQUAL       74         OR  77 )
+015530             ADD 1 TO WRC-VALE3
+015540             GO   TO   25-99-TRATA-CAF-TELPROV.
+015550
+015560     IF    ( WAD-36CLSRVP    EQUAL       'TPUA' )  AND
+015570           ( WAX-CPCC   NOT  EQUAL        89  )
+015580             ADD 1 TO WRC-VALE3
+015590             GO   TO   25-99-TRATA-CAF-TELPROV.
+015600
+015610      MOVE  SPACES     TO         S02-TIPEQT
+015620                                  S02-SIGEST
+015630      MOVE  1          TO         S02-V
+015640      MOVE  WAD-RBUF36 TO         S02-TELPROV
+015650      PERFORM  027-00-FORMATA-S02-TELPROV.
+015660
+015670      IF SGSLI OR (WAD-36CLSRVP EQUAL 'LEJT' AND
+015680         WAX-CONJCB EQUAL 3)
+015690         ADD   1          TO         WRC-VALS2
+015700         WRITE            S02-REGOUT
+015710      ELSE
+015720         IF  WAD-36CLSRVP = 'LTDS' OR 'LTDE' OR 'LTDB'
+015730             OR 'LTDO' OR 'LTDI' OR 'LTDA' OR 'LTDP'
+015740             OR 'LTEI' OR 'LTEP' OR 'LTFI' OR 'DDRP'
+015750             OR 'DDRD' OR 'DDRA' OR 'RDTI' OR 'RDTE'
+015760             OR 'RDIR' OR 'RDIN' OR 'RDIE'
+015770             MOVE S02-REGOUT  TO S06-REGOUT
+015780             PERFORM  10120-00-FORMATA-S06-COMPL
+015790             WRITE            S06-REGOUT
+015800             ADD    1         TO WRC-VALS6
+015810             ELSE
+015820             ADD    1         TO WRC-VALS3.
+015830
+015840 25-99-TRATA-CAF-TELPROV.
+015850     EXIT.
+015860******************************************************************
+015870*   ROTINA  DE MOVIMENTACAO DO CAMPO BINARIO PARA AREA AUXILIAR  *
+015880******************************************************************
+015890
+015900 026-00-MOVIMENTA-CAMPO-BINARIO SECTION.
+015910
+015920     MOVE WAD-36PAC     TO  WAX-PACBIN.
+015930     MOVE WAD-36DTALT   TO  WAX-DATBIN.
+015940     MOVE WAD-36CPCC    TO  WAX-CPCCBI.
+015950     MOVE WAD-LOGINS    TO  WAX-LOGIBI.
+015960     MOVE WAD-LOGCOR    TO  WAX-LOGCBI.
+015970
+015980 026-99-MOVIMENTA-CAMPO-BINARIO.
+015990     EXIT.
+016000******************************************************************
+016010*              ROTINA  PARA   FORMATAR   S02-TELPROV             *
+016020******************************************************************
+016030
+016040 027-00-FORMATA-S02-TELPROV SECTION.
+016050
+016060     IF  WAD-36CLSRVP  EQUAL  'LIRA'  OR  'LIRC'  OR  'LIRL'
+016070         MOVE  'R'  TO  WAD-INDLI
+016080     ELSE
+016090       IF  WAD-36CLSRVP  EQUAL  'LINA'  OR  'LINC'  OR  'LINL'
+016100           MOVE  'N'  TO  WAD-INDLI
+016110       ELSE
+016120         IF  WAD-36CLSRVP  EQUAL  'LIDG'
+016130             MOVE  '8'  TO  WAD-INDLI
+016140         ELSE
+016150           IF  WAD-36CLSRVP  EQUAL  'LEJN'
+016160               MOVE  '9'  TO  WAD-INDLI
+016170           ELSE
+016180             IF   WAD-36CLSRVP(1:3)  EQUAL  'DDR'
+016190                  MOVE  'D'  TO  WAD-INDLI
+016200             ELSE
+016210               IF  WAD-36CLSRVP(1:2)  EQUAL  'RD'
+016220                   MOVE  'L'  TO  WAD-INDLI
+016230               ELSE
+016240                   MOVE  'O'    TO  WAD-INDLI.
+016250
+016260     MOVE WAD-PARTEA    TO  S02-PARTEA.
+016270     MOVE WAD-DIFER4    TO  S02-ENDERC.
+016280     MOVE WAD-PARTEB    TO  S02-PARTEB.
+016290     MOVE WAD-PARTEB1   TO  S02-PARTEB1.
+016300     MOVE WAD-PARTEC    TO  S02-PARTEC.
+016310     MOVE WAD-PLANO         TO  S02-PLANO.
+016320     MOVE WAD-NR-PER-ATU    TO  S02-NR-PER-ATU.
+016330     MOVE WAD-NR-PER-ANT    TO  S02-NR-PER-ANT.
+016340     MOVE WAD-DT-ALT-PER    TO  S02-DT-ALT-PER.
+016350
+014420     PERFORM VARYING WIN-EQP
+014430                FROM 1 BY 1
+014440                   UNTIL WIN-EQP GREATER 19
+014450
+014610            MOVE WAD-PARTEBX(WIN-EQP) TO S02-PARTEBX(WIN-EQP)
+014620            MOVE WAD-36DTGAR(WIN-EQP) TO S02-DTGAR(WIN-EQP)
+014460            IF   WAD-36DTGAR(WIN-EQP)  NOT EQUAL  LOW-VALUES
+014470                 MOVE WAD-36DTGAR(WIN-EQP)   TO    WAX-DATGAR
+014480                 MOVE WAX-DATGAR-R           TO    WAX-DATAGAR
+014490              IF   WAX-DATAGAR           EQUAL  20010301  AND
+014500                   WAD-CLAADI(WIN-EQP)   EQUAL  'DSL'   AND
+014510                   WAD-TIPO(WIN-EQP)     EQUAL  'VLA'   AND
+014520                  (WAD-COR(WIN-EQP)  EQUAL  01 OR 02 OR 04 )  AND
+014530                  (WAD-PROP(WIN-EQP)     EQUAL  'G'  OR  'K' )
+                        MOVE SPACES             TO  S02-DTGAR(WIN-EQP)
+                    END-IF
+                  END-IF
+           END-PERFORM.
+016360**********  TRATAMENTO PARA SPEED COM PROMOCAO  *****************
+016370*    MOVE   'N'     TO     WAX-SPEED.
+016380*    MOVE   ZEROS   TO     IND1.
+016390*    MOVE   ZEROS   TO     WIN-OCOR1  WIN-OCOR2.
+016400*    PERFORM VARYING WIN-EQP
+016410*               FROM 1 BY 1
+016420*                  UNTIL WIN-EQP GREATER 19
+016430*
+016440*     IF   WAD-36DTGAR(WIN-EQP)  NOT EQUAL  LOW-VALUES
+016450*        MOVE WAD-36DTGAR(WIN-EQP)   TO    WAX-DATGAR
+016460*        MOVE WAX-DATGAR-R           TO    WAX-DATAGAR
+016470*        IF   WAX-DATAGAR           EQUAL  20010301  AND
+016480*             WAD-CLAADI(WIN-EQP)   EQUAL  'DSL'   AND
+016490*             WAD-TIPO(WIN-EQP)     EQUAL  'VLA'   AND
+016500*            (WAD-COR(WIN-EQP)      EQUAL  01 OR 02 OR 04 )  AND
+016510*            (WAD-PROP(WIN-EQP)     EQUAL  'G'  OR  'K' )
+016520*            MOVE   'N'              TO    WAX-SPEED
+016530*            MOVE   WIN-EQP          TO    WIN-OCOR1   WIN-OCOR2
+016540*            ADD    0                TO    WIN-OCOR2
+016550*        END-IF
+016560*     END-IF
+      *
+014490*     IF   WAX-DATAGAR           EQUAL  20010301          AND
+014500*          WAD-CLAADI(WIN-EQP)   EQUAL  'DSL'             AND
+014510*          WAD-TIPO(WIN-EQP)     EQUAL  'VLA'             AND
+014520*         (WAD-COR(WIN-EQP)      EQUAL  01 OR 02 OR 04 )  AND
+014530*         (WAD-PROP(WIN-EQP)     EQUAL  'G'  OR  'K' )    AND
+014530*          WAX-SPEED             EQUAL  'N'
+014600*          ADD  1                    TO IND1
+014620*          MOVE ZEROS                TO S02-DTGAR(IND1)
+014570*     ELSE
+016570*        IF  WAX-SPEED          NOT EQUAL  'S'
+016580*            ADD  1             TO    IND1
+016590*            MOVE WAD-PARTEBX(WIN-EQP) TO S02-PARTEBX(IND1)
+016600*            MOVE WAD-36DTGAR(WIN-EQP) TO S02-DTGAR(IND1)
+016610*        END-IF
+016610*     END-IF
+      *
+016620*     IF  WAX-SPEED            EQUAL    'S'        AND
+016630*         WIN-EQP              EQUAL    WIN-OCOR2
+016640*        IF  WAD-CLAADI(WIN-EQP)  NOT EQUAL  'MOD'
+016650*            ADD  1             TO    IND1
+016660*            MOVE WAD-PARTEBX(WIN-EQP) TO S02-PARTEBX(IND1)
+016670*            MOVE WAD-36DTGAR(WIN-EQP) TO S02-DTGAR(IND1)
+016680*        END-IF
+016690*     END-IF
+016700*     IF  WAX-SPEED            EQUAL    'S'        AND
+016710*         WIN-EQP             GREATER   WIN-OCOR2
+016720*         ADD  1             TO    IND1
+016730*         MOVE WAD-PARTEBX(WIN-EQP) TO S02-PARTEBX(IND1)
+016740*         MOVE WAD-36DTGAR(WIN-EQP) TO S02-DTGAR(IND1)
+016750*     END-IF
+016760*    END-PERFORM.
+016770
+016780**********  TRATAMENTO PARA CPCC 39  ****************************
+016790     IF   WAX-CPCC   EQUAL  39
+016800          MOVE   ZEROS   TO     IND1
+016810          PERFORM VARYING WIN-EQP
+016820                  FROM 1 BY 1
+016830                       UNTIL WIN-EQP GREATER 19
+016840
+016850             IF  S02-CLAADI(WIN-EQP)   NOT EQUAL  'PRI'
+016860                 ADD  1             TO    IND1
+016870                 MOVE S02-PARTEBX(WIN-EQP) TO WAX-PARTEBX(IND1)
+016880                 MOVE S02-DTGAR(WIN-EQP)   TO WAX-DTGAR(IND1)
+016890             END-IF
+016900          END-PERFORM
+016910          MOVE   ZEROS   TO     IND1 WIN-EQP
+016920          PERFORM VARYING WIN-EQP
+016930                  FROM 1 BY 1
+016940                       UNTIL WIN-EQP GREATER 19
+016950
+016960                 MOVE WAX-PARTEBX(WIN-EQP) TO S02-PARTEBX(WIN-EQP)
+016970                 MOVE WAX-DTGAR(WIN-EQP)   TO S02-DTGAR(WIN-EQP)
+016980          END-PERFORM
+016990     END-IF.
+017000
+017010**********  TRATAMENTO PARA MANUTENCAO ASSIST *******************
+017020     MOVE   ZEROS   TO     IND1  WIN-EQP
+017030     PERFORM VARYING WIN-EQP
+017040             FROM 1 BY 1
+017050                  UNTIL WIN-EQP GREATER 19
+017060
+017070       IF ((S02-DTGAR(WIN-EQP)  NOT EQUAL   LOW-VALUES)  AND
+017080           (S02-CLAADI(WIN-EQP)     EQUAL   'PBM' OR 'PBE')  AND
+017090           (S02-COR(WIN-EQP)        EQUAL   '25')  AND
+017100           (S02-PROP(WIN-EQP)       EQUAL   'G'))
+017110           CONTINUE
+017120       ELSE
+017130           ADD  1             TO    IND1
+017140           MOVE S02-PARTEBX(WIN-EQP) TO WAX-PARTEBX(IND1)
+017150           MOVE S02-DTGAR(WIN-EQP)   TO WAX-DTGAR(IND1)
+017160       END-IF
+017170     END-PERFORM.
+017180     MOVE   ZEROS   TO     IND1 WIN-EQP
+017190     PERFORM VARYING WIN-EQP
+017200            FROM 1 BY 1
+017210                   UNTIL WIN-EQP GREATER 19
+017220
+017230        MOVE WAX-PARTEBX(WIN-EQP) TO S02-PARTEBX(WIN-EQP)
+017240        MOVE WAX-DTGAR(WIN-EQP)   TO S02-DTGAR(WIN-EQP)
+017250     END-PERFORM.
+017260
+017270 027-99-FORMATA-S02-TELPROV.
+017280     EXIT.
+017290*****************************************************************
+017300*            ROTINA DE TRATAMENTO DOS ARQUIVOS SAI03 E SAI04    *
+017310*****************************************************************
+017320
+017330 28-00-TRATA-S03-S04  SECTION.
+017340
+017350     PERFORM  026-00-MOVIMENTA-CAMPO-BINARIO
+017360
+017370     MOVE    WAD-36TERTEL    TO              WAX-TELCB
+017380
+017390     IF      WAX-CONJCB      EQUAL           '7'
+017400             MOVE            LOW-VALUES  TO         WAD-OCORRE
+017410             MOVE            '1'         TO         WAD-QTDE  (1)
+017420             MOVE            'PRI'       TO         WAD-CLAADI(1)
+017430             MOVE            'SEQ'       TO         WAD-TIPO  (1)
+017440             MOVE            SPACES      TO         WAD-RESTO (1)
+017450             PERFORM  029-00-FORMATA-GRAVA-SEQSAI03
+017460             PERFORM  032-00-FORMATA-GRAVA-SEQSAI04
+017470     ELSE
+017480     MOVE  WAX-DATA   TO  WAX-DT-BUG1
+017490     MOVE  WAX-DATABI TO  WAX-DT-BUG2
+017500     ADD   500000     TO  WAX-DT-BUG1  WAX-DT-BUG2
+017510     IF    ( WAD-36NUMREG    EQUAL       ZEROS )               OR
+017520           ( WAX-PAC         EQUAL       01  OR  02  OR  03 )  OR
+017530           ( WAX-PAC-R       EQUAL       LOW-VALUES )          OR
+017540          (( WAX-PAC         EQUAL       31  OR  32  OR  33   OR
+017550                                 34  OR  35  OR  36  OR  37   OR
+017560                                 41  OR  43  OR  44  OR  45 ) AND
+017570           ( WAX-DT-BUG1     GREATER     WAX-DT-BUG2))
+017580             GO  TO  28-99-TRATA-S03-S04.
+017590
+017600     IF    ( WAD-36CLSRVP    NOT EQUAL   'LIRA'  AND  'LIRC'  AND
+017610                                         'LINA'  AND  'LINC'  AND
+017620                                         'LINL'  AND  'LIRL'  AND
+017630                                         'LIDG'  AND  'LEJN'  AND
+017640                                         'DSIB'  AND  'DSIP'  AND
+017650                                         'LICR'  AND  'TSCE'  AND
+017660                                         'TPUA'  AND  'LIVE'  AND
+017670                                         'LTNM'  AND  'RDSI'  AND
+017680                                         'DSIR'  AND  'DSIN'  AND
+017690                                         'DDRP'  AND  'DDRA'  AND
+017700                                         'DDRD'  AND  'RDTI'  AND
+017710                                         'RDTE'  AND  'RDIR'  AND
+017720                                         'RDIN'  AND  'RDIE'  AND
+017730                                         'DSIT'  AND  'DSIC') AND
+017740           ( WAD-36CLSRVP    NOT EQUAL   'LEJT'  OR
+017750             WAX-CONJCB      NOT EQUAL     '3')
+017760             GO  TO  28-99-TRATA-S03-S04.
+017770
+017780     IF    ( WAX-CPCC        EQUAL       74         OR  77 )
+017790             GO  TO  28-99-TRATA-S03-S04.
+017800
+017810     IF    ( WAD-36CLSRVP    EQUAL       'TPUA' )  AND
+017820           ( WAX-CPCC   NOT  EQUAL        89  )
+017830             GO  TO  28-99-TRATA-S03-S04.
+017840
+017850     PERFORM  029-00-FORMATA-GRAVA-SEQSAI03
+017860     PERFORM  032-00-FORMATA-GRAVA-SEQSAI04.
+017870
+017880 28-99-TRATA-S03-S04.
+017890     EXIT.
+017900******************************************************************
+017910*          ROTINA  PARA   FORMATAR   E GRAVAR  SEQSAI03          *
+017920******************************************************************
+017930
+017940 029-00-FORMATA-GRAVA-SEQSAI03 SECTION.
+017950     MOVE  SPACES         TO      S03-NOMLOC S03-FILLER S03-INDTAR
+017960     MOVE  SPACES         TO      S03-MALA-SEGURO
+017970     IF  WAD-SIT-ESP (35)   EQUAL  'M'
+017980         MOVE  'M'   TO   S03-MALA-SEGURO.
+017990     MOVE  WAD-36TERTEL   TO      S03-ASSINA.
+018000     MOVE    WAD-36NUMREG                    TO     S03-NUMREG.
+018010     MOVE    WAD-NUMGA       TO          S03-NUMGA
+018020     MOVE    WAD-OPCOBR      TO          S03-OPCOBR
+018030     MOVE    WAD-TIPNRF      TO          S03-TIPNRF
+018040
+018050     MOVE    WAD-NUMNRF      TO          S03-NUMNRF
+018060     IF  WAD-TP-DOC-ASS  EQUAL  '23'
+018070         MOVE  WAD-NUM-DOC-ASS  TO    S03-INSCREST
+018080     ELSE
+018090         MOVE  ZEROS            TO    S03-INSCREST
+018100     END-IF
+018110     MOVE    WAD-NUMCPCT     TO          S03-NUMCPCT
+018120     MOVE    WAD-CODCLI      TO          S03-CODCLI
+018130     MOVE    WAD-CODCON      TO          S03-CODCON
+018140     MOVE    WAD-CODRENP     TO          S03-CODRENP
+018150     MOVE    ZEROS           TO          S03-QTDFIO
+018160     MOVE    ZEROS           TO          S03-NRC-TAR
+018170     MOVE    WAD-CD-COF-LP   TO          S03-CODCOF
+018180     IF      WAD-CODAGL   EQUAL   '1'    OR  '2'
+018190             MOVE  WAD-CODAGL     TO     S03-CODAGL
+018200             MOVE  WAD-NRCFAT     TO     S03-NRCFAT
+018210     ELSE
+018220             MOVE  ZEROS          TO     S03-CODAGL  S03-NRCFAT.
+018230     IF      WAD-CSCOM       EQUAL       '4'  OR  '5'
+018240             MOVE  WAD-LOCINS   TO       S03-LOCDIP
+018250     ELSE
+018260             MOVE  ZEROS        TO       S03-LOCDIP.
+018270     IF     (WAD-36TERTEL  GREATER       110000009999999  AND
+018280             WAD-36TERTEL     LESS       110000020000000)  OR
+018290            (WAD-36TERTEL  GREATER       110000098999999  AND
+018300             WAD-36TERTEL     LESS       110000100000000)  OR
+018310            (WAD-36TERTEL  GREATER       110000054999999  AND
+018320             WAD-36TERTEL     LESS       110000056000000)  OR
+018330            (WAD-36TERTEL  GREATER       110000077999999  AND
+018340             WAD-36TERTEL     LESS       110000079000000)
+018350             MOVE  WAD-ORGDDG   TO       S03-ORGDDG.
+018360
+018370     IF  WAD-OPCOBR    EQUAL   4  OR  6  OR  8
+018380         MOVE  WAX-LOGCOR   TO  S03-CODLOG
+018390         MOVE  WAD-TPLOGC   TO  S03-TIPLOG
+018400         MOVE  WAD-NOMLGC   TO  S03-NOMLOG
+018410         MOVE  WAD-NUMCOR   TO  S03-NUMLOG
+018420         MOVE  WAD-COMPCO   TO  S03-COMPLE
+018430         MOVE  WAD-CEPCOR   TO  WAX-CEPANT
+018440         MOVE  WAD-CEPCOR2  TO  WAX-CEPNOV
+018450         MOVE  WAX-CEP      TO  S03-CEP
+018460         MOVE  WAD-BAIRCO   TO  S03-BAIRRO
+018470         MOVE  WAD-LOCCOR   TO  S03-LOCALC
+018480     ELSE
+018490         MOVE  WAD-LOCINS   TO  S03-LOCALC
+018500         MOVE  WAX-LOGINS   TO  S03-CODLOG
+018510         MOVE  WAD-TPLOGI   TO  S03-TIPLOG
+018520         MOVE  WAD-NOMLGI   TO  S03-NOMLOG
+018530         MOVE  WAD-NUMINS   TO  S03-NUMLOG
+018540         MOVE  WAD-COMPIN   TO  S03-COMPLE
+018550         MOVE  WAD-CEPINS   TO  WAX-CEPANT
+018560         MOVE  WAD-CEPINS2  TO  WAX-CEPNOV
+018570         MOVE  WAX-CEP      TO  S03-CEP
+018580         MOVE  WAD-APOS     TO  S03-APOS
+018590         MOVE  WAD-BAIRIN   TO  S03-BAIRRO.
+018600
+018610**** IF S03-CONJUG EQUAL 4 OR 8 OR 5
+018620     IF S03-CONJUG EQUAL 4 OR 8
+018630        MOVE ZEROS TO S03-CONJUG
+018640        MOVE S03-TELCON TO WRK-NUMERO
+018650        PERFORM 030-00-CALCULA-DIGITO
+018660        MOVE WRK-DIGITO TO S03-DIGITO.
+018670     IF  WAD-36CLSRVP     EQUAL   'LICR' OR 'TSCE' OR 'TPUA' OR
+018680         WAD-36CLSERV     EQUAL   'TP'
+018690         MOVE     'RR'         TO  S03-APOS
+018700         MOVE      WAD-LOCINS  TO  S03-LOCINS
+018710                                   S03-LOCDIP
+018720         IF  WAD-36CLSRVP  EQUAL  'LICR'
+018730             MOVE  'R'         TO  S03-INDRUR
+018740         END-IF
+018750         IF  WAD-36CLSRVP  EQUAL  'TSCE'
+018760             MOVE  'V'         TO  S03-INDRUR
+018770         END-IF
+018780         IF  WAD-36CLSRVP  EQUAL  'TPUA' OR
+018790             WAD-36CLSERV  EQUAL   'TP'
+018800             MOVE  'T'         TO  S03-INDRUR
+018810         END-IF
+018820     ELSE
+018830         IF   WAD-LOCCOR   EQUAL  ZEROS
+018840              MOVE  WAD-LOCINS  TO  S03-LOCDIP
+018850              MOVE  SPACES      TO  S03-INDRUR  S03-APOS
+018860         ELSE
+018870              MOVE  WAD-LOCCOR  TO  S03-LOCDIP
+018880              MOVE  SPACES      TO  S03-INDRUR  S03-APOS
+018890         END-IF.
+018900
+018910     MOVE  WAD-LOCINS       TO   S03-LOCINS.
+018920     MOVE  WAD-DATINS       TO   WAX-DATBIN.
+018930     MOVE  WAX-DATABI       TO   S03-DT-INST.
+018940     MOVE  WAD-NR-PER-ATU   TO   S03-PER-ATU.
+018950     MOVE  WAD-36CLSRVP     TO   S03-CLSERV.
+018960     MOVE  WAD-36DTATU      TO   WAX-DATBIN.
+018970     MOVE  WAX-DATABI       TO   S03-DT-ATU.
+018980
+018990     MOVE S03-NUMGA TO WAX-CC.
+019000
+019010     IF WAX-CC1 EQUAL 3 OR 9
+019020        MOVE 'G' TO S03-STA-HARD
+019030     ELSE
+019040        IF WAD-STATUS-HARD EQUAL 'A'
+019050           MOVE 'R' TO S03-STA-HARD
+019060        ELSE
+019070           IF WAD-STA-TOP-NEG EQUAL 'A'
+019080              MOVE 'N' TO S03-STA-HARD
+019090           ELSE
+019100              MOVE SPACES TO S03-STA-HARD.
+019110
+019120     PERFORM   VARYING  IND
+019130          FROM  1  BY   1
+019140              UNTIL IND  GREATER 8
+019150           MOVE  WAD-RESTR (IND)  TO   S03-RESTRI(IND)
+019160     END-PERFORM
+019170
+019180     WRITE  S03-REGOUT.
+019190     ADD    1   TO   WRC-VALS3.
+019200
+019210 029-99-FORMATA-GRAVA-SEQSAI03.
+019220     EXIT.
+019230*****************************************************************
+019240*****            CALCULA O DIGITO VERIFICADOR                ****
+019250*****************************************************************
+019260
+019270 030-00-CALCULA-DIGITO SECTION.
+019280
+019290     CALL      'CPD10020'  USING    WRK-NUMERO
+019300                                    WRK-TAMANHO
+019310                                    WRK-DIGITO.
+019320
+019330     IF     WRK-DIGITO    EQUAL     'X'
+019340            MOVE     0         TO   WRK-DIGITO.
+019350
+019360
+019370 030-99-EXIT. EXIT.
+019380******************************************************************
+019390*          ROTINA  PARA   FORMATAR   E GRAVAR  SEQSAI04          *
+019400******************************************************************
+019410
+019420 032-00-FORMATA-GRAVA-SEQSAI04 SECTION.
+019430
+019440     INITIALIZE S04-REGOUT.
+019450
+019460     MOVE  WAD-36NUMREG TO  S04-NRC.
+019470     MOVE  WAD-36TERTEL TO  S04-TEL.
+019480**   IF S04-CONJUG EQUAL 4 OR 8 OR 5
+019490     IF S04-CONJUG EQUAL 4 OR 8
+019500        MOVE ZEROS TO S04-CONJUG
+019510        MOVE S04-TELCON TO WRK-NUMERO
+019520        PERFORM 030-00-CALCULA-DIGITO
+019530        MOVE WRK-DIGITO TO S04-DIGITO.
+019540     MOVE  WAD-NUMNRF   TO  S04-CGC.
+019550
+019560     MOVE  WAD-TPLOGI   TO  S04-TLG.
+019570     MOVE  WAD-NOMLGI   TO  S04-NLG.
+019580     MOVE  WAD-NUMINS   TO  S04-RLG.
+019590     MOVE  WAD-COMPIN   TO  S04-CLG.
+019600     MOVE  WAD-BAIRIN   TO  S04-BLG.
+019610     MOVE  WAD-DATINS   TO  WAX-DATBIN.
+019620     MOVE  WAX-DATABI   TO  S04-INS.
+019630     IF  S04-AA   LESS  30
+019640         MOVE  20   TO  S04-XXX
+019650     ELSE
+019660         MOVE  19   TO  S04-XXX.
+019670
+019680     MOVE  WAD-ESTEL    TO  S04-CG.
+019690     MOVE  WAD-36CLSRVP TO  S04-CH.
+019700
+019710     MOVE  WAD-CLAASS   TO  WAX-BIN2-X.
+019720     MOVE  WAX-BINA2    TO  S04-CT.
+019730
+019740     MOVE  WAD-LISCLA   TO  WAX-BIN3-X.
+019750     MOVE  WAX-BINA3    TO  S04-EH.
+019760
+019770     MOVE  WAD-NUMGA    TO  S04-EJ.
+019780     MOVE  WAD-TCHV     TO  S04-FA.
+019790     MOVE  WAD-TIPNRF   TO  S04-IM.
+019800
+019810     MOVE  WAD-36DTATU  TO  WAX-DATBIN.
+019820     MOVE  WAX-DATABI   TO  S04-CC
+019830
+019840     IF  S04-CC  GREATER      361212
+019850         MOVE  19  TO  S04-SECATU
+019860     ELSE
+019870         MOVE  20  TO  S04-SECATU.
+019880     IF  WAD-36CLSRVP     EQUAL   'LICR' OR 'TSCE' OR
+019890         WAD-36CLSERV     EQUAL   'TP'
+019900         MOVE  WAD-LOCINS   TO  S03-LOCINS.
+019910
+019920     WRITE  S04-REGOUT.
+019930     ADD    1   TO   WRC-VALS4.
+019940
+019950 032-99-FORMATA-GRAVA-SEQSAI04.
+019960     EXIT.
+019970*****************************************************************
+019980*            ROTINA   DE    F I N A L I Z A C A O               *
+019990*****************************************************************
+020000
+020010 35-00-FINALIZA SECTION.
+020020
+020030     MOVE    'CL'            TO          WAD-CMDCOD
+020040                                         WMG-CID
+020050     MOVE    SPACES          TO          WAD-CMDID
+020060                                         WAD-COPT1
+020070                                         WAD-COPT2
+020080                                         WAD-ADDIT1
+020090                                         WAD-ADDIT2
+020100                                         WAD-ADDIT3
+020110                                         WAD-ADDIT4
+020120                                         WAD-ADDIT5
+020130     PERFORM 40-00-CALL-ADABAS
+020140
+020150     CALL    'CPD10740'      USING       WRC-REDE
+020160
+020170     CLOSE   SEQSAI01
+020180             SEQSAI02
+020190             SEQSAI03
+020200             SEQSAI04
+020210             SEQSAI05
+020220             SEQSAI06.
+            CLOSE SEQENT01.
+020230
+020240 35-99-FINALIZA.
+020250     EXIT.
+020260*****************************************************************
+020270*            ROTINA P/ ACESSAR AO BANCO DE DADOS                *
+020280*****************************************************************
+020290
+020300 40-00-CALL-ADABAS SECTION.
+020310
+020320     CALL    'ADABAS'        USING       WAD-CBLOCK
+020330                                         WAD-FORBUF
+020340                                         WAD-RECBUF
+020350                                         WAD-SEABUF
+020360                                         WAD-VALBUF
+020370                                         WAD-ISNBUF.
+020380
+020390     PERFORM 45-00-TESTE-RESPONSE-CODE.
+020400
+020410 40-99-CALL-ADABAS.
+020420     EXIT.
+020430*****************************************************************
+020440*            ROTINA P/ TESTE DE RESPONSE CODE DO ADABAS         *
+020450*****************************************************************
+020460
+020470 45-00-TESTE-RESPONSE-CODE SECTION.
+020480
+020490     IF      WAD-REPCOD      NOT EQUAL   0          AND  3
+020500             MOVE            +140        TO         WAX-CODABE
+020500             DISPLAY ' ERRO NA 45-00-TESTE-RESPONSE-CODE '
+020510             MOVE            WAD-REPCOD  TO         WMG-REPCOD
+020520             MOVE            WMG-ADABAS  TO         WRC-OBS
+020530             PERFORM         50-00-ABENDAR.
+020540
+020550 45-99-TESTE-RESPONSE-CODE.
+020560     EXIT.
+020570*****************************************************************
+020580*            ROTINA  PARA     A B E N D A R     O  PGM          *
+020590*****************************************************************
+020600
+020610 50-00-ABENDAR SECTION.
+020620
+020630     MOVE    'CL'            TO          WAD-CMDCOD
+020640     MOVE    SPACES          TO          WAD-CMDID
+020650     CALL    'ADABAS'        USING       WAD-CBLOCK
+020660                                         WAD-FORBUF
+020670                                         WAD-RECBUF
+020680                                         WAD-SEABUF
+020690                                         WAD-VALBUF
+020700                                         WAD-ISNBUF
+020710
+020720     CALL    'CPD10740'      USING       WRC-REDE
+020730
+020740     CALL    'ABENDAR'       USING       WAX-ABEND.
+020750*****************************************************************
+020760* ACESSA CSO POR NUMERO DO TELEFONE
+020770*****************************************************************
+020780 60-00-ACESSA-ADABAS SECTION.
+020790
+020800     IF WAX-CHAVE-LER NOT = ZERO AND
+020810        TEL OF A-0036SER10 = WAD-TCHV
+020820        PERFORM 70-00-MOVER-CAMPOS
+020830     ELSE
+020840        MOVE 1 TO WAX-CHAVE-LER
+020850        EXEC ADABAS
+020860          FIND
+020870          SELECT  NRC,
+020880                  TEL,
+020890                  NOME-ASS,
+020900                  LOC-INS,
+020910                  LOGR-INS,
+020920                  TP-LOGR-INS,
+020930                  NOME-LOGR-INS,
+020940                  NUM-INS,
+020950                  COMPL-INS,
+020960                  CEP-INS,
+020970                  BAIRRO-INS,
+020980                  NUM-GA,
+020990                  END-BANC,
+021000                  OP-COBR,
+021010                  LOC-CORR,
+021020                  LOGR-CORR,
+021030                  TP-LOGR-CORR,
+021040                  NOME-LOGR-CORR,
+021050                  NUM-CORR,
+021060                  COMPL-CORR,
+021070                  CEP-CORR,
+021080                  TP-NRF,
+021090                  NUM-NRF,
+021100                  NR-CLIE-CPCT-CL7CC,
+021110                  NM-BAIR-CORR-LOGRA,
+021120                  CD-CLIE-CN7CM,
+021130                  CD-CEP-COMP-INST-LOGRA,
+021140                  CD-CEP-COMP-CORR-LOGRA,
+021150                  TIPO-NRC-CONTA-UNICA,
+021160                  NRC-CONTA-UNICA,
+021170                  QT-LT-VINC,
+021180                  QT-RAM-CDN,
+021190                  ID-PLANO-ATU,
+021200                  DT-ALT-PLANO
+021210          FROM    A-0036SER10
+021220          WHERE   TEL = :WAD-TCHV
+021230        END-EXEC
+021240        IF RESPONSE-CODE OF A-0036SER10 NOT = ZEROS
+021250           MOVE   +140        TO    WAX-CODABE
+021250           DISPLAY 'ERRO NA 60-00-ACESSA-ADABAS '
+021260           MOVE   WAD-REPCOD  TO    WMG-REPCOD
+021270           MOVE   WMG-ADABAS  TO WRC-OBS
+021280           PERFORM         50-00-ABENDAR
+021290        ELSE
+021300           IF QUANTITY OF A-0036SER10 > ZEROS
+021310              PERFORM 70-00-MOVER-CAMPOS
+021320           END-IF.
+021340
+021350*****************************************************************
+021360* MOVER CAMPOS DO FILE 36
+021370*****************************************************************
+021380 70-00-MOVER-CAMPOS SECTION.
+021400
+021410     MOVE NRC OF A-0036SER10
+021420          TO S05-NRC-TRONCO-CHAVE.
+021430     MOVE QT-LT-VINC OF A-0036SER10
+021440          TO S05-QT-LT-VINC.
+021450     MOVE QT-RAM-CDN OF A-0036SER10
+021460          TO S05-QT-RAM-CDN.
+021470     MOVE NUM-GA OF A-0036SER10
+021480          TO RS05-NUM-GA.
+021490     MOVE NR-CLIE-CPCT-CL7CC OF A-0036SER10
+021500          TO S05-EQUIP-DDR
+021510     MOVE ID-PLANO-ATU OF A-0036SER10
+021520          TO S05-PL-CONTR
+021530     MOVE DT-ALT-PLANO OF A-0036SER10
+021540          TO S05-DT-ALT-PL-CONTR.
+021550
+021560*****************************************************************
+021570* CONTAS DE CONDOMINIO COM EMISSAO DE CONTA POR RAMAL
+021580*        MAS EM NOME DO CONDOMINIO
+021590*****************************************************************
+021600
+021610 80-00-DADOS-TCHV-EM-RAMAL SECTION.
+021630
+021640     MOVE NOME-ASS OF A-0036SER10
+021650                                 TO S05-NM-ASS (1:63)
+021660     MOVE OP-COBR OF A-0036SER10
+021670                                 TO S05-OP-COBR
+021680     MOVE END-BANC OF A-0036SER10
+021690                                 TO S05-END-BCO
+021700     MOVE CD-CLIE-CN7CM OF A-0036SER10
+021710                                 TO S05-CD-CLIENTE
+021720     MOVE TP-NRF OF A-0036SER10
+021730                                 TO S05-TPO-DCTO-ASSIN
+021740     MOVE NUM-NRF OF A-0036SER10
+021750                                 TO S05-NRO-DCTO-ASSIN
+021760     MOVE NRC-CONTA-UNICA OF A-0036SER10
+021770                                 TO S05-NRC-FAT
+021780     MOVE TIPO-NRC-CONTA-UNICA
+021790                                 TO S05-AGLUTINADOR
+021800
+021810     IF OP-COBR OF A-0036SER10 = '4' OR '6'
+021820        MOVE LOC-CORR OF A-0036SER10
+021830                                 TO S05-CD-LOC-CORRES
+021840        MOVE LOGR-CORR OF A-0036SER10
+021850                                 TO WAX-BIN3-X
+021860        MOVE WAX-BINA3
+021870                                 TO S05-CD-LOGRADOURO
+021880        MOVE TP-LOGR-CORR OF A-0036SER10
+021890                                 TO S05-TP-LOGR
+021900        MOVE NOME-LOGR-CORR OF A-0036SER10
+021910                                 TO S05-NM-LOGR
+021920        MOVE NUM-CORR OF A-0036SER10
+021930                                 TO S05-NR-LOGR
+021940        MOVE COMPL-CORR OF A-0036SER10
+021950                                 TO S05-COMP-LOGR
+021960        MOVE NM-BAIR-CORR-LOGRA OF A-0036SER10
+021970                                 TO S05-BAIRRO
+021980        MOVE CEP-CORR OF A-0036SER10
+021990                                 TO S05-CEP-LOGR
+022000        MOVE CD-CEP-COMP-CORR-LOGRA OF A-0036SER10
+022010                                 TO S05-CEP-COMPL
+022020     ELSE
+022030        MOVE LOC-INS OF A-0036SER10
+022040                                 TO S05-CD-LOC-CORRES
+022050        MOVE LOGR-INS OF A-0036SER10
+022060                                 TO WAX-BIN3-X
+022070        MOVE WAX-BINA3
+022080                                 TO S05-CD-LOGRADOURO
+022090        MOVE TP-LOGR-INS OF A-0036SER10
+022100                                 TO S05-TP-LOGR
+022110        MOVE NOME-LOGR-INS OF A-0036SER10
+022120                                 TO S05-NM-LOGR
+022130        MOVE NUM-INS OF A-0036SER10
+022140                                 TO S05-NR-LOGR
+022150        MOVE COMPL-INS OF A-0036SER10
+022160                                 TO S05-COMP-LOGR
+022170        MOVE BAIRRO-INS OF A-0036SER10
+022180                                 TO S05-BAIRRO
+022190        MOVE CEP-INS OF A-0036SER10
+022200                                 TO S05-CEP-LOGR
+022210        MOVE CD-CEP-COMP-INST-LOGRA OF A-0036SER10
+022220                                 TO S05-CEP-COMPL
+022230     END-IF.

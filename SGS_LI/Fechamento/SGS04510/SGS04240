@@ -1,0 +1,31 @@
+       ID DIVISION.
+       PROGRAM-ID.    SGS04240.
+       AUTHOR.        PAULO CEZAR.
+       DATE-WRITTEN.  JANEIRO/2001.
+      *
+      ************************************************************
+      * OBJETIVO: MOVER 1 PARA O RETURN-CODE QUANDO O ARQUIVO DE *
+      *         ENTRADA ESTIVER VAZIO.                           *
+      ************************************************************
+      *
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       SPECIAL-NAMES.           DECIMAL-POINT IS COMMA.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+            SELECT   SEQENT01 ASSIGN UT-S-SEQENT01.
+       DATA DIVISION.
+       FILE SECTION.
+       FD   SEQENT01
+            BLOCK       0
+            RECORDING   F
+            RECORD      200.
+       01   REG         PIC X(200).
+       WORKING-STORAGE SECTION.
+       PROCEDURE DIVISION.
+            OPEN INPUT SEQENT01.
+            READ SEQENT01
+                 AT END
+                 MOVE 1 TO RETURN-CODE.
+            CLOSE SEQENT01.
+            STOP RUN.

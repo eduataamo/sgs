@@ -1,0 +1,50 @@
+//SGS03710  PROC                                                        00000000
+//*------------------------------------------------------------------*  00000010
+//*    SGS03-7  - GERACAO DO ARQUIVO CONTROLE DE ORDENS P/ ON LINE   *  00000020
+//*------------------------------------------------------------------*  00000030
+//* ******************************************************* SGS0371S *  00000040
+//SGS0371S  EXEC  PGM=SORT                                              00000050
+//SORTLIB   DD DSN=CTB.SORTLIB,DISP=SHR                                 00000060
+//SORTDIAG  DD SYSOUT=*                                                 00000070
+//SORTMSG   DD SYSOUT=*                                                 00000080
+//SYSOUT    DD SYSOUT=*,DCB=BLKSIZE=133                                 00000090
+//SYSPRINT  DD SYSOUT=*                                                 00000100
+//SORTIN    DD DSN=D.SGS034(0),DISP=OLD                                 00000110
+//SORTOUT   DD DSN=D.SGS03.B034CORD,UNIT=SYSDA,DISP=(,CATLG,DELETE),    00000120
+//             DCB=(LRECL=30,RECFM=FB),                                 00000130
+//             SPACE=(CYL,(2,1),RLSE)                                   00000140
+//SORTWK01  DD UNIT=SYSDA,SPACE=(CYL,(1,2),RLSE)                        00000150
+//SORTWK02  DD UNIT=SYSDA,SPACE=(CYL,(1,2),RLSE)                        00000160
+//SORTWK03  DD UNIT=SYSDA,SPACE=(CYL,(1,2),RLSE)                        00000170
+//SYSIN     DD DSN=SYS4.DADOS(SGS0371S),DISP=SHR                        00000180
+//* ******************************************************** SGS0372V * 00000190
+//SGS0372V  EXEC  PGM=IDCAMS                                            00000200
+//SYSPRINT  DD SYSOUT=*                                                 00000210
+//DD1       DD UNIT=SYSDA,DISP=SHR,VOL=SER=TPR28F                       00000220
+//SEQENT01  DD  DSN=D.SGS03.B034CORD,DISP=OLD                           00000230
+//SYSIN     DD DSN=SYS4.DADOS(SGS0372V),DISP=SHR                        00000240
+//* ******************************************************** SGS0373S * 00000250
+//SGS0373S  EXEC  PGM=SORT                                              00000260
+//SORTLIB   DD DSN=CTB.SORTLIB,DISP=SHR                                 00000270
+//SORTDIAG  DD SYSOUT=*                                                 00000280
+//SORTMSG   DD SYSOUT=*                                                 00000290
+//SYSOUT    DD SYSOUT=*,DCB=BLKSIZE=133                                 00000300
+//SYSPRINT  DD SYSOUT=*                                                 00000310
+//SORTIN    DD DSN=D.SGS040(0),DISP=OLD                                 00000320
+//SORTOUT   DD DSN=D.SGS04.B040CONT,UNIT=SYSDA,DISP=(,CATLG,DELETE),    00000330
+//             DCB=(LRECL=80,RECFM=FB),                                 00000340
+//             SPACE=(CYL,(1,1),RLSE)                                   00000350
+//SORTWK01  DD UNIT=SYSDA,SPACE=(CYL,(1,2),RLSE)                        00000360
+//SORTWK02  DD UNIT=SYSDA,SPACE=(CYL,(1,2),RLSE)                        00000370
+//SORTWK03  DD UNIT=SYSDA,SPACE=(CYL,(1,2),RLSE)                        00000380
+//SYSIN     DD DSN=SYS4.DADOS(SGS0373S),DISP=SHR                        00000390
+//* ******************************************************** SGS0374V * 00000400
+//SGS0374V  EXEC  PGM=IDCAMS                                            00000410
+//SYSPRINT  DD SYSOUT=*                                                 00000420
+//DD1       DD UNIT=SYSDA,DISP=SHR,VOL=SER=TPR28F                       00000430
+//SEQENT01  DD DSN=D.SGS04.B040CONT,DISP=OLD                            00000440
+//SYSIN     DD DSN=SYS4.DADOS(SGS0374V),DISP=SHR                        00000450
+//* ******************************************************** SGS0371I * 00000460
+//SGS0371I  EXEC PGM=IEFBR14                                            00000470
+//DD1       DD DSN=D.SGS03.B034CORD,DISP=(OLD,DELETE)                   00000480
+//DD2       DD DSN=D.SGS04.B040CONT,DISP=(OLD,DELETE)                   00000490

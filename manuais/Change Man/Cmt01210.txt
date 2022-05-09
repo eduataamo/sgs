@@ -1,0 +1,143 @@
+ 
+  M A N U A L  O P E R A C I O N A L  D E  P R O D U C A O  "M O P"
+ 
+ *----------------------------------------------------------------*
+ *             Instrucoes de Preenchimento:                       *
+ *  O nome do MOP e' o mesmo nome da PROC                         *
+ *  Nao alterar a mascara do Documento - Use "Nao se aplica".     *
+ *----------------------------------------------------------------*
+ 
+  PACKAGE-ID: CMT0100057
+ 
+  SISTEMA: CMT  SUBSISTEMA: CMT01    ETAPA: CMT01-2  PROC: CMT01210
+ 
+  ---------------------------------------------------------------------
+  1.  HIERARQUIA DE PREDECESSORES E SUCESSORES
+ 
+  1.1 Nivel -1 - Predecessores
+ 
+ 
+  1.2 Nivel  0 - Propria Etapa
+ 
+ 
+  1.3 Nivel +1 - Sucessores
+ 
+ 
+ ----------------------------------------------------------------------
+  2.  DEPENDENCIAS DA ETAPA
+      (Informar quais etapas deverao ser executadas antes e/ou depois)
+ 
+  2.1 Bancos de Dados
+ 
+  2.2 On Line
+ 
+  2.3 Transmissao de Arquivos
+ 
+  2.4 Outras
+ 
+ ----------------------------------------------------------------------
+  3.  INFORMACOES GERAIS DA ETAPA
+ 
+  3.1 Identificacao
+ 
+      Codigo    :
+      Nome      :
+      Frequencia: ( ) Diaria   ( ) Mensal  ( ) Eventual
+                  Se mensal, informar dia do mes: __
+                  Horario de Execucao: __/__
+ 
+  3.2 Objetivos da Etapa
+      (Informar o que e' feito nessa etapa)
+ 
+  3.3 Orgao Responsavel
+ 
+      Orgao   :
+      Analista:                           Fone:
+      Endereco:
+ 
+ ----------------------------------------------------------------------
+  4.  PROCEDIMENTOS ESPECIAIS PARA OPERACAO DA ETAPA
+      (Ex. Quando envolve transmissao eletronica de arquivos qual DSN
+       que sera' transmitido, para quem, qual software de transmissao,
+       processar apos determinado horario, periodo,  etc.)
+ 
+ 
+ 
+ 
+ ----------------------------------------------------------------------
+  5.  MODO DE ACIONAMENTO DA ETAPA
+      (Ex. Via CONTROL-M;  SAJ)
+ 
+ 
+ 
+ 
+ ----------------------------------------------------------------------
+  6.  PARAMETROS
+ 
+  6.1 Parametros Simbolicos - Identificar variaveis das Procedures
+      (Ex. MMAA,  MMDD,  MMPP,  PP e outros)
+ 
+ 
+  6.2 Return-codes de Programas e Acoes Requeridas
+      (Ex. RC diferente de ZERO - Qual a providencia do preparador ?)
+ 
+ 
+ ----------------------------------------------------------------------
+  7.  REPROCESSAMENTO - ACAO REQUERIDA
+      (Qual a acao que o preparador devera tomar em caso de abend ?)
+ 
+ 
+ 
+ ----------------------------------------------------------------------
+  8.  IMPLANTACAO DE RELATORIOS NO CONTROL-D
+      (Somente deve ser preenchido na Implantacao de Procs.
+       Para Alteracoes e Exclusoes enviar via Online FORMS)
+ 
+  8.1 Dados para o Relatorio
+ 
+      Stepname:
+      Codigo do Relatorio:
+      Nome do Relatorio:
+ 
+  8.2 Distribuicao Interna do Relatorio
+ 
+      ( ) Relatorio sem Quebra
+      ( ) Relatorio com Quebra
+          Relacionar usuario por String:
+          Linha      Coluna      String
+          .....      ......      ......
+ 
+  8.3 Como o Relatorio sera' disponibilizado para o Usuario
+ 
+      ( ) Somente VIEW
+      ( ) PRINT via SIR - Informar o SIR: .........
+      ( ) Control-D/PC  - Contatar o Grupo Control-D
+ 
+  8.4 Dados do Usuario
+ 
+      Area de Lotacao:
+      Nome:
+      Numero Legal:
+      Endereco:
+      Telefone:
+      CEP:             (Obrigatorio, se for outra empresa)
+ 
+ ----------------------------------------------------------------------
+  9.  IMPLANTACAO DE DADOS DE MICROFICHAS NO FOLDERS
+ 
+  9.1 Informacoes do Relatorio
+ 
+      Stepname:
+      Codigo do Relatorio:
+      Nome do Servico:
+      Nome da Empresa:                 (Telefonica/CTBC/Telesp Celular)
+ 
+  9.2 Como os documentos serao serao disponibilizados para o Usuario
+ 
+      ( ) Quebra por Regional
+          Informe as Regionais:
+ 
+      ( ) String
+          Informe os Strings:
+ 
+ ----------------------------------------------------------------------

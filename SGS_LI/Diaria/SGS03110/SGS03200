@@ -1,0 +1,383 @@
+000010 ID DIVISION.                                                     00000010
+000020*== ========                                                      00000020
+000030                                                                  00000030
+000040  PROGRAM-ID.                SGS03200.                            00000040
+000050                                                                  00000050
+000060  AUTHOR.                    VALDIR.                              00000060
+000070                                                                  00000070
+000080  DATE-WRITTEN.              MAIO/88.                             00000080
+000090                                                                  00000090
+000100******************************************************************00000100
+000110*                                                                *00000110
+000120*             -   GERACAO  DE  REGISTROS  TOCA.                  *00000120
+000130*                                                                *00000130
+000140******************************************************************00000140
+000150                **************************************************00000150
+000160                *    ALTERACAO: 07/06/96  -  DTS                  00000160
+000170                *    SANEAMENTO FASE2     -  VIACENTER (GILMAR)   00000170
+000180                **************************************************00000180
+000190 EJECT                                                            00000190
+000200 ENVIRONMENT DIVISION.                                            00000200
+000210*=========== ========                                             00000210
+000220                                                                  00000220
+000230  CONFIGURATION SECTION.                                          00000230
+000240                                                                  00000240
+000250   SPECIAL-NAMES.                                                 00000250
+000260            DECIMAL-POINT IS COMMA.                               00000260
+000270                                                                  00000270
+000280  INPUT-OUTPUT SECTION.                                           00000280
+000290                                                                  00000290
+000300   FILE-CONTROL.                                                  00000300
+000310                                                                  00000310
+000320     SELECT  SEQENT01  ASSIGN  TO  UT-S-SEQENT01.                 00000320
+000330                                                                  00000330
+000340     SELECT  SEQSAI01  ASSIGN  TO  UT-S-SEQSAI01.                 00000340
+000350 EJECT                                                            00000350
+000360 DATA DIVISION.                                                   00000360
+000370*==== ========                                                    00000370
+000380                                                                  00000380
+000390  FILE SECTION.                                                   00000390
+000400                                                                  00000400
+000410   FD        SEQENT01                                             00000410
+000420             RECORD   400                                         00000420
+000430             BLOCK      0                                         00000430
+000440     LABEL RECORD IS STANDARD.                                    00000440
+000450                                                                  00000450
+000460   01        E01-REG.                                             00000460
+000470     05      FILLER          PIC X(04).                           00000470
+000480     05      E01-NOCS        PIC S9(11)      COMP-3.              00000480
+000490     05      E01-NRC         PIC S9(11)      COMP-3.              00000490
+000500     05      FILLER          PIC X(08).                           00000500
+000510     05      E01-TERTEL.                                          00000510
+000520      10     E01-LOCAL       PIC X(05).                           00000520
+000530      10     E01-TEL         PIC X(10).                           00000530
+000540     05      FILLER          PIC X(15).                           00000540
+000550     05      E01-PEDI        PIC X(03).                           00000550
+000560     05      FILLER          PIC X(06).                           00000560
+000570     05      E01-CMPL        PIC X(03).                           00000570
+000580     05      FILLER          PIC X(01).                           00000580
+000590     05      E01-CLAT        PIC X(04).                           00000590
+000600     05      FILLER          PIC X(06).                           00000600
+000610     05      E01-CPCC        PIC X(01).                           00000610
+000620     05      FILLER          PIC X(19).                           00000620
+000630     05      E01-EQUIP       OCCURS    12.                        00000630
+000640      10     FILLER          PIC X(02).                           00000640
+000650      10     E01-CLAD        PIC X(03).                           00000650
+000660      10     E01-TIPO        PIC X(03).                           00000660
+000670      10     E01-CCOR        PIC X(02).                           00000670
+000680      10     E01-PROP        PIC X(01).                           00000680
+000690      10     E01-MARC        PIC X(03).                           00000690
+000700      10     E01-MODE        PIC X(06).                           00000700
+000710     05      FILLER          PIC X(06).                           00000710
+000720     05      E01-DHAT        PIC 9(11)       COMP-3.              00000720
+000730***  05      FILLER          PIC X(51).                           00000730
+000740     05      FILLER          PIC X(36).                           00000740
+000750     05      E01-PER-ATU     PIC 9(02).                           00000750
+000760     05      FILLER          PIC X(13).                           00000760
+000770 EJECT                                                            00000770
+000780   FD        SEQSAI01                                             00000780
+000790             RECORD    200                                        00000790
+000800             BLOCK       0                                        00000800
+000810     LABEL RECORD IS STANDARD.                                    00000810
+000820                                                                  00000820
+000830   01        S01-REG.                                             00000830
+000840     05      S01-TREG        PIC 9(03).                           00000840
+000850     05      S01-TERTEL      PIC 9(15).                           00000850
+000860     05      S01-DCOM        PIC 9(06).                           00000860
+000870     05      S01-DINI        PIC 9(06).                           00000870
+000880     05      S01-DFIM        PIC 9(06).                           00000880
+000890     05      S01-NATU        PIC X(07).                           00000890
+000900     05      S01-CLAS        PIC X(04).                           00000900
+000910     05      S01-CLAD        PIC X(03).                           00000910
+000920     05      S01-EQUIP.                                           00000920
+000930      10     S01-TIPO        PIC X(03).                           00000930
+000940      10     S01-CCOR        PIC X(02).                           00000940
+000950      10     S01-PROP        PIC X(01).                           00000950
+000960      10     S01-MODE        PIC X(06).                           00000960
+000970     05      S01-CPCC        PIC 9(02).                           00000970
+000980     05      S01-CDEQ        PIC 9(03)       COMP-3.              00000980
+000990     05      S01-QTDE        PIC 9(05)       COMP-3.              00000990
+001000     05      S01-VALO        PIC S9(09)V99   COMP-3.              00001000
+001010     05      S01-FFNT        PIC 9(03)       COMP-3.              00001010
+001020     05      S01-CCON        PIC 9(13)       COMP-3.              00001020
+001030     05      S01-TEXT.                                            00001030
+001040      10     S01-TEXT1       PIC X(02).                           00001040
+001050      10     S01-BRAN        PIC X(01).                           00001050
+001060      10     S01-TEXT2       PIC X(16).                           00001060
+001070     05      S01-PTEL        PIC 9(05)       COMP-3.              00001070
+001080     05      S01-CLIS        PIC 9(05)       COMP-3.              00001080
+001090     05      S01-EDIC        PIC X(02).                           00001090
+001100     05      S01-SALD        PIC S9(03)      COMP-3.              00001100
+001110     05      S01-TOTA        PIC S9(03)      COMP-3.              00001110
+001120     05      S01-TARI        PIC X(01).                           00001120
+001130     05      S01-NDOC        PIC 9(11)       COMP-3.              00001130
+001140     05      S01-CLAN        PIC X(04).                           00001140
+001150     05      S01-TTAN        PIC 9(15)       COMP-3.              00001150
+001160     05      S01-FATB        PIC 9(02).                           00001160
+001170     05      S01-FTBX        PIC 9(02).                           00001170
+001180     05      S01-FATU        PIC S9(05)      COMP-3.              00001180
+001190     05      S01-CMOV        PIC X(01).                           00001190
+001200     05      S01-DIAG        PIC X(20).                           00001200
+001210     05      S01-NSEQ        PIC 9(07)       COMP-3.              00001210
+001220     05      S01-DSEQ        PIC 9(09)       COMP-3.              00001220
+001230     05      S01-CORR        PIC X(01).                           00001230
+001240     05      S01-SITR        PIC X(01).                           00001240
+001250     05      S01-NRC         PIC S9(11)      COMP-3.              00001250
+001260***  05      FILLER          PIC X(21).                           00001260
+001270     05      S01-PER-ATU     PIC 9(02).                           00001270
+001280     05      FILLER          PIC X(19).                           00001280
+001290 EJECT                                                            00001290
+001300 WORKING-STORAGE SECTION.                                         00001300
+001310*--------------- -------                                          00001310
+001320                                                                  00001320
+001330 01          E01-WORK.                                            00001330
+001340     05      FILLER          PIC X(48)              VALUE         00001340
+001350             '* SGS03200 - INICIO DA WORKING-STORAGE SECTION *'.  00001350
+001360 SKIP2                                                            00001360
+001370     05      WCH-FIM         PIC X(01)              VALUE SPACES. 00001370
+001380                                                                  00001380
+001390     05      WIN-EQUIP       PIC S9(3)       COMP-3 VALUE +0.     00001390
+001400                                                                  00001400
+001410     05      WAX-CONVER1.                                         00001410
+001420      10     FILLER          PIC X(01)              VALUE         00001420
+001430             LOW-VALUE.                                           00001430
+001440      10     WAX-CPCCB       PIC X(01).                           00001440
+001450                                                                  00001450
+001460     05      WAX-CPCCS1      REDEFINES   WAX-CONVER1              00001460
+001470                             PIC S9(04)  COMP.                    00001470
+001480                                                                  00001480
+001490     05      WAX-CONVER2.                                         00001490
+001500      10     FILLER          PIC X(01)              VALUE         00001500
+001510             LOW-VALUE.                                           00001510
+001520      10     WAX-CMPLB       PIC X(03).                           00001520
+001530                                                                  00001530
+001540     05      WAX-CMPL        REDEFINES   WAX-CONVER2              00001540
+001550                             PIC S9(08)  COMP.                    00001550
+001560                                                                  00001560
+001570     05      WAX-DHAT        PIC 9(10).                           00001570
+001580     05      FILLER          REDEFINES  WAX-DHAT.                 00001580
+001590      10     WAX-DTATU       PIC 9(06).                           00001590
+001600 EJECT                                                            00001600
+001610*=================================================================00001610
+001620*=              R E D E     D E     C O N T R O L E              =00001620
+001630*=================================================================00001630
+001640                                                                  00001640
+001650                                                                  00001650
+001660     05      WRC-REDE.                                            00001660
+001670      10     WRC-TAMANH      PIC S9(009)     COMP-3 VALUE +263.   00001670
+001680      10     WRC-NOMJOB      PIC X(008).                          00001680
+001690      10     WRC-NOMPRG      PIC X(008)             VALUE         00001690
+001700             'SGS03200'.                                          00001700
+001710      10     WRC-CODREG      PIC X(010)             VALUE         00001710
+001720             'SGS0320-R'.                                         00001720
+001730                                                                  00001730
+001740      10     WRC-DTPROC.                                          00001740
+001750       15    WRC-CONDIC      PIC X(002)             VALUE 'NV'.   00001750
+001760       15    WRC-DDPROC      PIC X(002).                          00001760
+001770       15    WRC-MMPROC      PIC X(002).                          00001770
+001780       15    WRC-AAPROC      PIC X(002).                          00001780
+001790                                                                  00001790
+001800      10     WRC-HORAS       PIC 99.99.99.                        00001800
+001810      10     WRC-ETAPA       PIC X(004)             VALUE ALL '*'.00001810
+001820      10     WRC-PAG         PIC X(003)             VALUE ALL '*'.00001820
+001830                                                                  00001830
+001840      10     WRC-ENTRAD.                                          00001840
+001850       15    WRC-CODE1       PIC X(024)             VALUE SPACES. 00001850
+001860       15    WRC-NOME1       PIC X(019)             VALUE         00001860
+001870             'REGISTROS LIDOS'.                                   00001870
+001880       15    WRC-INDE1       PIC X(002)             VALUE SPACES. 00001880
+001890       15    WRC-VALE1       PIC S9(015)     COMP-3 VALUE +0.     00001890
+001900                                                                  00001900
+001910       15    WRC-FIMENT      PIC X(001)             VALUE         00001910
+001920             LOW-VALUES.                                          00001920
+001930                                                                  00001930
+001940      10     WRC-SAIDA.                                           00001940
+001950       15    WRC-CODS1       PIC X(024)             VALUE SPACES. 00001950
+001960       15    WRC-NOMS1       PIC X(019)             VALUE         00001960
+001970             'REGISTROS GRAVADOS'.                                00001970
+001980       15    WRC-INDS1       PIC X(002)             VALUE SPACES. 00001980
+001990       15    WRC-VALS1       PIC S9(015)     COMP-3 VALUE +0.     00001990
+002000                                                                  00002000
+002010       15    WRC-FIMSAI      PIC X(001)             VALUE         00002010
+002020             LOW-VALUE.                                           00002020
+002030                                                                  00002030
+002040      10     WRC-OBS         PIC X(100).                          00002040
+002050      10     WRC-FIM         PIC X(001)             VALUE         00002050
+002060             HIGH-VALUE.                                          00002060
+002070 EJECT                                                            00002070
+002080*=================================================================00002080
+002090*=             T  A  B  E  L  A    'DDNDSN'                      =00002090
+002100*=================================================================00002100
+002110                                                                  00002110
+002120                                                                  00002120
+002130     05      WDS-DDNS.                                            00002130
+002140      10     FILLER          OCCURS  10  TIMES                    00002140
+002150                             INDEXED BY WIN-DSN.                  00002150
+002160       15    WDS-DDN         PIC X(008).                          00002160
+002170       15    WDS-DSN         PIC X(044).                          00002170
+002180 EJECT                                                            00002180
+002190 01        WIZ-AREAS-ESPECIAIS.                                   00002190
+002200                                                                  00002200
+002210                                                                  00002210
+002220     05    WIZ-TIME-ACCEPT      PIC  9(008).                      00002220
+002230     05    FILLER     REDEFINES WIZ-TIME-ACCEPT.                  00002230
+002240       10  WIZ-TIMEDAY          PIC  9(006).                      00002240
+002250       10  FILLER               PIC  X(002).                      00002250
+002260                                                                  00002260
+002270 PROCEDURE DIVISION.                                              00002270
+002280*--------- --------                                               00002280
+002290 SKIP3                                                            00002290
+002300 00-00-SGS03200 SECTION.                                          00002300
+002310 SKIP2                                                            00002310
+002320     PERFORM 05-00-INICIALIZA.                                    00002320
+002330                                                                  00002330
+002340     PERFORM 10-00-GERA-TOCA                                      00002340
+002350             UNTIL  WCH-FIM  EQUAL  '*'.                          00002350
+002360                                                                  00002360
+002370     PERFORM 30-00-FINALIZA.                                      00002370
+002380 SKIP2                                                            00002380
+002390 00-99-SGS03200.                                                  00002390
+002400                                                                  00002400
+002410     STOP    RUN.                                                 00002410
+002420 EJECT                                                            00002420
+002430 05-00-INICIALIZA SECTION.                                        00002430
+002440 SKIP2                                                            00002440
+002450     OPEN    INPUT     SEQENT01                                   00002450
+002460             OUTPUT    SEQSAI01.                                  00002460
+002470                                                                  00002470
+002480     CALL    'DATA'      USING   WRC-DTPROC.                      00002480
+002490                                                                  00002490
+002500     ACCEPT WIZ-TIME-ACCEPT FROM TIME                             00002500
+002510     MOVE    WIZ-TIMEDAY TO      WRC-HORAS.                       00002510
+002520                                                                  00002520
+002530     CALL    'CPD10170'  USING   WRC-NOMJOB.                      00002530
+002540     CALL    'CPD0003S'  USING   WDS-DDNS.                        00002540
+002550                                                                  00002550
+002560     PERFORM  05-05-PESQ-DSN                                      00002560
+002570              VARYING  WIN-DSN   FROM  1  BY  1                   00002570
+002580              UNTIL    WIN-DSN   GREATER  10  OR                  00002580
+002590              WDS-DDN (WIN-DSN)  EQUAL    HIGH-VALUES.            00002590
+002600                                                                  00002600
+002610     PERFORM  25-00-LEITURA.                                      00002610
+002620                                                                  00002620
+002630                                                                  00002630
+002640 05-99-INICIALIZA.                                                00002640
+002650                                                                  00002650
+002660     EXIT.                                                        00002660
+002670 SKIP2                                                            00002670
+002680 05-05-PESQ-DSN  SECTION.                                         00002680
+002690                                                                  00002690
+002700     IF  WDS-DDN (WIN-DSN) EQUAL  'SEQENT01'                      00002700
+002710         MOVE    WDS-DSN   (WIN-DSN)                              00002710
+002720         TO      WRC-CODE1                                        00002720
+002730     ELSE                                                         00002730
+002740         IF  WDS-DDN (WIN-DSN) EQUAL  'SEQSAI01'                  00002740
+002750             MOVE    WDS-DSN   (WIN-DSN)                          00002750
+002760             TO      WRC-CODS1.                                   00002760
+002770 EJECT                                                            00002770
+002780 10-00-GERA-TOCA SECTION.                                         00002780
+002790 SKIP2                                                            00002790
+002800     PERFORM 15-00-MONTA-REG                                      00002800
+002810             VARYING  WIN-EQUIP  FROM  1  BY  1                   00002810
+002820             UNTIL    WIN-EQUIP  GREATER  12.                     00002820
+002830                                                                  00002830
+002840     PERFORM 25-00-LEITURA.                                       00002840
+002850 SKIP2                                                            00002850
+002860 10-99-GERA-TOCA.                                                 00002860
+002870                                                                  00002870
+002880     EXIT.                                                        00002880
+002890 EJECT                                                            00002890
+002900 15-00-MONTA-REG SECTION.                                         00002900
+002910 SKIP2                                                            00002910
+002920     IF      E01-CLAD (WIN-EQUIP) NOT EQUAL 'VTP' AND 'XT2'       00002920
+002930             NEXT  SENTENCE                                       00002930
+002940     ELSE                                                         00002940
+002950             PERFORM   15-05-MONTA-REG.                           00002950
+002960                                                                  00002960
+002970 15-99-MONTA-REG.                                                 00002970
+002980     EXIT.                                                        00002980
+002990 15-05-MONTA-REG SECTION.                                         00002990
+003000                                                                  00003000
+003010     MOVE    512                   TO   S01-TREG.                 00003010
+003020     MOVE    E01-TERTEL            TO   S01-TERTEL.               00003020
+003030     MOVE    E01-CMPL              TO   WAX-CMPLB.                00003030
+003040     MOVE    WAX-CMPL              TO   S01-DCOM.                 00003040
+003050     MOVE    E01-DHAT              TO   WAX-DHAT.                 00003050
+003060     MOVE    WAX-DTATU             TO   S01-DINI.                 00003060
+003070     MOVE    E01-CLAT              TO   S01-CLAS.                 00003070
+003080     MOVE    E01-CLAD (WIN-EQUIP)  TO   S01-CLAD.                 00003080
+003090     MOVE    E01-TIPO (WIN-EQUIP)  TO   S01-TIPO.                 00003090
+003100     MOVE    E01-CCOR (WIN-EQUIP)  TO   S01-CCOR.                 00003100
+003110     MOVE    E01-PROP (WIN-EQUIP)  TO   S01-PROP.                 00003110
+003120     MOVE    E01-MODE (WIN-EQUIP)  TO   S01-MODE                  00003120
+003130                                        S01-TEXT2.                00003130
+003140     MOVE    E01-CPCC              TO   WAX-CPCCB.                00003140
+003150     MOVE    E01-NRC               TO   S01-NRC.                  00003150
+003160     MOVE    E01-PER-ATU           TO   S01-PER-ATU.              00003160
+003170     MOVE    WAX-CPCCS1            TO   S01-CPCC.                 00003170
+003180     IF   E01-CLAD  (WIN-EQUIP)   EQUAL 'VTP'                     00003180
+003190          MOVE    502            TO   S01-CDEQ                    00003190
+003200          MOVE    1              TO   S01-QTDE                    00003200
+003210          MOVE    107599000      TO   S01-CCON                    00003210
+003220          MOVE    'EM'           TO   S01-TEXT1                   00003220
+003230          MOVE    E01-NOCS       TO   S01-NDOC                    00003230
+003240          MOVE    2408           TO   S01-FATU                    00003240
+003250     ELSE                                                         00003250
+003260          MOVE    140            TO   S01-CDEQ                    00003260
+003270          MOVE    1              TO   S01-QTDE                    00003270
+003280          MOVE    107117900      TO   S01-CCON                    00003280
+003290          MOVE    'EM'           TO   S01-TEXT1                   00003290
+003300          MOVE    E01-NOCS       TO   S01-NDOC                    00003300
+003310          MOVE    2417           TO   S01-FATU.                   00003310
+003320     MOVE    'I'                   TO   S01-SITR.                 00003320
+003330     MOVE    ZEROS                 TO   S01-DFIM     S01-VALO     00003330
+003340                                        S01-FFNT     S01-PTEL     00003340
+003350                                        S01-CLIS     S01-EDIC     00003350
+003360                                        S01-SALD     S01-TOTA     00003360
+003370                                        S01-TARI     S01-CLAN     00003370
+003380                                        S01-TTAN     S01-FATB     00003380
+003390                                        S01-FTBX     S01-NSEQ     00003390
+003400                                        S01-DSEQ     S01-CORR.    00003400
+003410                                                                  00003410
+003420     MOVE    SPACES                 TO  S01-NATU                  00003420
+003430                                        S01-BRAN                  00003430
+003440                                        S01-CMOV.                 00003440
+003450                                                                  00003450
+003460     MOVE    LOW-VALUES             TO  S01-DIAG.                 00003460
+003470                                                                  00003470
+003480     PERFORM 20-00-GRAVACAO.                                      00003480
+003490                                                                  00003490
+003500 EJECT                                                            00003500
+003510 20-00-GRAVACAO SECTION.                                          00003510
+003520 SKIP2                                                            00003520
+003530     WRITE  S01-REG.                                              00003530
+003540                                                                  00003540
+003550     ADD    +1        TO   WRC-VALS1.                             00003550
+003560  SKIP2                                                           00003560
+003570 20-99-GRAVACAO.                                                  00003570
+003580                                                                  00003580
+003590     EXIT.                                                        00003590
+003600 EJECT                                                            00003600
+003610 25-00-LEITURA SECTION.                                           00003610
+003620 SKIP2                                                            00003620
+003630     ADD    +1    TO    WRC-VALE1.                                00003630
+003640     READ   SEQENT01                                              00003640
+003650            AT   END                                              00003650
+003660                 MOVE    '*'  TO  WCH-FIM                         00003660
+003670                 SUBTRACT 1  FROM WRC-VALE1.                      00003670
+003680                                                                  00003680
+003690 SKIP2                                                            00003690
+003700 25-99-LEITURA.                                                   00003700
+003710                                                                  00003710
+003720     EXIT.                                                        00003720
+003730 EJECT                                                            00003730
+003740 30-00-FINALIZA SECTION.                                          00003740
+003750 SKIP2                                                            00003750
+003760     CALL    'CPD10740'  USING   WRC-REDE.                        00003760
+003770                                                                  00003770
+003780     CLOSE   SEQENT01                                             00003780
+003790             SEQSAI01.                                            00003790
+003800 SKIP2                                                            00003800
+003810 30-99-FINALIZA.                                                  00003810
+003820                                                                  00003820
+003830     EXIT.                                                        00003830

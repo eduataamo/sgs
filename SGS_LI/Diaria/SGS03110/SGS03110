@@ -1,0 +1,749 @@
+000010 ID  DIVISION.                                                    00000001
+000020     SKIP2                                                        00000002
+000030 PROGRAM-ID.                 SGS03110.                            00000003
+000040     SKIP1                                                        00000004
+000050 DATE-WRITTEN.               19/07/83.                            00000005
+000060     SKIP1                                                        00000006
+000070 AUTHOR.                     SATIKO.                              00000007
+000080     SKIP1                                                        00000008
+000090*REMARKS.                    ****************************         00000009
+000100*                            *   ESTE PROGRAMA TEM POR  *         00000010
+000110*                            *   OBJETIVO FAZER BALAN-  *         00000011
+000120*                            *   CEAMENTO DE TABELA DE  *         00000012
+000130*                            *   CORRESPONDENCIA DE TE- *         00000013
+000140*                            *   LEFONES CONTRA CADAS-  *         00000014
+000150*                            *   TRO AUXILIAR DE FATU-  *         00000015
+000160*                            *   RAMENTO PARA  ALTERAR  *         00000016
+000170*                            *   TERMINAIS QUE SOFRE -  *         00000017
+000180*                            *   RAM MUDANCA DE NUMERO. *         00000018
+000190*                            ****************************         00000019
+000200     EJECT                                                        00000020
+000210 ENVIRONMENT DIVISION.                                            00000021
+000220     SKIP2                                                        00000022
+000230 CONFIGURATION SECTION.                                           00000023
+000240     SKIP1                                                        00000024
+000250 SOURCE-COMPUTER.            IBM.                                 00000025
+000260 OBJECT-COMPUTER.            IBM.                                 00000026
+000270 SPECIAL-NAMES.              DECIMAL-POINT IS COMMA.              00000027
+000280     SKIP2                                                        00000028
+000290 INPUT-OUTPUT  SECTION.                                           00000029
+000300     SKIP1                                                        00000030
+000310 FILE-CONTROL.                                                    00000031
+000320     SKIP1                                                        00000032
+000330     SELECT  SEQENT01        ASSIGN  UT-S-SEQENT01.               00000033
+000340     EJECT                                                        00000034
+000350 DATA  DIVISION.                                                  00000035
+000360     SKIP2                                                        00000036
+000370 FILE  SECTION.                                                   00000037
+000380     SKIP1                                                        00000038
+000390*    *****************************************************        00000039
+000400*    *   DEFINICAO DO ARQUIVO TABELA DE CORRESPONDENCIA  *        00000040
+000410*    *                'SEQENT01'                         *        00000041
+000420*    *****************************************************        00000042
+000430     SKIP2                                                        00000043
+000440 FD  SEQENT01    RECORDING   F                                    00000044
+000450                 RECORD       80                                  00000045
+000460                 BLOCK       0                                    00000046
+000470     LABEL RECORD IS STANDARD.                                    00000048
+000480     SKIP2                                                        00000048
+000490 01          E01-REG.                                             00000049
+000500**** 05      E01-TERMANT     PIC 9(014).              WIZ04 31/05 00000050
+000510     05      E01-TERMANT     PIC 9(015).                          00000051
+000520     05      E01-TPANT       PIC 99.                              00000052
+000530**** 05      E01-TERMAT      PIC 9(014).              WIZ04 31/05 00000053
+000540     05      E01-TERMAT      PIC 9(015).                          00000054
+000550     05      FILLER  REDEFINES  E01-TERMAT.                       00000055
+000560****  10     E01-800         PIC 9(07).               WIZ04 31/05 00000056
+000570      10     E01-800         PIC 9(09).                           00000057
+000580      10     FIILER          PIC 9(06).                           00000058
+000590     05      FILLER          PIC X(002).                          00000059
+000600     05      E01-DATAS.                                           00000060
+000610      10     E01-ULTEL.                                           00000061
+000620       15    E01-DE          PIC 9(006).                          00000062
+000630       15    E01-ATE         PIC 9(006).                          00000063
+000640      10     E01-DTARET      PIC 9(006).                          00000064
+000650     05      E01-PERIOD.                                          00000065
+000660      10     E01-PERANT      PIC 99.                              00000066
+000670      10     E01-PERATU      PIC 99.                              00000067
+000680     05      E01-ZONATU      PIC X(003).                          00000068
+000690     05      E01-ZONANT      PIC X(003).                          00000069
+000700**** 05      E01-FILLER      PIC X(020).              WIZ04 31/05 00000070
+000710     05      FILLER          PIC X(006).                          00000200
+000720     05      E01-NRC         PIC S9(011)     COMP-3.              00000300
+000730     05      FILLER          PIC X(006).                          00000400
+000740*    ********************************************                 00000072
+000750*    *     DEFINICAO DAS AREAS DE TRABALHO      *                 00000073
+000760*    ********************************************                 00000074
+000770     SKIP2                                                        00000075
+000780 WORKING-STORAGE SECTION.                                         00000076
+000790     SKIP2                                                        00000077
+000800 01          WRK-ARS.                                             00000078
+000810     05      FILLER          PIC X(055)  VALUE                    00000079
+000820             '* SGS03110 - INICIO DA WORKING-STORAGE SECTION *'.  00000080
+000830**************  AREAS AUXILIARES  **************************      00000081
+000840     SKIP2                                                        00000082
+000850     05      WAX-DATASYST    PIC X(008)  VALUE SPACES.            00000083
+000860     05      WAX-DATASYST-R  REDEFINES   WAX-DATASYST.            00000084
+000870      10     WAX-MESYST      PIC 9(002).                          00000085
+000880      10     FILLER          PIC X(001).                          00000086
+000890      10     WAX-DIASYST     PIC 9(002).                          00000087
+000900      10     FILLER          PIC X(001).                          00000088
+000910      10     WAX-ANOSYST     PIC 9(002).                          00000089
+000920*                                                                 00000090
+000930     05      WAX-HORASYST    PIC 9(006)  VALUE 0.                 00000091
+000940     05      WAX-HORASYST-R  REDEFINES   WAX-HORASYST.            00000092
+000950      10     WAX-HORSYST     PIC 9(002).                          00000093
+000960      10     WAX-MINSYST     PIC 9(002).                          00000094
+000970      10     WAX-SEGSYST     PIC 9(002).                          00000095
+000980*                                                                 00000097
+000990     05      WAX-LEITURA     PIC S9(007)     COMP-3 VALUE +0.     00000098
+001000     SKIP2                                                        00000096
+001010************  AREA PARA INVERSAO DA DATA  *************           00000097
+001020     SKIP2                                                        00000098
+001030     05      WAX-DTAINV      PIC 9(006)  VALUE 0.                 00000099
+001040     05      WAX-DTAINV-R    REDEFINES   WAX-DTAINV.              00000100
+001050      10     WAX-AAI         PIC 9(002).                          00000101
+001060      10     WAX-MMI         PIC 9(002).                          00000102
+001070      10     WAX-DDI         PIC 9(002).                          00000103
+001080     SKIP2                                                        00000104
+001090********************    CHAVES      **************************    00000105
+001100     05      WCH-FS          PIC X(001)  VALUE ZEROS.             00000106
+001110     05      WCH-BD          PIC X(001)  VALUE ZEROS.             00000107
+001120**** 05      WAX-TERM        PIC 9(14).               WIZ04 31/05 00000108
+001130     05      WAX-TERM        PIC 9(15).                           00000109
+001140     05      FILLER   REDEFINES  WAX-TERM.                        00000110
+001150****  10     FILLER          PIC X(13).               WIZ04 31/05 00000111
+001160      10     FILLER          PIC X(14).                           00000112
+001170      10     WAX-TERM1       PIC X.                               00000113
+001180 SKIP2                                                            00000114
+001190**********  INICIO DAS AREAS PARA O BUG 2000  ********************00000002
+001200*                                                                 00000003
+001210     05      WAX-BDATA1      PIC  9(006).                         00000004
+001220     05      FILLER          REDEFINES              WAX-BDATA1.   00000005
+001230      10     WAX-BANO1       PIC  9(002).                         00000006
+001240*                                                                 00000007
+001250     05      WAX-BDATA2      PIC  9(006).                         00000008
+001260     05      FILLER          REDEFINES              WAX-BDATA2.   00000009
+001270      10     WAX-BANO2       PIC  9(002).                         00000010
+001280*                                                                 00000011
+001290     05      WAX-BDATA3      PIC  9(006).                         00000012
+001300     05      FILLER          REDEFINES              WAX-BDATA3.   00000013
+001310      10     WAX-BANO3       PIC  9(002).                         00000014
+001320*                                                                 00000015
+001330     05      WAX-BDATA4      PIC  9(006).                         00000016
+001340     05      FILLER          REDEFINES              WAX-BDATA4.   00000017
+001350      10     WAX-BANO4       PIC  9(002).                         00000018
+001360*                                                                 00000019
+001370**********  FINAL  DAS AREAS PARA O BUG 2000  ********************00000020
+001380*     **************** INDEXADORES  *************************     00000115
+001390 SKIP1                                                            00000116
+001400     05      WIN-PQ          PIC S9(09)  COMP SYNC VALUE ZEROS.   00000117
+001410*    ********************************************************     00000118
+001420*    *       AREA  PARA  REDE  DE  CONTROLE                 *     00000119
+001430*    ********************************************************     00000120
+001440 SKIP2                                                            00000121
+001450     05      WRC-REDE.                                            00000122
+001460      10     WRC-TAM         PIC S9(09)  COMP-3  VALUE +800.      00000123
+001470      10     WRC-JOB         PIC X(008)  VALUE SPACES.            00000124
+001480      10     WRC-CTE         PIC X(008)  VALUE 'SGS03110'.        00000125
+001490      10     WRC-CODRED      PIC X(010)  VALUE 'SGS0311-R'.       00000126
+001500      10     WRC-CONST       PIC X(002)  VALUE 'NV'.              00000127
+001510      10     WRC-DIA         PIC 9(002).                          00000128
+001520      10     WRC-MES         PIC 9(002).                          00000129
+001530      10     WRC-ANO         PIC 9(002).                          00000130
+001540      10     WRC-HORA        PIC 9(002).                          00000131
+001550      10     FILLER          PIC X       VALUE '.'.               00000132
+001560      10     WRC-MIN         PIC 9(002).                          00000133
+001570      10     FILLER          PIC X       VALUE '.'.               00000134
+001580      10     WRC-SEG         PIC 9(002).                          00000135
+001590      10     FILLER          PIC X(007)  VALUE ALL '*'.           00000136
+001600      10     WRC-ENTRADA.                                         00000137
+001610       15    WRC-E1          PIC X(018)  VALUE SPACES.            00000138
+001620       15    FILLER          PIC X(029)  VALUE                    00000139
+001630             'REG. TAC LIDOS'.                                    00000140
+001640       15    WRC-VE1         PIC S9(11)  COMP-3  VALUE +0.        00000141
+001650       15    WRC-E2          PIC X(018)  VALUE 'DBD'.             00000142
+001660       15    FILLER          PIC X(029)  VALUE                    00000143
+001670             'REG. CAX LIDOS'.                                    00000144
+001680       15    WRC-VE2         PIC S9(11)  COMP-3  VALUE +0.        00000145
+001690       15    WRC-EF          PIC X       VALUE LOW-VALUE.         00000146
+001700      10     WRC-SAIDA.                                           00000147
+001710       15    WRC-S1          PIC X(018)  VALUE 'DBD'.             00000148
+001720       15    FILLER          PIC X(029)  VALUE                    00000149
+001730             'REG. CAX ALTERADA'.                                 00000150
+001740       15    WRC-VS1         PIC S9(11)  COMP-3  VALUE +0.        00000151
+001750       15    WRC-SF          PIC X       VALUE LOW-VALUE.         00000152
+001760      10     WRC-OBS         PIC X(100)  VALUE                    00000153
+001770             'FIM NORMAL'.                                        00000154
+001780      10     WRC-FIM         PIC X       VALUE HIGH-VALUE.        00000155
+001790*    *********************************************************    00000156
+001800*    *       NOME DOS ARQUIVOS PARA REDE DE CONTROLE         *    00000157
+001810*    *********************************************************    00000158
+001820 SKIP2                                                            00000159
+001830     05      WAX-DSNOMES.                                         00000160
+001840*                                                                 00000161
+001850      10     WAX-NOMARQ      OCCURS  15 TIMES.                    00000162
+001860       15    WAX-DDN         PIC X(008).                          00000163
+001870       15    WAX-DSN         PIC X(044).                          00000164
+001880      10     WIN-DSN         PIC S9(09) COMP  VALUE +0.           00000165
+001890*    ********************************************************     00000166
+001900*    *       AREA PARA ROTINA ABENDAR                       *     00000167
+001910*    ********************************************************     00000168
+001920     SKIP2                                                        00000169
+001930     05      WAB-ABENDAR.                                         00000170
+001940      10     WAB-AB1         PIC X       VALUE LOW-VALUE.         00000171
+001950      10     WAB-AB2         PIC S9(04)  COMP  VALUE +0.          00000172
+001960*    ********************************                             00000173
+001970*    *  MENSAGEM DE ERRO DO ADABAS  *                             00000174
+001980*    ********************************                             00000175
+001990     SKIP2                                                        00000176
+002000     05      WMG-ADABAS.                                          00000177
+002010      10     FILLER          PIC X(019)  VALUE                    00000178
+002020             'ERRO ADABAS RCODE '.                                00000179
+002030      10     WMG-CODE        PIC 9(004).                          00000180
+002040*    *********************************************                00000181
+002050*    *  DEFINICAO DAS AREAS DE ACESSO DO ADABAS  *                00000182
+002060*    *********************************************                00000183
+002070     SKIP2                                                        00000184
+002080**************** OPEN E CLOSE  *********************              00000185
+002090     SKIP2                                                        00000186
+002100     05      WAD-TPUTI.                                           00000187
+002110      10     WAD-TP          PIC X(002)  VALUE 'MN'.              00000188
+002120      10     FILLER          PIC X(010)  VALUE SPACES.            00000189
+002130     05      WAD-RCODEX.                                          00000190
+002140      10     WAD-RCODE       PIC S9(04)  COMP  VALUE +0.          00000191
+002150      10     WAD-RCODE5      PIC S9(04)  COMP  VALUE +0.          00000192
+002160     SKIP2                                                        00000193
+002170**************** FINDSET - 'FS26001' *****************            00000194
+002180     SKIP2                                                        00000195
+002190     05      WAD-KEYFS.                                           00000196
+002200      10     WAD-KEY-NRC     PIC S9(011)     COMP-3.              00000402
+002210     05      WAD-ISNQ        PIC S9(08)  COMP  VALUE +0.          00000199
+002220     SKIP2                                                        00000200
+002230**************** READSET - 'RS26001' *****************            00000201
+002240     SKIP2                                                        00000202
+002250     05      WAD-RBUFRS.                                          00000203
+002260      10     WAD-SIT         PIC X(001).                          00000204
+002270      10     WAD-DTACOMPL    PIC S9(07)  COMP-3.                  00000205
+002280      10     WAD-SERV        PIC X(004).                          00000206
+002290      10     WAD-TERMANTR    PIC S9(15)  COMP-3.                  00000207
+002300      10     WAD-DTAINCL     PIC S9(07)  COMP-3.                  00000208
+002310     SKIP2                                                        00000209
+002320**************** UPDATE - 'UP26001' *************                 00000210
+002330     SKIP2                                                        00000211
+002340     05      WAD-RBUFUP.                                          00000212
+002350      10     WAD-TERMAT      PIC S9(15)  COMP-3.                  00000213
+002360      10     WAD-DTACPUP     PIC S9(07)  COMP-3.                  00000214
+002370      10     WAD-TERMANT     PIC S9(15)  COMP-3.                  00000215
+002380      10     WAD-MOV         PIC X(001).                          00000216
+002390      10     WAD-DTAIUP      PIC S9(07)  COMP-3.                  00000217
+002400      10     WAD-PER-ATU     PIC 9(002).                          00000404
+002410*    ********************************************************     00000218
+002420*    *           ROTINA  PRINCIPAL  DO  PROGRAMA            *     00000219
+002430*    ********************************************************     00000220
+002440 SKIP2                                                            00000221
+002450 01        WIZ-AREAS-ESPECIAIS.                                    WIZDATA
+002460     05   WIZ-DATA-ACCEPT.                                         WIZDATA
+002470       10  WIZ-DATA-ANO         PIC  9(002).                       WIZDATA
+002480       10  WIZ-DATA-MES         PIC  9(002).                       WIZDATA
+002490       10  WIZ-DATA-DIA         PIC  9(002).                       WIZDATA
+002500     05    WIZ-CUR-DATE.                                           WIZDATA
+002510       10  WIZ-DATA-MES         PIC  9(002).                       WIZDATA
+002520       10  FILLER               PIC  X(001) VALUE '/'.             WIZDATA
+002530       10  WIZ-DATA-DIA         PIC  9(002).                       WIZDATA
+002540       10  FILLER               PIC  X(001) VALUE '/'.             WIZDATA
+002550       10  WIZ-DATA-ANO         PIC  9(002).                       WIZDATA
+002560     05    WIZ-TIME-ACCEPT      PIC  9(008).                       WIZDATA
+002570     05    FILLER     REDEFINES WIZ-TIME-ACCEPT.                   WIZDATA
+002580       10  WIZ-TIMEDAY          PIC  9(006).                       WIZDATA
+002590       10  FILLER               PIC  X(002).                       WIZDATA
+002600     05    WIZ-IMPR01.                                             WIZDATA
+002610       10   WIZ-CCX.                                               WIZDATA
+002620         15  WIZ-CC             PIC  9(001).                       WIZDATA
+002630       10    WIZ-IMPR01-R       PIC  X(132).                       WIZDATA
+002640     EJECT                                                        00000244
+002650*  2SQL GENERATED WORKING STORAGE:                                00000245
+002660     EXEC ADABAS                                                  00000246
+002670         BEGIN DECLARE SECTION                                    00000247
+002680     END-EXEC.                                                    00000248
+002690 01  2SQL-DBS260-CURRENT-ISN      PIC 9(9)  COMP.                 00000249
+002700 01  2SQL-C110-CURRENT-CURSOR           PIC X(04).                00000250
+002710 01  R112-A-0017SGS03.                                            00000251
+002720  02 RECORD-BUFR112.                                              00000252
+002730   03 NR-TR7TE                PIC 9(15) COMP-3.                   00000253
+002740   03 NR-TR7TE-R                         REDEFINES                00000254
+002750     NR-TR7TE                 PIC X(8).                           00000255
+002760   03 DT-VIGR-OCS-FATUR-ORDEM PIC 9(7) COMP-3.                    00000256
+002770   03 DT-VIGR-OCS-FATUR-ORDEM-R          REDEFINES                00000257
+002780     DT-VIGR-OCS-FATUR-ORDEM                                      00000258
+002790                              PIC X(4).                           00000259
+002800   03 NR-ANTE-TR7TE           PIC 9(15) COMP-3.                   00000260
+002810   03 NR-ANTE-TR7TE-R                    REDEFINES                00000261
+002820     NR-ANTE-TR7TE            PIC X(8).                           00000262
+002830   03 CD-MOVI-REGT-CADR-FATUR PIC X(1).                           00000263
+002840   03 DT-INCS-REGT-CADR-FATUR PIC 9(7) COMP-3.                    00000264
+002850   03 DT-INCS-REGT-CADR-FATUR-R          REDEFINES                00000265
+002860     DT-INCS-REGT-CADR-FATUR                                      00000266
+002870                              PIC X(4).                           00000267
+002880*  03 NR-REGT-COME-ASSIN-R   PIC 9(011)     COMP-3.               00000406
+002890   03 PERIODO                PIC 9(002).                          00000407
+002900   03 PERIODO-R                          REDEFINES                00000407
+002910     PERIODO                 PIC X(002).                          00000407
+002920     EXEC ADABAS                                                  00000268
+002930       FIND                                                       00000269
+002940       DECLARE C110 CURSOR FOR                                    00000270
+002950       SELECT                                                     00000271
+002960       CD-SITU-REGT-CADR-FATUR, DT-VIGR-OCS-FATUR-ORDEM,          00000272
+002970       SG-TIPO-PRET-SERVI, NR-ANTE-TR7TE,                         00000273
+002980       DT-INCS-REGT-CADR-FATUR, NR-REGT-COME-ASSIN, PERIODO       00000409
+002990       FROM A-0017SGS03                                           00000275
+003000       C110-A-0017SGS03                                           00000276
+003010       WHERE NR-REGT-COME-ASSIN = :C110-VALUE01                   00000600
+003020       OPTIONS                                                    00000278
+003030       HOLD                                                       00000279
+003040     END-EXEC.                                                    00000280
+003050 01  C110-SEARCH-VALUE.                                           00000281
+003060     03  C110-VALUE01              PIC S9(11) COMP-3.             00000800
+003070     EXEC ADABAS                                                  00000283
+003080       FIND                                                       00000284
+003090       DECLARE C111 CURSOR FOR                                    00000285
+003100       SELECT                                                     00000286
+003110       CD-SITU-REGT-CADR-FATUR, DT-VIGR-OCS-FATUR-ORDEM,          00000287
+003120       SG-TIPO-PRET-SERVI, NR-ANTE-TR7TE,                         00000288
+003130       DT-INCS-REGT-CADR-FATUR, NR-REGT-COME-ASSIN, PERIODO       00000802
+003140       FROM A-0017SGS03                                           00000290
+003150       C111-A-0017SGS03                                           00000291
+003160       WHERE NR-REGT-COME-ASSIN = :C111-VALUE01                   00000804
+003170       OPTIONS                                                    00000293
+003180       HOLD                                                       00000294
+003190     END-EXEC.                                                    00000295
+003200 01  C111-SEARCH-VALUE.                                           00000296
+003210     03  C111-VALUE01              PIC S9(11) COMP-3.             00000806
+003220 01  2SQL-RESPONSE-CODE            PIC S9(4) COMP.                00000299
+003230 01  2SQL-S1         PIC S9(3)  COMP-3.                           00000300
+003240 01  2SQL-S2         PIC S9(3)  COMP-3.                           00000301
+003250 01  2SQL-LAST-ET                  PIC X(04).                     00000302
+003260 01  2SQL-LAST-ETBN REDEFINES 2SQL-LAST-ET PIC 9(09) COMP.        00000303
+003270 01  2SQL-RUN-MODE.                                               00000304
+003280     03  FILLER                    PIC X(04).                     00000305
+003290     EJECT                                                        00000306
+003300 PROCEDURE DIVISION.                                              00000222
+003310 SKIP2                                                            00000223
+003320 00-00-PRINCIPAL SECTION.                                         00000224
+003330*                                                                 00000225
+003340     PERFORM  03-00-INICIO.                                       00000226
+003350     PERFORM  09-00-PROCESSA.                                     00000227
+003360     PERFORM  18-00-TERMINO.                                      00000228
+003370*                                                                 00000229
+003380 00-99-SAIDAPRINC.                                                00000230
+003390     EXIT.                                                        00000231
+003400*    *********************************************************    00000232
+003410*    *           INICIO  DO  PROGRAMA  'SGS03110'            *    00000233
+003420*    *********************************************************    00000234
+003430 SKIP2                                                            00000235
+003440 03-00-INICIO SECTION.                                            00000236
+003450*                                                                 00000237
+003460     ACCEPT WIZ-DATA-ACCEPT FROM DATE                              WIZPROC
+003470     MOVE   CORR WIZ-DATA-ACCEPT TO WIZ-CUR-DATE                   WIZPROC
+003480     MOVE  WIZ-CUR-DATE  TO  WAX-DATASYST.                        00000238
+003490     ACCEPT WIZ-TIME-ACCEPT FROM TIME                              WIZPROC
+003500     MOVE  WIZ-TIMEDAY   TO  WAX-HORASYST.                        00000239
+003510     MOVE  WAX-DIASYST   TO  WRC-DIA  WAX-DDI.                    00000240
+003520     MOVE  WAX-MESYST    TO  WRC-MES  WAX-MMI.                    00000241
+003530     MOVE  WAX-ANOSYST   TO  WRC-ANO  WAX-AAI.                    00000242
+003540     MOVE  WAX-HORSYST   TO  WRC-HORA.                            00000243
+003550     MOVE  WAX-MINSYST   TO  WRC-MIN.                             00000244
+003560     MOVE  WAX-SEGSYST   TO  WRC-SEG.                             00000245
+003570     CALL  'CPD0017S' USING  WRC-JOB.                             00000246
+003580     OPEN  INPUT  SEQENT01.                                       00000247
+003590*    CALL  'OP26001'  USING  WAD-TPUTI                            ADAMINT
+003600*                            WAD-RCODEX.  <==== ?????             ADAMINT
+003610     PERFORM 2SQL-90030-C999-CONNECT                              00000338
+003620     MOVE 2SQL-RESPONSE-CODE TO                                   00000339
+003630         WAD-RCODE.                                               00000340
+003640****     WAD-RCODEX.                                              00000341
+003650     IF  WAD-RCODE  EQUAL  9                                      00000342
+003660*        CALL 'OP26001'  USING  WAD-TPUTI                         ADAMINT
+003670*                               WAD-RCODEX.                       ADAMINT
+003680     PERFORM 2SQL-90030-C999-CONNECT                              00000345
+003690     MOVE 2SQL-RESPONSE-CODE TO                                   00000346
+003700         WAD-RCODE.                                               00000347
+003710****     WAD-RCODEX.                                              00000348
+003720     IF  WAD-RCODE  NOT  EQUAL  ZEROS                             00000349
+003730         PERFORM  21-00-ERRO-ADABAS                               00000254
+003740     ELSE                                                         00000255
+003750         CALL  'CPD0003S'  USING  WAX-DSNOMES                     00000256
+003760         PERFORM  06-00-MONTADSN                                  00000257
+003770                  VARYING  WIN-DSN  FROM  1  BY  1                00000258
+003780                  UNTIL    WIN-DSN  GREATER  15.                  00000259
+003790*                                                                 00000260
+003800 03-99-SAIDAINICIO.                                               00000261
+003810     EXIT.                                                        00000262
+003820*    ****************************************************         00000263
+003830*    * ROTINA PARA MONTAR DSNAMES PARA REDE DE CONTROLE *         00000264
+003840*    ****************************************************         00000265
+003850     SKIP2                                                        00000266
+003860 06-00-MONTADSN SECTION.                                          00000267
+003870*                                                                 00000268
+003880     IF  WAX-DDN(WIN-DSN)  EQUAL  'SEQENT01'                      00000269
+003890         MOVE  WAX-DSN(WIN-DSN)  TO  WRC-E1.                      00000270
+003900*                                                                 00000271
+003910 06-99-SAIDADSN.                                                  00000272
+003920     EXIT.                                                        00000273
+003930*    *****************************************                    00000274
+003940*    *  ROTINA DE PROCESSAMENTO DO PROGRAMA  *                    00000275
+003950*    *****************************************                    00000276
+003960     SKIP2                                                        00000277
+003970 09-00-PROCESSA SECTION.                                          00000278
+003980*                                                                 00000279
+003990     READ  SEQENT01  AT  END                                      00000280
+004000           MOVE  HIGH-VALUES  TO  E01-REG.                        00000281
+004010     IF  E01-REG  EQUAL  HIGH-VALUES                              00000282
+004020         MOVE  'ARQUIVO VAZIO SEQENT01'  TO  WRC-OBS              00000283
+004030         CALL  'CPD0016S'             USING  WRC-REDE             00000284
+004040         CALL  'ABENDAR'              USING  WAB-ABENDAR.         00000285
+004050     ADD   1            TO  WRC-VE1.                              00000286
+004060     PERFORM  12-00-FIND26001                                     00000287
+004070              UNTIL  E01-REG  EQUAL  HIGH-VALUES.                 00000288
+004080*                                                                 00000289
+004090 09-99-SAIDAPROCESSA.                                             00000290
+004100     EXIT.                                                        00000291
+004110*    ************************************************             00000292
+004120*    *  ROTINA  DO  FINDSET E LEITURA  DO SEQENT01  *             00000293
+004130*    ************************************************             00000294
+004140     SKIP2                                                        00000295
+004150 12-00-FIND26001 SECTION.                                         00000296
+004160*                                                                 00000297
+004170     IF      (E01-800     GREATER   110000009 AND                 00000298
+004180              E01-800     LESS      110000020) OR                 00000101
+004190             (E01-800     EQUAL     110000055 OR                  00000102
+004200                                    110000078 OR                  00000103
+004210                                    110000099)                    00000104
+004220             GO  TO                12-03-LEITURA.                 00000299
+004230     IF      E01-TPANT  EQUAL  88 OR  63  OR  50                  00000300
+004240             MOVE  E01-NRC      TO  WAD-KEY-NRC                   00000808
+004250*            CALL  'FS26002'   USING   WAD-KEYFS                  ADAMINT
+004260*                                   WAD-RCODEX WAD-ISNQ           ADAMINT
+004270     MOVE WAD-KEYFS  TO C111-SEARCH-VALUE                         00000412
+004280     PERFORM 2SQL-90090-C111-OPEN                                 00000413
+004290     MOVE 2SQL-RESPONSE-CODE TO                                   00000414
+004300         WAD-RCODE                                                00000415
+004310****     WAD-RCODEX                                               00000416
+004320         MOVE QUANTITY OF C111-A-0017SGS03 TO WAD-ISNQ            00000417
+004330     ELSE                                                         00000418
+004340         GO  TO  12-03-LEITURA.                                   00000309
+004350     IF  WAD-RCODE  NOT  EQUAL  ZEROS                             00000310
+004360         PERFORM 21-00-ERRO-ADABAS                                00000311
+004370     ELSE                                                         00000312
+004380         IF  WAD-ISNQ  EQUAL  ZEROS                               00000313
+004390             NEXT SENTENCE                                        00000314
+004400         ELSE                                                     00000315
+004410             PERFORM  15-00-RSUP26001                             00000316
+004420                      VARYING  WIN-PQ  FROM  1  BY  1             00000317
+004430                      UNTIL    WIN-PQ  GREATER  WAD-ISNQ          00000318
+004440                      OR       WCH-BD  EQUAL '1'                  00000319
+004450                          EXEC ADABAS COMMIT WORK END-EXEC
+004460             MOVE  ZEROS  TO  WCH-BD                              00000320
+004470                              WIN-PQ.                             00000321
+004480*                                                                 00000432
+004490     IF  WAX-LEITURA  GREATER  49                                 00000433
+004500         EXEC ADABAS                                              00000434
+004510              COMMIT WORK                                         00000435
+004520         END-EXEC                                                 00000436
+004530         MOVE  1  TO  WAX-LEITURA                                 00000437
+004540     ELSE                                                         00000438
+004550         ADD   1  TO  WAX-LEITURA.                                00000439
+004560 12-03-LEITURA.                                                   00000322
+004570     READ  SEQENT01  AT  END                                      00000323
+004580           MOVE  HIGH-VALUES  TO  E01-REG                         00000324
+004590           GO  TO  12-99-SAIDAFINDLE01.                           00000325
+004600     ADD   1  TO  WRC-VE1.                                        00000326
+004610*                                                                 00000327
+004620 12-99-SAIDAFINDLE01.                                             00000328
+004630     EXIT.                                                        00000329
+004640*    ******************************                               00000330
+004650*    * ROTINA DO READSET E UPDATE *                               00000331
+004660*    ******************************                               00000332
+004670     SKIP2                                                        00000333
+004680 15-00-RSUP26001 SECTION.                                         00000334
+004690*                                                                 00000335
+004700*    CALL  'RS26001'  USING  WAD-RBUFRS                           ADAMINT
+004710*                            WAD-RCODEX.                          ADAMINT
+004720*    PERFORM 2SQL-90040-C110-FETCH-CHECK
+004730     PERFORM 2SQL-90060-C111-FETCH.
+004740     MOVE ISN OF C111-A-0017SGS03
+004750       TO 2SQL-DBS260-CURRENT-ISN.
+004760     MOVE C111-A-0017SGS03 TO WAD-RBUFRS
+004770     MOVE 2SQL-RESPONSE-CODE TO WAD-RCODE.                        00000458
+004780****     WAD-RCODEX.                                              00000459
+004790     IF  WAD-RCODE  EQUAL  -1                                     00000460
+004800         MOVE  '1'  TO  WCH-BD                                    00000339
+004810         GO   TO  15-99-SAIDARSUP.                                00000340
+004820     IF  WAD-RCODE  EQUAL  9                                      00000341
+004830         GO  TO  15-99-SAIDARSUP.                                 00000342
+004840     IF  WAD-RCODE  NOT  EQUAL  ZEROS                             00000343
+004850         PERFORM  21-00-ERRO-ADABAS.                              00000344
+004860     ADD 1   TO  WRC-VE2.                                         00000345
+004870*    IF  WAD-SIT  NOT  (EQUAL  'I'  OR   EQUAL  'A')              00000348
+004880     IF  WAD-SIT  NOT   EQUAL  'I' AND                            00000349
+004890         WAD-SIT  NOT   EQUAL  'A'                                00000350
+004900         GO  TO  15-99-SAIDARSUP.                                 00000351
+004910     MOVE  HIGH-VALUES  TO  WAD-RBUFUP.                           00000352
+004920     IF  WAD-SERV  EQUAL 'FRA'  OR  'EXEC'  OR                    00000353
+004930                         'DCA'  OR  'CRED'  OR                    00000354
+004940                         'TOCA'                                   00000355
+004950      IF WAD-TERMANTR  EQUAL  ZEROS                               00000356
+004960********    ALTERACAO P/O BUG 2000   *****************************00000022
+004970         MOVE  WAD-DTACOMPL        TO              WAX-BDATA1     00000023
+004980         COMPUTE  WAX-BANO1  =     WAX-BANO1       +  50          00000024
+004990         MOVE  E01-DE              TO              WAX-BDATA2     00000025
+005000         COMPUTE  WAX-BANO2  =     WAX-BANO2       +  50          00000026
+005010         MOVE  E01-ATE             TO              WAX-BDATA3     00000027
+005020         COMPUTE  WAX-BANO3  =     WAX-BANO3       +  50          00000028
+005030*        IF  (WAD-DTACOMPL  NOT  LESS  E01-DE)  AND               00000029
+005040*            (WAD-DTACOMPL  NOT  GREATER  E01-ATE)                00000030
+005050         IF  (WAX-BDATA1    NOT  LESS  WAX-BDATA2)  AND           00000031
+005060             (WAX-BDATA1    NOT  GREATER  WAX-BDATA3)             00000032
+005070             NEXT  SENTENCE                                       00000359
+005080         ELSE                                                     00000360
+005090             GO  TO  15-99-SAIDARSUP                              00000361
+005100      ELSE                                                        00000362
+005110********    ALTERACAO P/O BUG 2000   *****************************00000034
+005120         MOVE  WAD-DTAINCL         TO              WAX-BDATA1     00000035
+005130         COMPUTE  WAX-BANO1  =     WAX-BANO1       +  50          00000036
+005140         MOVE  E01-DE              TO              WAX-BDATA2     00000037
+005150         COMPUTE  WAX-BANO2  =     WAX-BANO2       +  50          00000038
+005160         MOVE  E01-ATE             TO              WAX-BDATA3     00000039
+005170         COMPUTE  WAX-BANO3  =     WAX-BANO3       +  50          00000040
+005180*        IF  (WAD-DTAINCL NOT LESS E01-DE) AND                    00000041
+005190*            (WAD-DTAINCL NOT GREATER E01-ATE)                    00000042
+005200         IF  (WAX-BDATA1  NOT LESS WAX-BDATA2) AND                00000043
+005210             (WAX-BDATA1  NOT GREATER WAX-BDATA3)                 00000044
+005220             NEXT SENTENCE                                        00000365
+005230         ELSE                                                     00000366
+005240             GO  TO  15-99-SAIDARSUP                              00000367
+005250     ELSE                                                         00000368
+005260         IF  WAD-SERV  EQUAL 'MUS'  OR  'LIS'  OR                 00000369
+005270                             'NFL'                                00000370
+005280********    ALTERACAO P/O BUG 2000   *****************************00000046
+005290             MOVE  WAD-DTAINCL         TO          WAX-BDATA1     00000047
+005300             COMPUTE  WAX-BANO1  =     WAX-BANO1   +  50          00000048
+005310             MOVE  E01-DE              TO          WAX-BDATA2     00000049
+005320             COMPUTE  WAX-BANO2  =     WAX-BANO2   +  50          00000050
+005330             MOVE  E01-ATE             TO          WAX-BDATA3     00000051
+005340             COMPUTE  WAX-BANO3  =     WAX-BANO3   +  50          00000052
+005350*            IF  (WAD-DTAINCL  NOT  LESS  E01-DE)  AND            00000053
+005360*                (WAD-DTAINCL  NOT  GREATER  E01-ATE)             00000054
+005370             IF  (WAX-BDATA1   NOT  LESS  WAX-BDATA2)  AND        00000055
+005380                 (WAX-BDATA1   NOT  GREATER  WAX-BDATA3)          00000056
+005390                 NEXT SENTENCE                                    00000373
+005400             ELSE                                                 00000374
+005410                 GO  TO  15-99-SAIDARSUP                          00000375
+005420         ELSE                                                     00000376
+005430             GO  TO  15-99-SAIDARSUP.                             00000377
+005440     MOVE  E01-TERMANT     TO   WAD-TERMANT.                      00000810
+005450     MOVE  E01-TERMAT      TO   WAD-TERMAT.                       00000811
+005460     MOVE  E01-PERATU      TO   WAD-PER-ATU.                      00000812
+005470     MOVE  WAX-DTAINV      TO   WAD-DTAIUP.                       00000813
+005480         IF  WAD-SERV  EQUAL 'LIS'                                00000381
+005490             MOVE  '*'  TO  WAD-MOV.                              00000382
+005500 15-05-RSUR26001.                                                 00000384
+005510*    CALL  'UP26001'  USING  WAD-RBUFUP                           ADAMINT
+005520*                            WAD-RCODEX.                          ADAMINT
+005530     MOVE WAD-RBUFUP TO R112-A-0017SGS03                          00000506
+005540     PERFORM 2SQL-90070-C112-UPDATE                               00000507
+005550     MOVE 2SQL-RESPONSE-CODE TO WAD-RCODE.                        00000508
+005560****     WAD-RCODEX.                                              00000509
+005570     IF  WAD-RCODE  EQUAL  9                                      00000510
+005580*        CALL  'UP26001'  USING  WAD-RBUFUP                       ADAMINT
+005590*                                WAD-RCODEX.                      ADAMINT
+005600     MOVE   WAD-RBUFUP   TO R112-A-0017SGS03                      00000513
+005610     PERFORM 2SQL-90070-C112-UPDATE                               00000514
+005620     MOVE 2SQL-RESPONSE-CODE TO  WAD-RCODE.                       00000515
+005630****     WAD-RCODEX.                                              00000516
+005640     IF  WAD-RCODE  NOT  EQUAL  ZEROS                             00000517
+005650         PERFORM  21-00-ERRO-ADABAS                               00000392
+005660     ELSE                                                         00000393
+005670         ADD  1  TO  WRC-VS1.                                     00000394
+005680 15-99-SAIDARSUP.                                                 00000396
+005690     EXIT.                                                        00000397
+005700*    *********************************************************    00000398
+005710*    *            TERMINO  DO  PROGRAMA  'SGS03110'          *    00000399
+005720*    *********************************************************    00000400
+005730     SKIP2                                                        00000401
+005740 18-00-TERMINO SECTION.                                           00000402
+005750*                                                                 00000403
+005760     CLOSE  SEQENT01.                                             00000404
+005770*    CALL   'CL26001'  USING  WAD-RCODEX.                         ADAMINT
+005780     PERFORM 2SQL-90020-C999-DBCLOSE                              00000531
+005790     MOVE 2SQL-RESPONSE-CODE TO                                   00000532
+005800         WAD-RCODE.                                               00000533
+005810****     WAD-RCODEX.                                              00000534
+005820     IF  WAD-RCODE  EQUAL 9                                       00000535
+005830*        CALL  'CL26001'  USING  WAD-RCODEX.                      ADAMINT
+005840     PERFORM 2SQL-90020-C999-DBCLOSE                              00000537
+005850     MOVE 2SQL-RESPONSE-CODE TO                                   00000538
+005860         WAD-RCODE.                                               00000539
+005870****     WAD-RCODEX.                                              00000540
+005880     IF  WAD-RCODE  NOT  EQUAL ZEROS                              00000541
+005890         PERFORM  21-00-ERRO-ADABAS                               00000409
+005900     ELSE                                                         00000410
+005910         CALL  'CPD0016S'  USING  WRC-REDE                        00000411
+005920         STOP RUN.                                                00000412
+005930*                                                                 00000413
+005940 18-99-SAIDATERMINO.                                              00000414
+005950     EXIT.                                                        00000415
+005960*    ******************************                               00000416
+005970*    *  ROTINA DE ERRO DO ADABAS  *                               00000417
+005980*    ******************************                               00000418
+005990     SKIP2                                                        00000419
+006000 21-00-ERRO-ADABAS SECTION.                                       00000420
+006010*                                                                 00000421
+006020     DISPLAY 'ADAMINT ERROR RESPONSE'                             00000422
+006030*    CALL    'SN26001'                                            ADAMINT
+006040     PERFORM 2SQL-90010-C999-SNAPINT                              00000557
+006050     DISPLAY 'RESPONSE-CODE...'  WAD-RCODEX                       00000558
+006060     MOVE  WAD-RCODE      TO  WMG-CODE                            00000425
+006070     MOVE  WMG-ADABAS     TO  WRC-OBS                             00000426
+006080     CALL  'CPD0016S'  USING  WRC-REDE                            00000427
+006090     MOVE  1001           TO  WAB-AB2                             00000428
+006100     CALL  'ABENDAR'   USING  WAB-ABENDAR.                        00000429
+006110*                                                                 00000430
+006120 21-99-SAIDAERROADABAS.                                           00000431
+006130     EXIT.                                                        00000432
+006140     EJECT                                                        00000567
+006150 2SQL-90000-ADASQL SECTION.                                       00000568
+006160     SKIP2                                                        00000569
+006170 2SQL-90030-C999-CONNECT.                                         00000570
+006180     EXEC ADABAS                                                  00000571
+006190       CONNECT                                                    00000572
+006200       UPD = A-0017SGS03                                          00000573
+006210     END-EXEC.                                                    00000574
+006220     MOVE  COMMAND-IDOPN TO 2SQL-LAST-ET.                         00000575
+006230     MOVE RESPONSE-CODEOPN TO                                     00000576
+006240              2SQL-RESPONSE-CODE.                                 00000577
+006250     SKIP2                                                        00000578
+006260 2SQL-90010-C999-SNAPINT.                                         00000579
+006270     EXIT.                                                        00000580
+006280     SKIP2                                                        00000581
+006290 2SQL-90020-C999-DBCLOSE.                                         00000582
+006300     EXEC ADABAS                                                  00000583
+006310       DBCLOSE                                                    00000584
+006320     END-EXEC.                                                    00000585
+006330     MOVE  COMMAND-IDOPN TO 2SQL-LAST-ET.                         00000586
+006340     MOVE RESPONSE-CODEOPN TO                                     00000587
+006350              2SQL-RESPONSE-CODE.                                 00000588
+006360     SKIP2                                                        00000589
+006370 2SQL-90040-C110-FETCH-CHECK.                                     00000590
+006380     IF 2SQL-C110-CURRENT-CURSOR = 'C110'                         00000591
+006390       PERFORM 2SQL-90050-C110-FETCH.                             00000592
+006400     IF 2SQL-C110-CURRENT-CURSOR = 'C111'                         00000593
+006410       PERFORM 2SQL-90060-C111-FETCH.                             00000594
+006420**** O PGM ADAMINT NAO TEM MAIS O FS26001, PORTANTO SEMPRE VAI    00000595
+006430**** EXECUTAR O C111-FETCH                                        00000596
+006440     MOVE RESPONSE-CODE OF C110-A-0017SGS03                       00000597
+006450       TO 2SQL-RESPONSE-CODE.                                     00000598
+006460     IF 2SQL-RESPONSE-CODE = 3                                    00000599
+006470       MOVE -1 TO 2SQL-RESPONSE-CODE.                             00000600
+006480     MOVE ISN OF C110-A-0017SGS03                                 00000601
+006490       TO 2SQL-DBS260-CURRENT-ISN.                                00000602
+006500     SKIP2                                                        00000603
+006510 2SQL-90050-C110-FETCH.                                           00000604
+006520     EXEC ADABAS                                                  00000605
+006530       FETCH C110                                                 00000606
+006540     END-EXEC.                                                    00000607
+006550     .                                                            00000608
+006560     SKIP2                                                        00000609
+006570 2SQL-90060-C111-FETCH.                                           00000610
+006580*****  FETCH C110                                                 00000611
+006590     EXEC ADABAS                                                  00000612
+006600       FETCH C111                                                 00000613
+006610     END-EXEC.                                                    00000614
+006620     MOVE C111-A-0017SGS03 TO C110-A-0017SGS03.                   00000615
+006630 2SQL-90070-C112-UPDATE.                                          00000616
+006640     EXEC ADABAS                                                  00000617
+006650       READ ISN                                                   00000618
+006660         DECLARE C112 CURSOR                                      00000619
+006670       SELECT                                                     00000620
+006680       NR-TR7TE, DT-VIGR-OCS-FATUR-ORDEM, NR-ANTE-TR7TE,          00000621
+006690       CD-MOVI-REGT-CADR-FATUR, DT-INCS-REGT-CADR-FATUR,          00000622
+006700       PERIODO
+006710       FROM A-0017SGS03                                           00000623
+006720       C112-A-0017SGS03                                           00000624
+006730       WHERE ISN = :2SQL-DBS260-CURRENT-ISN                       00000625
+006740       OPTIONS HOLD                                               00000626
+006750     END-EXEC.                                                    00000627
+006760     MOVE RESPONSE-CODE OF C112-A-0017SGS03                       00000628
+006770       TO 2SQL-RESPONSE-CODE.                                     00000629
+006780     IF NR-TR7TE-R                     OF                         00000630
+006790       R112-A-0017SGS03                                           00000631
+006800         NOT = HIGH-VALUES MOVE                                   00000632
+006810         NR-TR7TE                       OF                        00000633
+006820       R112-A-0017SGS03                                           00000634
+006830         TO NR-TR7TE                       OF                     00000635
+006840       C112-A-0017SGS03.                                          00000636
+006850     IF DT-VIGR-OCS-FATUR-ORDEM-R      OF                         00000637
+006860       R112-A-0017SGS03                                           00000638
+006870         NOT = HIGH-VALUES MOVE                                   00000639
+006880         DT-VIGR-OCS-FATUR-ORDEM        OF                        00000640
+006890       R112-A-0017SGS03                                           00000641
+006900         TO DT-VIGR-OCS-FATUR-ORDEM        OF                     00000642
+006910       C112-A-0017SGS03.                                          00000643
+006920     IF NR-ANTE-TR7TE-R                OF                         00000644
+006930       R112-A-0017SGS03                                           00000645
+006940         NOT = HIGH-VALUES MOVE                                   00000646
+006950         NR-ANTE-TR7TE                  OF                        00000647
+006960       R112-A-0017SGS03                                           00000648
+006970         TO NR-ANTE-TR7TE                  OF                     00000649
+006980       C112-A-0017SGS03.                                          00000650
+006990     IF CD-MOVI-REGT-CADR-FATUR        OF                         00000651
+007000       R112-A-0017SGS03                                           00000652
+007010         NOT = HIGH-VALUES MOVE                                   00000653
+007020         CD-MOVI-REGT-CADR-FATUR        OF                        00000654
+007030       R112-A-0017SGS03                                           00000655
+007040         TO CD-MOVI-REGT-CADR-FATUR        OF                     00000656
+007050       C112-A-0017SGS03.                                          00000657
+007060     IF DT-INCS-REGT-CADR-FATUR-R      OF                         00000658
+007070       R112-A-0017SGS03                                           00000659
+007080         NOT = HIGH-VALUES MOVE                                   00000660
+007090         DT-INCS-REGT-CADR-FATUR        OF                        00000661
+007100       R112-A-0017SGS03                                           00000662
+007110         TO DT-INCS-REGT-CADR-FATUR        OF                     00000663
+007120       C112-A-0017SGS03.                                          00000664
+007130     IF PERIODO-R                      OF                         00000658
+007140       R112-A-0017SGS03                                           00000659
+007150         NOT = HIGH-VALUES MOVE                                   00000660
+007160         PERIODO                        OF                        00000661
+007170       R112-A-0017SGS03                                           00000662
+007180         TO PERIODO                        OF                     00000663
+007190       C112-A-0017SGS03.                                          00000664
+007200     EXEC ADABAS                                                  00000665
+007210       UPDATE                                                     00000666
+007220       A-0017SGS03                                                00000667
+007230       C112-A-0017SGS03                                           00000668
+007240       WHERE CURRENT OF C112                                      00000669
+007250     END-EXEC.                                                    00000670
+007260     MOVE RESPONSE-CODE OF C112-A-0017SGS03                       00000671
+007270       TO 2SQL-RESPONSE-CODE.                                     00000672
+007280     SKIP2                                                        00000673
+007290 2SQL-90080-C110-OPEN.                                            00000674
+007300     EXEC ADABAS                                                  00000675
+007310       CLOSE C110                                                 00000676
+007320     END-EXEC.                                                    00000677
+007330     EXEC ADABAS                                                  00000678
+007340       OPEN C110                                                  00000679
+007350     END-EXEC.                                                    00000680
+007360     MOVE RESPONSE-CODE OF C110-A-0017SGS03                       00000681
+007370       TO 2SQL-RESPONSE-CODE.                                     00000682
+007380     MOVE 'C110' TO 2SQL-C110-CURRENT-CURSOR.                     00000683
+007390     SKIP2                                                        00000684
+007400 2SQL-90090-C111-OPEN.                                            00000685
+007410     EXEC ADABAS                                                  00000686
+007420       CLOSE C111                                                 00000687
+007430     END-EXEC.                                                    00000688
+007440     EXEC ADABAS                                                  00000689
+007450       OPEN C111                                                  00000690
+007460     END-EXEC.                                                    00000691
+007470     MOVE RESPONSE-CODE OF C111-A-0017SGS03                       00000692
+007480       TO 2SQL-RESPONSE-CODE.                                     00000693
+007490     MOVE 'C111' TO 2SQL-C110-CURRENT-CURSOR.                     00000694

@@ -1,0 +1,21 @@
+      090. TRANSFERIR PROGRAMA PARA TESTE :
+ 
+        ... ATENCAO ...
+            Esta transferencia deve ser executada, somente quando
+            for necessario testar o programa.
+ 
+ 
+        . no painel 'PRIMARY OPTION MENU', digite opcao 3 e <enter>.
+        . retorna o painel 'PROMOTE CHANGE PACKAGE' :
+          verifique se o numero do pacote e' o desejado, e <enter>.
+        . retorna o painel 'PROMOTE CHANGE PACKAGE' :
+          . no campo 'ACTION REQUESTED', digite P e <enter>.
+        . retorna o painel 'PROMOTE OPTIONS' :
+          . no campo 'OPTION ===>', digite F e <enter>.
+          . retorna a mensagem :
+            FAT012$$(JOB11882) submitted CN(INTERNAL)
+            ***
+            . tecle <enter>.
+        . retorna o painel 'PROMOTE CHANGE PACKAGE', com a mensagem
+          'JOB SUBMITTED' no canto direito superior, indicando que o
+          processo de tranferencia foi executado com sucesso.

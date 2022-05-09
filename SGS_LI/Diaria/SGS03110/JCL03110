@@ -1,0 +1,468 @@
+//SGS03110 PROC MMDD=ESQUECEU,AA=ESQUECEU,CPU=D,                        00000000
+//         TRK1=90,TRK2=5,CYL1=500,                                     00000000
+//         BLK1=750,BLK2=2000,BLK3=500,BLK4=10,BLK5=1530,BLK6=100       00000010
+//*                                                                     00000030
+//*-------------------------------------------------------------------* 00000040
+//*       SGS03-1   MOVIMENTACAO DE ORDENS E ATUALIZACAO CAX/TAC      * 00000050
+//*-------------------------------------------------------------------* 00000060
+//*                                                                     00000070
+//*-------------------------------------------------------------------* 00000100
+//*   INFORMA CHAVE DE ACESSO P/ ENTRADA NOS CICS DE PRODUCAO         * 00000110
+//*--------------------------------------------------------- PCP98360 * 00000120
+//PCP98360 EXEC PGM=PCP98360                                            00000090
+//SYSOUT   DD SYSOUT=*                                                  00000130
+//IN       DD DSN=SYS4.DADOS(SGS031SC),DISP=SHR                         00000140
+//*-------------------------------------------------------------------* 00000170
+//*   DESABLA TRANSACOES 'O790,OP20,OL07,O131,O157,O160,O161,O166'    * 00000180
+//*   DOS CICS 'C'  AO  'H'  +  'Z'                                   * 00000190
+//*--------------------------------------------------------- PCP98361 * 00000200
+//PCP98361 EXEC PGM=PCP98360                                            00000160
+//SYSOUT   DD SYSOUT=*                                                  00000210
+//IN       DD DSN=SYS4.DADOS(SGS031DC),DISP=SHR                         00000220
+//*-------------------------------------------------------------------* 00000230
+//*   CAPTACAO DAS ORDENS DE SERVICOS COMPLETADAS                     * 00000230
+//*--------------------------------------------------------- SGS03050 * 00000230
+//SGS03050 EXEC PGM=SGS03050,PARM='&AA&MMDD'                            00000240
+//STEPLIB  DD DSN=ADABAS.TELE.ADALOAD,DISP=SHR                          00000250
+//SYSOUT   DD SYSOUT=*                                                  00000260
+//SORTMSGE DD SYSOUT=*                                                  00000270
+//SORTDIAG DD SYSOUT=*                                                  00000280
+//MINTDUMP DD SYSOUT=P                                                  00000290
+//TSTDMP   DD SYSOUT=P                                                  00000300
+//SYSUDUMP DD SYSOUT=U                                                  00000310
+//DDASSO   DD DUMMY                                                     00000320
+//DDCARD   DD DSN=ADABAS.TELE.INSTALL(RUNPROD),DISP=SHR                 00000330
+//SEQUPD01 DD DSN=D.SGS03.A3103410,DISP=SHR                             00000340
+//SEQSAI01 DD DSN=D.SGS03.A051&MMDD,DISP=(,CATLG,CATLG),                00000350
+//            DCB=(LRECL=400,RECFM=FB),UNIT=PROD,                       00000360
+//            SPACE=(11200,(&BLK1,150),RLSE)                            00000370
+//SEQSAI02 DD DUMMY,DCB=(BLKSIZE=11424,LRECL=56,RECFM=FB)               00000380
+//DDREDE   DD SYSOUT=P                                                  00000390
+//*-------------------------------------------------------------------* 00000400
+//*   CRIA REGISTRO DE DCA PARCELADO                                  * 00000400
+//*--------------------------------------------------------- SGS03090 * 00000400
+//SGS03090 EXEC PGM=SGS03090                                            00000410
+//STEPLIB  DD DSN=ADABAS.TELE.ADALOAD,DISP=SHR                          00000420
+//SYSOUT   DD SYSOUT=*                                                  00000430
+//SORTMSGE DD SYSOUT=*                                                  00000440
+//SORTDIAG DD SYSOUT=*                                                  00000450
+//MINTDUMP DD SYSOUT=P                                                  00000460
+//TSTDMP   DD SYSOUT=P                                                  00000470
+//SYSUDUMP DD SYSOUT=U                                                  00000480
+//DDASSO   DD DUMMY                                                     00000490
+//DDCARD   DD DSN=ADABAS.TELE.INSTALL(RUNPROD),DISP=SHR                 00000500
+//SEQENT01 DD DSN=D.SGS03.A051&MMDD,DISP=SHR                            00000510
+//SEQSAI01 DD DSN=D.SGS03.A081&MMDD,DISP=(,CATLG,DELETE),               00000520
+//            DCB=(LRECL=200,RECFM=FB),UNIT=PROD,                       00000530
+//            SPACE=(11200,(&BLK5,150),RLSE)                            00000540
+//SEQSAI02 DD DSN=D.SGS03.A082&MMDD,DISP=(,CATLG,DELETE),               00000550
+//            DCB=(LRECL=400,RECFM=FB),UNIT=PROD,                       00000560
+//            SPACE=(11200,(&BLK5,150),RLSE)                            00000570
+//DDREDE   DD SYSOUT=P                                                  00000590
+//*--------------------------------------------------------- SGS0313I * 00000600
+//SGS0313I EXEC PGM=IEFBR14,COND=(0,EQ,SGS03090)                        00000610
+//DD1      DD DSN=D.SGS03.A081&MMDD,DISP=(OLD,DELETE)                   00000620
+//DD2      DD DSN=D.SGS03.A082&MMDD,DISP=(OLD,DELETE)                   00000630
+//*--------------------------------------------------------- SGS0311S * 00000640
+//SGS0311S EXEC PGM=SORT                                                00000650
+//SORTMSGE DD SYSOUT=*                                                  00000660
+//SORTDIAG DD SYSOUT=*                                                  00000670
+//SYSOUT   DD SYSOUT=*                                                  00000680
+//SORTIN   DD DSN=D.SGS03.A082&MMDD,DISP=SHR                            00000690
+//SORTOUT  DD DSN=D.SGS03.B082&MMDD,DISP=(,CATLG,DELETE),               00000700
+//            DCB=(LRECL=400,RECFM=FB),UNIT=SYSDA,                      00000710
+//            SPACE=(11200,(&BLK1,150),RLSE)                            00000720
+//SYSIN    DD DSN=SYS4.DADOS(SGS0311S),DISP=SHR                         00000730
+//*-------------------------------------------------------------------* 00000740
+//*   SEPARA ORDENS P/FATURAMENTO, CONFORME CONTROLE DADO P/ CENTRAL  * 00000740
+//*--------------------------------------------------------- SGS03170 * 00000740
+//SGS03170 EXEC PGM=SGS03170                                            00000750
+//SYSOUT   DD SYSOUT=*                                                  00000760
+//SORTMSGE DD SYSOUT=*                                                  00000770
+//SORTDIAG DD SYSOUT=*                                                  00000780
+//SYSUDUMP DD SYSOUT=U                                                  00000790
+//SEQENT01 DD DSN=D.SGS03.B082&MMDD,DISP=SHR                            00000800
+//SEQENT02 DD DSN=D.SGS034(0),DISP=SHR                                  00000810
+//SEQSAI01 DD DSN=D.SGS03.A171&MMDD,DISP=(,CATLG,DELETE),               00000820
+//            DCB=(LRECL=400,RECFM=FB),UNIT=PROD,                       00000830
+//            SPACE=(11200,(&BLK2,200),RLSE)                            00000840
+//SEQSAI02 DD DSN=D.SGS03.A172&MMDD,DISP=(,CATLG,DELETE),               00000850
+//            DCB=(LRECL=50,RECFM=FB),UNIT=PROD,                        00000860
+//            SPACE=(11440,(&BLK3,100),RLSE)                            00000870
+//SEQSAI03 DD DSN=D.SGS034(+1),DISP=(,CATLG,DELETE),                    00000880
+//            DCB=(GDGCTB,LRECL=30,RECFM=FB),UNIT=PROD,                 00000890
+//            SPACE=(11475,(&BLK4,2),RLSE)                              00000900
+//SEQSAI04 DD DUMMY,DCB=(BLKSIZE=11424,LRECL=56,RECFM=FB)               00000910
+//SEQSAI05 DD DSN=D.SGS03.A173&MMDD,DISP=(,CATLG,DELETE),               00000920
+//            DCB=(LRECL=400,RECFM=FB),UNIT=PROD,                       00000930
+//            SPACE=(11200,(&BLK2,200),RLSE)                            00000940
+//SEQSAI06 DD DSN=D.SGS03.A174&MMDD,DISP=(,CATLG,DELETE),               00000941
+//            DCB=(LRECL=400,RECFM=FB),UNIT=PROD,                       00000942
+//            SPACE=(11200,(&BLK2,200),RLSE)                            00000943
+//DDREDE   DD SYSOUT=P                                                  00000950
+//*--------------------------------------------------------- SGS0315I * 00000960
+//SGS0315I EXEC PGM=IEFBR14,                                            00000970
+//         COND=((0,EQ,SGS03170),(3000,EQ,SGS03170))                    00000980
+//DD1      DD DSN=D.SGS03.A171&MMDD,DISP=(OLD,DELETE)                   00000990
+//DD2      DD DSN=D.SGS03.A172&MMDD,DISP=(OLD,DELETE)                   00001000
+//DD3      DD DSN=D.SGS034(+1),DISP=(OLD,DELETE)                        00001010
+//DD4      DD DSN=D.SGS03.A173&MMDD,DISP=(OLD,DELETE)                   00001020
+//DD5      DD DSN=D.SGS03.A174&MMDD,DISP=(OLD,DELETE)                   00001021
+//*--------------------------------------------------------- SGS0311U * 00002840
+//SGS0311U EXEC PGM=ICEGENER                                            00002850
+//SYSPRINT DD SYSOUT=*                                                  00002860
+//SYSUT1   DD DSN=D.SGS034(+1),DISP=SHR                                 00002870
+//SYSUT2   DD DSN=D.SGS03.X034&MMDD,DISP=(,CATLG,DELETE),               00002880
+//            DCB=(LRECL=25,RECFM=FB),UNIT=PROD,                        00002890
+//            SPACE=(11475,(&BLK4,2),RLSE)                              00002900
+//SYSIN    DD DUMMY                                                     00002910
+//*--------------------------------------------------------- SGS031CI * 00002920
+//SGS031CI EXEC PGM=IEFBR14,COND=(0,EQ,SGS0311U)                        00002930
+//DD1      DD DSN=D.SGS03.X034&MMDD,DISP=(OLD,DELETE)                   00002940
+//*--------------------------------------------------------- SGS0312S * 00001030
+//SGS0312S EXEC PGM=SORT                                                00001040
+//SORTMSGE DD SYSOUT=*                                                  00001050
+//SORTDIAG DD SYSOUT=*                                                  00001060
+//SYSOUT   DD SYSOUT=*                                                  00001070
+//SORTIN   DD DSN=D.SGS03.A171&MMDD,DISP=SHR                            00001080
+//SORTOUT  DD DSN=D.SGS03.B171&MMDD,DISP=(,CATLG,DELETE),               00001090
+//            DCB=(LRECL=400,RECFM=FB),UNIT=SYSDA,                      00001100
+//            SPACE=(11200,(&BLK2,200),RLSE)                            00001110
+//SYSIN    DD DSN=SYS4.DADOS(SGS0312S),DISP=SHR                         00001120
+//*--------------------------------------------------------- SGS031AS * 00001130
+//SGS031AS EXEC PGM=SORT                                                00001140
+//SYSOUT   DD SYSOUT=*                                                  00001150
+//SORTMSGE DD SYSOUT=*                                                  00001160
+//SORTDIAG DD SYSOUT=*                                                  00001170
+//SORTIN   DD DSN=D.SGS040(0),DISP=SHR                                  00001180
+//SORTOUT  DD DSN=D.SGS03.A040&MMDD,DISP=(,CATLG,DELETE),               00001190
+//            DCB=(LRECL=80,RECFM=FB),UNIT=SYSDA,                       00001200
+//            SPACE=(11440,(&BLK4,2),RLSE)                              00001210
+//SYSIN    DD DSN=SYS4.DADOS(SGS031AS),DISP=SHR                         00001220
+//*-------------------------------------------------------------------* 00001250
+//*   CRIA MOVIMENTOS DE ATUALIZACAO DO CAX E INFORMACOES P/ OUTROS   * 00001230
+//*   SISTEMAS SOBRE FATURAMENTO E DADOS CADASTRAIS DOS ASSINANTES    * 00001230
+//*-------------------------------------------------------------------* 00001230
+//*--------------------------------------------------------- SGS03060 * 00001230
+//SGS03060 EXEC PGM=SGS03060                                            00001240
+//STEPLIB  DD DSN=ADABAS.TELE.ADALOAD,DISP=SHR                          00001330
+//SORTMSGE DD SYSOUT=*                                                  00001340
+//SORTDIAG DD SYSOUT=*                                                  00001350
+//SYSOUT   DD SYSOUT=*                                                  00001360
+//MINTDUMP DD SYSOUT=P                                                  00001370
+//TSTDMP   DD SYSOUT=P                                                  00001380
+//SYSUDUMP DD SYSOUT=U                                                  00001390
+//DDASSO   DD DUMMY                                                     00001400
+//DDCARD   DD DSN=ADABAS.TELE.INSTALL(RUNPROD),DISP=SHR                 00001410
+//SEQENT01 DD DSN=D.SGS03.B171&MMDD,DISP=SHR                            00001420
+//SEQENT02 DD DSN=D.SGS03.A040&MMDD,DISP=SHR                            00001430
+//SEQSAI01 DD DSN=D.SGS03.A061&MMDD,DISP=(,CATLG,DELETE),               00001440
+//            DCB=(LRECL=200,RECFM=FB),UNIT=PROD,                       00001450
+//            SPACE=(11400,(&BLK3,100),RLSE)                            00001460
+//SEQSAI02 DD DSN=D.SGS03.A062&MMDD,DISP=(,CATLG,DELETE),               00001470
+//            DCB=(LRECL=110,RECFM=FB),UNIT=PROD,                       00001480
+//            SPACE=(11400,(&BLK6,20),RLSE)                             00001490
+//SEQSAI03 DD DUMMY,DCB=(BLKSIZE=11424,LRECL=56,RECFM=FB)               00001500
+//SEQSAI04 DD DUMMY,DCB=(BLKSIZE=11200,LRECL=400,RECFM=FB)              00001510
+//SEQSAI05 DD DUMMY,DSN=D.SGS03.A065&MMDD,DISP=(,CATLG,DELETE),         00001520
+//            DCB=(LRECL=135,RECFM=VB),UNIT=PROD,                       00001530
+//            SPACE=(11400,(&BLK6,100),RLSE)                            00001540
+//RELATO01 DD SUBSYS=(CDAM,'SYSOUT=(C,,0001)'),DCB=(BLKSIZE=133)        00001550
+//RELATO02 DD SUBSYS=(CDAM,'SYSOUT=(C,,0001)'),DCB=(BLKSIZE=133)        00001560
+//RELATO03 DD DUMMY,DCB=BLKSIZE=133                                     00001570
+//DDREDE   DD SYSOUT=P                                                  00001580
+//*--------------------------------------------------------- SGS0317I * 00001590
+//SGS0317I EXEC PGM=IEFBR14,COND=(0,EQ,SGS03060)                        00001600
+//DD1      DD DSN=D.SGS03.A061&MMDD,DISP=(OLD,DELETE)                   00001610
+//DD2      DD DSN=D.SGS03.A062&MMDD,DISP=(OLD,DELETE)                   00001620
+//*--------------------------------------------------------- SGS0313S * 00001630
+//SGS0313S EXEC PGM=SORT                                                00001640
+//SYSOUT   DD SYSOUT=*                                                  00001650
+//SORTMSGE DD SYSOUT=*                                                  00001660
+//SORTDIAG DD SYSOUT=*                                                  00001670
+//SORTIN   DD DSN=D.SGS03.A062&MMDD,DISP=SHR                            00001680
+//SORTOUT  DD DSN=D.SGS03.B062&MMDD,DISP=(,CATLG,DELETE),               00001690
+//            DCB=(LRECL=110,RECFM=FB),UNIT=SYSDA,                      00001700
+//            SPACE=(11400,(&BLK6,10),RLSE)                             00001710
+//SYSIN    DD DSN=SYS4.DADOS(SGS0313S),DISP=SHR                         00001720
+//*--------------------------------------------------------- SGS0315S * 00001730
+//SGS0315S EXEC PGM=SORT                                                00001740
+//SYSOUT   DD SYSOUT=*                                                  00001750
+//SORTMSGE DD SYSOUT=*                                                  00001760
+//SORTDIAG DD SYSOUT=*                                                  00001770
+//SORTIN   DD DSN=D.SGS03.A062&MMDD,DISP=SHR                            00001780
+//SORTOUT  DD DSN=D.SGS062(+1),DISP=(,CATLG,DELETE),                    00001790
+//            DCB=(GDGCTB,LRECL=110,RECFM=FB),UNIT=PROD,                00001800
+//            SPACE=(11400,(&BLK2,200),RLSE)                            00001810
+//SYSIN    DD DSN=SYS4.DADOS(SGS0315S),DISP=SHR                         00001820
+//*-------------------------------------------------------------------* 00001830
+//*   GERA REGISTROS TOCA                                             * 00001830
+//*--------------------------------------------------------- SGS03200 * 00001830
+//SGS03200 EXEC PGM=SGS03200                                            00001840
+//SYSOUT   DD SYSOUT=*                                                  00001850
+//SYSUDUMP DD SYSOUT=U                                                  00001860
+//SEQENT01 DD DSN=D.SGS03.B171&MMDD,DISP=SHR                            00001870
+//SEQSAI01 DD DSN=D.SGS03.A201&MMDD,DISP=(,CATLG,DELETE),               00001880
+//            DCB=(LRECL=200,RECFM=FB),UNIT=PROD,                       00001890
+//            SPACE=(11400,(&BLK4,2),RLSE)                              00001900
+//DDREDE   DD SYSOUT=P                                                  00001910
+//*--------------------------------------------------------- SGS0319I * 00001920
+//SGS0319I EXEC PGM=IEFBR14,COND=(0,EQ,SGS03200)                        00001930
+//DD1      DD DSN=D.SGS03.A201&MMDD,DISP=(OLD,DELETE,KEEP)              00001940
+//*--------------------------------------------------------- SGS0341S * 00001950
+//SGS0341S EXEC PGM=SORT                                                00001960
+//SYSOUT   DD SYSOUT=*                                                  00001970
+//SORTMSGE DD SYSOUT=*                                                  00001980
+//SORTDIAG DD SYSOUT=*                                                  00001990
+//SORTIN   DD DSN=D.SGS03.A061&MMDD,DISP=SHR                            00002000
+//         DD DSN=D.SGS03.A201&MMDD,DISP=SHR                            00002010
+//         DD DSN=D.SGS03.A081&MMDD,DISP=SHR                            00002020
+//         DD DSN=D.SGS061,DISP=SHR                                     00002030
+//SORTOUT  DD DSN=D.SGS03.B061&MMDD,DISP=(,CATLG,DELETE),               00002040
+//            DCB=(LRECL=200,RECFM=FB),UNIT=PROD,                       00002050
+//            SPACE=(11400,(&BLK3,100),RLSE)                            00002060
+//SYSIN    DD DSN=SYS4.DADOS(SGS0341S),DISP=SHR                         00002070
+//*-------------------------------------------------------------------* 00002080
+//*   INCLUSAO NO CAX C/ MOVIMENTO DE FRACIONARIOS E EXECUCAO, NAO FI-* 00002080
+//*   GURACAO EM LISTA, SALDO CREDOR, LISTAS E TOCA                   * 00002080
+//*-------------------------------------------------------------------* 00002080
+//* ATENCAO!!* EM CASO DE ABEND DESTE STEP, RESTARTAR NO MESMO E PROS-* 00002130
+//*            SEGUIR.                                                * 00002130
+//*           "NAO"  PROCESSAR O MOVIMENTO DO DIA SEGUINTE ENQUANTO   * 00002130
+//*            ESTE STEP NAO PROCESSAR COM COND 00                    * 00002130
+//*                                                                   * 00002130
+//*          * ESTE STEP NAO PODE SER REPROCESSADO (SE COND=00, SAL-  * 00002110
+//*            TAR O STEP CASO TENHA QUE REPROCESSAR)                 * 00002120
+//*--------------------------------------------------------- SGS03100 * 00002080
+//SGS03100 EXEC PGM=SGS03100,PARM=&MMDD                                 00002090
+//STEPLIB  DD DSN=ADABAS.TELE.ADALOAD,DISP=SHR                          00002150
+//DDCARD   DD DSN=ADABAS.TELE.INSTALL(RUNPROD),DISP=SHR                 00002160
+//DDASSO   DD DUMMY                                                     00002170
+//SYSOUT   DD SYSOUT=*                                                  00002180
+//MINTDUMP DD SYSOUT=P                                                  00002190
+//TSTDMP   DD SYSOUT=P                                                  00002200
+//SYSUDUMP DD SYSOUT=U                                                  00002210
+//SEQENT01 DD DSN=D.SGS03.B061&MMDD,DISP=SHR                            00002220
+//SEQUPD01 DD DSN=D.SGS03.A3103410,DISP=SHR                             00002230
+//SEQSAI01 DD DUMMY,DCB=(BLKSIZE=6216,LRECL=56,RECFM=FB)                00002240
+//DDREDE   DD SYSOUT=P                                                  00002250
+//*-------------------------------------------------------------------* 00002260
+//*   GERA MOVIMENTOS DE ATUALIZACAO DA TAB.CORRESPONDENCIA E FIND NO * 00002260
+//*   FILE 36 DE ALTER. EFETUADAS NO CAD.COMERCIAL EM GRANDES GRUPOS  * 00002260
+//*--------------------------------------------------------- SGS05040 * 00002260
+//SGS05040 EXEC PGM=SGS05040                                            00002270
+//STEPLIB  DD DSN=ADABAS.TELE.ADALOAD,DISP=SHR                          00002280
+//MINTDUMP DD SYSOUT=P                                                  00002290
+//TSTDMP   DD SYSOUT=P                                                  00002300
+//SYSUDUMP DD SYSOUT=U                                                  00002310
+//SYSOUT   DD SYSOUT=*                                                  00002320
+//DDCARD   DD DSN=ADABAS.TELE.INSTALL(RUNPROD),DISP=SHR                 00002330
+//SEQENT01 DD DSN=D.SGS03.A172&MMDD,DISP=SHR                            00002340
+//SEQSAI01 DD DSN=D.SGS03.A041&MMDD,DISP=(,CATLG,DELETE),               00002350
+//            DCB=(LRECL=110,RECFM=FB),UNIT=SYSDA,                      00002360
+//            SPACE=(11400,(&BLK3,100),RLSE)                            00002370
+//SEQSAI02 DD DUMMY,DCB=(BLKSIZE=11424,LRECL=56,RECFM=FB)               00002380
+//DDREDE   DD SYSOUT=P                                                  00002390
+//*--------------------------------------------------------- SGS031AI * 00002400
+//SGS031AI EXEC PGM=IEFBR14,COND=(0,EQ,SGS05040)                        00002410
+//DD1      DD DSN=D.SGS03.A041&MMDD,DISP=(OLD,DELETE)                   00002420
+//*-------------------------------------------------------------------* 00002430
+//*   FORMATA ARQS DE ATUALIZACAO DO FINDER FILE, TAB.CORRESPONDEN-   * 00002430
+//*   CIA E SERVICO MEDIDO                                            * 00002430
+//*--------------------------------------------------------- SGS03070 * 00002430
+//SGS03070 EXEC PGM=SGS03070                                            00002440
+//SYSOUT   DD SYSOUT=*                                                  00002450
+//SYSUDUMP DD SYSOUT=U                                                  00002460
+//SEQENT01 DD DSN=D.SGS03.B062&MMDD,DISP=SHR                            00002470
+//SEQSAI02 DD DSN=D.SGS344(+1),DISP=(,CATLG,DELETE),                    00002480
+//            DCB=(GDGCTB,LRECL=90,RECFM=FB),UNIT=PROD,                 00002490
+//            SPACE=(11430,(&BLK6,20),RLSE)                             00002500
+//SEQSAI03 DD DSN=D.SGS03.A073&MMDD,DISP=(,CATLG,DELETE),               00002510
+//            DCB=(LRECL=110,RECFM=FB),UNIT=PROD,                       00002520
+//            SPACE=(11400,(&BLK2,200),RLSE)                            00002530
+//SEQSAI04 DD DUMMY,DCB=(BLKSIZE=11424,LRECL=56,RECFM=FB)               00002540
+//RELATO01 DD DUMMY,DCB=BLKSIZE=133                                     00002550
+//DDREDE   DD SYSOUT=P                                                  00002560
+//*--------------------------------------------------------- SGS031BI * 00002570
+//SGS031BI EXEC PGM=IEFBR14,COND=(0,EQ,SGS03070)                        00002580
+//DD1      DD DSN=D.SGS344(+1),DISP=(OLD,DELETE)                        00002590
+//DD2      DD DSN=D.SGS03.A073&MMDD,DISP=(OLD,DELETE)                   00002600
+//*--------------------------------------------------------- SGS0317S * 00002610
+//SGS0317S EXEC PGM=SORT                                                00002620
+//SORTLIB  DD DSN=CTB.SORTLIB,DISP=SHR                                  00002630
+//SYSOUT   DD SYSOUT=*                                                  00002640
+//SORTMSGE DD SYSOUT=*                                                  00002650
+//SORTDIAG DD SYSOUT=*                                                  00002660
+//SORTIN   DD DSN=D.SGS03.A073&MMDD,DISP=SHR                            00002670
+//         DD DSN=D.SGS03.A041&MMDD,DISP=SHR                            00002680
+//SORTOUT  DD DSN=D.SGS03.B073&MMDD,DISP=(,CATLG,DELETE),               00002690
+//            DCB=(LRECL=110,RECFM=FB),UNIT=PROD,                       00002700
+//            SPACE=(11400,(&BLK6,20),RLSE)                             00002710
+//SYSIN    DD DSN=SYS4.DADOS(SGS0317S),DISP=SHR                         00002720
+//*-------------------------------------------------------------------* 00002730
+//*   FAZ BALANCEAMENTO DA TAB.CORRESPONDENCIA DE TELEFONES CONTRA O  * 00002730
+//*   CAX P/ ALTERAR TERMINAIS QUE SOFRERAM MUDANCA DE NUMERO         * 00002730
+//*--------------------------------------------------------- SGS03110 * 00002730
+//SGS03110 EXEC PGM=SGS03110                                            00002740
+//STEPLIB  DD DSN=ADABAS.TELE.ADALOAD,DISP=SHR                          00002750
+//SYSOUT   DD SYSOUT=*                                                  00002760
+//MINTDUMP DD SYSOUT=P                                                  00002770
+//TSTDMP   DD SYSOUT=P                                                  00002780
+//SYSUDUMP DD SYSOUT=U                                                  00002790
+//DDASSO   DD DUMMY                                                     00002800
+//DDCARD   DD DSN=ADABAS.TELE.INSTALL(RUNPROD),DISP=SHR                 00002810
+//SEQENT01 DD DSN=F.SGS530(0),DISP=SHR                                  00002820
+//DDREDE   DD SYSOUT=P                                                  00002830
+//*--------------------------------------------------------- SGS0311T * 00002950
+//SGS0311T EXEC PGM=CPD30230,PARM=('1')                                 00002960
+//SYSUT1   DD DSN=D.SGS03.A051&MMDD,DISP=SHR                            00002970
+//SYSUT2   DD DSN=D.SGS03.X051&MMDD,DISP=(,CATLG,DELETE),               00002980
+//            DCB=(LRECL=400,RECFM=FB),UNIT=PROD,                       00002990
+//            SPACE=(TRK,(&TRK1,15),RLSE)                               00003000
+//*--------------------------------------------------------- SGS031DI * 00003010
+//SGS031DI EXEC PGM=IEFBR14,COND=(0,EQ,SGS0311T)                        00003020
+//DD1      DD DSN=D.SGS03.X051&MMDD,DISP=(OLD,DELETE)                   00003030
+//*--------------------------------------------------------- SGS0313U * 00003040
+//SGS0313U EXEC PGM=ICEGENER                                            00003050
+//SYSPRINT DD SYSOUT=*                                                  00003060
+//SYSUT1   DD DSN=F.SGS530(0),DISP=SHR                                  00003070
+//SYSUT2   DD DSN=F.SGS03.X530&MMDD,DISP=(,CATLG,DELETE),               00003080
+//            DCB=(LRECL=80,RECFM=FB),UNIT=TAPEROBO                     00003090
+//SYSIN    DD DUMMY                                                     00003100
+//*--------------------------------------------------------- SGS031EI * 00003110
+//SGS031EI EXEC PGM=IEFBR14,COND=(0,EQ,SGS0313U)                        00003120
+//DD1      DD DSN=F.SGS03.X530&MMDD,DISP=(OLD,DELETE)                   00003130
+//*-------------------------------------------------------------------* 00003140
+//*   SELECIONA TELEFONES TELEFONICA                                  * 00003150
+//*--------------------------------------------------------- SGS0318S * 00003110
+//SGS0318S EXEC PGM=SORT                                                00003170
+//SORTLIB  DD DSN=CTB.SORTLIB,DISP=SHR                                  00003180
+//SYSOUT   DD SYSOUT=*                                                  00003190
+//SORTIN   DD DSN=D.SGS03.A051&MMDD,DISP=SHR                            00003200
+//SORTOUT  DD DSN=D.FAT06.A003&MMDD,DISP=(,CATLG,DELETE),               00003300
+//            DCB=(LRECL=400,RECFM=FB),UNIT=PROD,                       00003400
+//            SPACE=(11200,(&BLK1,150),RLSE)                            00003500
+//SYSIN    DD DSN=SYS4.DADOS(SGS0318S),DISP=SHR                         00003600
+//*-------------------------------------------------------------------* 00003610
+//*   SELECIONA TELEFONES CETERP                                      * 00003620
+//*--------------------------------------------------------- SGS0319S * 00003110
+//SGS0319S EXEC PGM=SORT                                                00003631
+//SORTLIB  DD DSN=CTB.SORTLIB,DISP=SHR                                  00003632
+//SYSOUT   DD SYSOUT=*                                                  00003633
+//SORTIN   DD DSN=D.SGS03.A051&MMDD,DISP=SHR                            00003634
+//SORTOUT  DD DSN=D.FAT06.A004&MMDD,DISP=(,CATLG,DELETE),               00003635
+//            DCB=(LRECL=400,RECFM=FB),UNIT=PROD,                       00003636
+//            SPACE=(11200,(&BLK1,150),RLSE)                            00003637
+//SYSIN    DD DSN=SYS4.DADOS(SGS0319S),DISP=SHR                         00003638
+//*-------------------------------------------------------------------* 00003639
+//*   CRIA ARQ.MOVIMENTACAO DE TELS DE/PARA, P/ ACERTO DOS BANCOS     * 00003639
+//*--------------------------------------------------------- FAT06910 * 00003639
+//FAT06910 EXEC PGM=FAT06910                                            00003640
+//SYSOUT   DD SYSOUT=*                                                  00003641
+//SYSUDUMP DD SYSOUT=U                                                  00003642
+//SEQENT01 DD DSN=D.FAT06.A003&MMDD,DISP=SHR                            00003643
+//INDUPD01 DD DSN=VPPRD003.FAT06X.KCDEBAUT,DISP=SHR                     00003644
+//SEQSAI01 DD DSN=D.FAT060(+1),DISP=(,CATLG,DELETE),                    00003645
+//            DCB=(GDGCTB,LRECL=150,RECFM=FB),UNIT=PROD,                00003646
+//            SPACE=(11400,(&BLK3,100),RLSE)                            00003647
+//DDREDE   DD SYSOUT=P                                                  00003648
+//*--------------------------------------------------------- SGS031FI * 00003649
+//SGS031FI EXEC PGM=IEFBR14,COND=(0,EQ,FAT06910)                        00003650
+//DD1      DD DSN=D.FAT060(+1),DISP=(OLD,DELETE,DELETE)                 00003651
+//*--------------------------------------------------------- FAT06911 * 00003652
+//FAT06911 EXEC PGM=FAT06910                                            00003653
+//SYSOUT   DD SYSOUT=*                                                  00003654
+//SYSUDUMP DD SYSOUT=U                                                  00003655
+//SEQENT01 DD DSN=D.FAT06.A004&MMDD,DISP=SHR                            00003656
+//INDUPD01 DD DSN=VPPRD003.FAT06X.KCDEBAUT,DISP=SHR                     00003657
+//SEQSAI01 DD DSN=D.FAT060(+2),DISP=(,CATLG,DELETE),                    00003658
+//            DCB=(GDGCTB,LRECL=150,RECFM=FB),UNIT=PROD,                00003659
+//            SPACE=(11400,(&BLK3,100),RLSE)                            00003660
+//DDREDE   DD SYSOUT=P                                                  00003661
+//*--------------------------------------------------------- SGS032GI * 00003662
+//SGS032GI EXEC PGM=IEFBR14,COND=(0,EQ,FAT06911)                        00003663
+//DD1      DD DSN=D.FAT060(+2),DISP=(OLD,DELETE,DELETE)                 00003664
+//*--------------------------------------------------------- FAT0658V * 00003665
+//FAT0658V EXEC PGM=IDCAMS,COND=((0,NE,FAT06910),(0,NE,FAT06911))       00003666
+//SYSPRINT DD SYSOUT=*                                                  00003667
+//DD1      DD UNIT=SYSDA,VOL=SER=PRD800,DISP=SHR                        00003670
+//SEQENT01 DD DSN=VPPRD003.FAT06X.KCDEBAUT,DISP=SHR                     00003680
+//SEQSAI01 DD DSN=F.FAT060(+1),DISP=(,CATLG,DELETE),UNIT=TAPEROBO,      00003690
+//            DCB=(GDGCTB,BLKSIZE=0,LRECL=100,RECFM=FB)                 00003700
+//SYSIN    DD DSN=SYS4.DADOS(FAT0658V),DISP=SHR                         00003710
+//*--------------------------------------------------------- SGS031HI * 00003720
+//SGS031HI EXEC PGM=IEFBR14,COND=(0,EQ,FAT0658V)                        00003730
+//DD1      DD DSN=F.FAT060(+1),DISP=(OLD,DELETE,DELETE)                 00003740
+//*--------------------------------------------------------- SGS0312T * 00003860
+//SGS0312T EXEC PGM=CPD30230,PARM=('1')                                 00003870
+//SYSUT1   DD DSN=D.SGS061,DISP=SHR                                     00003880
+//SYSUT2   DD DSN=D.SGS03.X061&MMDD,DISP=(,CATLG,DELETE),               00003890
+//            DCB=(LRECL=200,RECFM=FB),UNIT=PROD,                       00003900
+//            SPACE=(TRK,(&TRK1,15),RLSE)                               00003910
+//*--------------------------------------------------------- SGS031JI * 00003920
+//SGS031JI EXEC PGM=IEFBR14,COND=(0,EQ,SGS0312T)                        00003930
+//DD1      DD DSN=D.SGS03.X061&MMDD,DISP=(OLD,DELETE)                   00003940
+//*--------------------------------------------------------- SGS031KI * 00003950
+//SGS031KI EXEC PGM=IEFBR14,COND=((0,NE,FAT06910),(0,NE,FAT06911))      00003960
+//DD2      DD DSN=D.SGS03.B171&MMDD,DISP=(OLD,DELETE)                   00003980
+//DD3      DD DSN=D.SGS03.A040&MMDD,DISP=(OLD,DELETE)                   00003990
+//DD4      DD DSN=D.SGS03.B062&MMDD,DISP=(OLD,DELETE)                   00004000
+//DD5      DD DSN=D.SGS03.A041&MMDD,DISP=(OLD,DELETE)                   00004010
+//DD6      DD DSN=D.SGS03.A073&MMDD,DISP=(OLD,DELETE)                   00004020
+//DD7      DD DSN=D.SGS061,DISP=(OLD,DELETE)                            00004030
+//DD8      DD DSN=D.FAT06.A003&MMDD,DISP=(OLD,DELETE)                   00004031
+//DD9      DD DSN=D.FAT06.A004&MMDD,DISP=(OLD,DELETE)                   00004032
+//*-------------------------------------------------------------------* 00004060
+//*   CRIA GDG(+1) VAZIA PARA LEITURA NO DIA SEGUINTE                 * 00004070
+//*--------------------------------------------------------- SGS0315U * 00004040
+//SGS0315U EXEC PGM=ICEGENER                                            00004050
+//SYSPRINT DD SYSOUT=*                                                  00004090
+//SYSUT1   DD DUMMY,DCB=(BLKSIZE=200,LRECL=100,RECFM=FB)                00004100
+//SYSUT2   DD DSN=D.SGS061(+1),DISP=(,CATLG,DELETE),                    00004110
+//            DCB=(GDGCTB,LRECL=200,RECFM=FB),UNIT=PROD,                00004120
+//            SPACE=(TRK,(1,1),RLSE)                                    00004130
+//SYSIN    DD DUMMY,DCB=BLKSIZE=80                                      00004140
+//*--------------------------------------------------------- SGS0310S * 00004150
+//SGS0310S EXEC PGM=SORT                                                00004160
+//SORTMSGE DD SYSOUT=*                                                  00004170
+//SORTDIAG DD SYSOUT=*                                                  00004180
+//SYSOUT   DD SYSOUT=*                                                  00004190
+//SORTIN   DD DSN=D.FAT286(0),DISP=SHR  ** ORIGEM FAT02 **              00004200
+//         DD DSN=D.SGS03.A051&MMDD,DISP=SHR                            00004210
+//SORTOUT  DD DSN=D.FAT286(+1),DISP=(,CATLG,DELETE),                    00004220
+//            DCB=(GDGCTB,LRECL=400,RECFM=FB),UNIT=PROD,                00004230
+//            SPACE=(11200,(&BLK1,150),RLSE)                            00004240
+//SYSIN    DD DSN=SYS4.DADOS(SGS0311S),DISP=SHR                         00004250
+//*-------------------------------------------------------------------*
+//*   GERA IMAGEM DA TAB.CCM (FILE 018) EM ARQUIVO SEQUENCIAL         *
+//*--------------------------------------------------------- SGS03180 *
+//SGS03180 EXEC PGM=NAT2D,REGION=4M,PARM='SL=72,SYS=&CPU,ETID=X'
+//STEPLIB  DD DSN=NATURAL.BATCH.PRODUCAO,DISP=SHR
+//         DD DSN=ADABAS.TELE.ADALOAD,DISP=SHR
+//         DD DSN=CTB.LOADLIB,DISP=SHR
+//SORTLIB  DD DSN=CTB.SORTLIB,DISP=SHR
+//SYSUDUMP DD SYSOUT=U
+//SYSOUT   DD SYSOUT=*
+//SORTOUT  DD DUMMY,DCB=BLKSIZE=80
+//DDSORTIN DD DUMMY
+//DDSORTUT DD DUMMY
+//SORTWK01 DD UNIT=SYSDA,SPACE=(CYL,(&CYL1))
+//SORTWK02 DD UNIT=SYSDA,SPACE=(CYL,(&CYL1))
+//SORTWK03 DD UNIT=SYSDA,SPACE=(CYL,(&CYL1))
+//SORTWK04 DD UNIT=SYSDA,SPACE=(CYL,(&CYL1))
+//SORTMSG  DD SYSOUT=*
+//DDCARD   DD DSN=ADABAS.TELE.INSTALL(RUNNUC00),DISP=SHR
+//         DD DSN=ADABAS.TELE.INSTALL(RUNUSR),DISP=SHR
+//         DD DSN=ADABAS.TELE.INSTALL(RUNMTELE),DISP=SHR
+//         DD DSN=ADABAS.TELE.INSTALL(RUND),DISP=SHR
+//DDPRINT  DD SYSOUT=*
+//CMPRINT  DD SYSOUT=*
+//CMWKF01  DD DSN=D.SGS018(+1),DISP=(,CATLG,DELETE),
+//            DCB=(GDGCTB,LRECL=230,RECFM=FB),UNIT=PROD,
+//            SPACE=(TRK,(&TRK1,&TRK2),RLSE)
+//CMSYNIN  DD DSN=SYS4.NATURAL(SGS0300N),DISP=SHR
+//         DD DSN=SYS4.DADOS(SGS0318P),DISP=SHR
+//DDREDE   DD SYSOUT=P
+//*---------------------------------------------------------- SGS0318I *
+//SGS0318I EXEC PGM=IEFBR14,COND=(0,EQ,SGS03180)
+//DD1      DD DSN=D.SGS018(+1),DISP=(OLD,DELETE)

@@ -1,0 +1,25 @@
+      040. EDITAR HISTORICO DE PROGRAMA (TIPO SRH) NO DESENVOLVIMENTO :
+ 
+        . no painel 'PRIMARY OPTION MENU', digite opcao 5 e <enter>.
+        . no painel 'PACKAGE LIST PARAMETERS' :
+          . no campo 'PACKAGE ID', digite o numero do pacote e <enter>.
+        . no painel 'CHANGE PACKAGE LIST' :
+          . no campo antes do 'PACKAGE ID', digite S2 e <enter>.
+        . retorna o painel 'STAGE: Numero do pacote COMPONENTS' :
+          . no campo antes do 'NAME', digite E, tecle <enter>.
+        . retorna o fonte de historico, para manutencao :
+          . para salvar as alteracoes tecle PF3 ou digite SAVE <enter>
+          . para sair sem salvar, digite CANCEL <enter>.
+        . se vai salvar, retorna o painel 'OUTLIST' com as manutencoes
+          . tecle PF3.
+          . retorna o painel 'COMPARISON REPORT DISPOSITION' :
+            . tecle PF3 ou <enter>, para processar as manutencoes.
+            . para sair sem salvar, digite CANCEL <enter>.
+          . se vai processar as manutencoes :
+            . retorna o painel 'Nome do programa.Tipo de biblioteca',
+              quando houver outros pacotes acessando este programa.
+              . tecle <enter>.
+            . retorna o painel 'STAGE: Numero do pacote COMPONENTS' :
+            . tecle PF3.
+            . retorna o painel 'CHANGE PACKAGE LIST', com a manutencao
+              do historico OK.

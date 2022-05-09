@@ -1,0 +1,25 @@
+      110. LISTA DOS TIPOS DE BIBLIOTECAS :
+ 
+          TIPO     DESCRICAO
+ 
+          CPY      CopyBooks
+          CTC      Cartoes de Controle (Cardlib)
+          DOC      Documentacao
+          JCE      Jcl Emergencial
+          LOB      Load Modulo Batch (Executavel da SRB)
+          LOD      Load Modulo Online (Executavel da SRC)
+          LOE      Load Modulo Batch Emergencial (Executavel da SRE)
+          LOT      Load Modulo Subrotina Batch (Executavel da SRT)
+          LRO      Load Modulo Subrotina Online (Executavel da SRO)
+          LST      Listagem de Compilacao
+          MAP      Load Modulo BMS (Executavel da MPS)
+          MOP      Manual Operacional
+          MPC      CopyBooks gerado na compilacao de Mapas
+          MPS      Codigo Fonte BMS
+          PRC      Procedures
+          SRB      Codigo Fonte Batch
+          SRC      Codigo Fonte Online
+          SRE      Codigo Fonte Batch Emergencial
+          SRH      Historico de Alteracoes de Codigo Fonte
+          SRO      Codigo Fonte Subrotinas Online
+          SRT      Codigo Fonte Subrotinas Batch

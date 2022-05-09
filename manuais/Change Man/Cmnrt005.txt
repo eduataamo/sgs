@@ -1,0 +1,520 @@
+INFORMACOES GERAIS
+ 
+ 
+. Muitas acoes podem ser iniciadas pelo fluxo de paineis (telas), ou
+  digitando a linha de comandos na opcao List do painel principal do
+  CHANGE MAN.
+ 
+. Para processar as informacoes, digite  Enter.
+ 
+. Para cancelar as informacoes saindo do processo, isto e, sem salvar,
+  digite "CANCEL", em linha de comando.
+ 
+. Para acessar o Help online, digite  PF1.
+ 
+. Para navegar de um painel, que nao o anterior ou o proximo, use o
+  sinal de '=', por exemplo, se estiver no painel de opcoes do Stage e
+  precisa retornar ao painel menu de opcoes,   digite '=B' e  Enter.
+ 
+ 
+ 
+CREATE (Criando ao Alterando um pacote)
+ 
+ 
+. No menu Primary Option, escolha a opcao 1 (Build).
+ 
+. No menu Build Options, escolha a opcao 1 (Create).
+ 
+. Digite 'L' (Long method) ou 'S' (Short method) no campo Option.
+ 
+. Digite o tipo do pacote.
+ 
+. Digite o codigo da aplicacao.
+ 
+. Digite o nome do solicitante.
+ 
+. Digite o numero de telefone do solicitante.
+ 
+. Digite o codigo do trabalho, o numero do TICKET do Service Center.
+ 
+. Digite o codigo de departamento/superintendencia/secao.
+ 
+. Digite o nivel do pacote :
+ 
+   1 (Simples).
+ 
+   2 (Complexo).
+ 
+   3 (Super).
+ 
+   4 (Participativo).
+ 
+. Digite o tipo do pacote (Planejado ou Nao Planejado(Emergencial).
+ 
+. Digite a condicao de permanencia do pacote (Permanente).
+ 
+. Opcionalmente pode ser digitado o numero do pacote, do qual queremos
+  COPIAR a estrutura, isto e, as informacoes do tipo descricao, data e
+  hora de instalacao. (Os componentes do pacote nco serao copiados).
+ 
+. Quando o pacote for Nao Planejado, digite o codigo que representa o
+  motivo pelo qual este pacote e Nao Planejado ou '*' para visualizar a
+  lista de codigos.
+ 
+. Digite Enter. ?
+ 
+. Digite a descricao do pacote.
+ 
+. Digite Enter.
+ 
+. Digite o codigo de acao de contingencia :
+ 
+   1 (Retem o pacote na producao e contata o analista responsavel).
+ 
+   2 (Inicializa o processo de Backout).
+ 
+   3 (O usuario pode descrever procedimento diferente dos anteriores).
+ 
+. Digite o metodo de instalacao do pacote :
+ 
+   MAN (O Change Man instala automaticamente o pacote, a partir do
+        APPROVE fornecido pelo usuario e considerando a data e hora de
+        instalacao como limite final, isto e, se a data e hora de
+        instalacao informada na criacao do pacote forem maior que a data
+        e hora do processo de instalacao, o processo ocorre normalmente.
+ 
+. Digite instrucoes de implementacao ao pacote, num limite de 46 linhas.
+ 
+. Digite Enter.
+ 
+. Digite a data e hora da instalacao.
+ 
+. Digite os nomes e telefones dos contatos principal e backup.
+ 
+. Digite Enter.
+ 
+ 
+ 
+CHECKOUT (Transferencia de componente)
+ 
+ 
+. No menu Primary Option, escolha a opcao 1 (Build).
+ 
+. No menu Build Options, escolha a opcao 5 (Checkout).
+ 
+. No campo PACKAGE ID digite 1 (Baseline / Promotion), no painel de
+  opcoes do Checkout.
+ 
+. Digite Enter.
+ 
+. No painel CHECKOUT :
+ 
+   Opcionalmente digite 'L' para mostra a lista de bibliotecas onde
+   podera selecionar o componente.
+ 
+   Digite o nome do componente ou deixe em branco para listar todos.
+ 
+   Opcionalmente digite o tipo de biblioteca onde esta o componente.
+ 
+   Opcionalmente digite o nome da linguagem do componente.
+ 
+   Digite a versao do componente na biblioteca de origem
+   (Baseline 0 a -n / Promotion  +1 a +n).
+ 
+   Digite a biblioteca de destino (S (Staging) ou P (Personal).
+ 
+   Quando a biblioteca de destino for P, digite o nome e o tipo de
+   organizacao da mesma (PDS,PDSE,SEQ,PAN,LIB).
+ 
+   Digite 'Y' ou 'N' para ativar o painel de confirmacao.
+ 
+   Digite o modo que executara o Checkout :
+ 
+    1 (Online)
+ 
+    2 (Batch)
+ 
+   Digite 'Y' ou 'N' para bloquear o componente quando houver utilizacao
+   concorrente.
+ 
+   Digite Enter.
+ 
+ 
+ 
+STAGE (Compilacao Linkedicao de componente)
+ 
+ 
+. No menu Primary Option, escolha a opcao 1 (Build).
+ 
+. No menu Build Options, escolha a opcao 6 (Stage).
+ 
+. Digite Enter.
+ 
+. No campo PACKAGE ID digite o numero do Pacote.
+ 
+. No painel STAGE OPTIONS :
+ 
+   1 (Development) se o Stage for executado da biblioteca de
+      desenvolvimento, digite o nome a organizacao e o tipo da
+      biblioteca.
+ 
+   2 (Package) se o Stage for executado com componentes do pacote.
+ 
+. Digite Enter.
+ 
+. Digite uma das seguintes opcoes, em linha de comando, para manipular o
+  componente :
+ 
+   B (Browse) mostrar o conteudo do componente.
+ 
+   BA (Browse) mostrar o conteudo do componente do arquivo historico.
+ 
+   BD (Browse) mostrar um painel para descricoes gerais do componente.
+ 
+   D (Delete) excluir o componete da biblioteca Stage.
+ 
+   E (Edit) edita o conteudo do componente ou executa Stage, das
+     bibliotecas Stage ou Pessoal.
+ 
+   EA (Edit) edita o conteudo do componente ou executa Stage, do arquivo
+      de historico.
+ 
+   ED (Edit) edita o conteudo das descricoes gerais do componente.
+ 
+   H (Display) mostra o conteudo do historico do componente, dos pacotes
+     que ele participa.
+ 
+   LC (Lock) bloquea o componente, impedindo o checkout ou stage por
+      outro usuario.
+ 
+   R (Recompile) recompila o componente da biblioteca Stage.
+ 
+   SB (Stage) permite preparar job de execucao batch, para um ou mais
+      componentes.
+ 
+   SL (Display) mostra o relacionamento entre as bibliotecas de fonte e
+      objeto do componente.
+ 
+   UC (Unlock) desbloqueia o componente para checkout ou stage, por
+      outro usuario.
+ 
+   UL (Display) mostra uma lista de codigos de usuario.
+ 
+. Digite Enter.
+ 
+ 
+ 
+PARA COMPONENTES FONTE
+ 
+ 
+. Se esta editando um modulo de compilacao ou linkedicao, digite a
+  procedure de compilacao.
+ 
+. Digite qualquer parametro adicional de compilacao ou linkedicao, se
+  necessario.
+ 
+. Digite 'Y' ou 'N' para indicar quando e um precompilador de DB2.
+ 
+. Digite 'Y' ou 'N' para adicionar opcoes de usuario.
+ 
+. Digite os cartoes de JCL quando for executar uma compilacao batch.
+ 
+. Digite Enter.
+ 
+Apos o Change Man ter processado as solicitacoes de stage, o componente
+tera um dos seguintes status :
+ 
+. ACTIVE - Stage foi executado com sucesso.
+ 
+. CHECKOUT - componente foi transferido da Baseline, mas nao executou
+             stage.
+ 
+. FREEZE - componente nao pode ser modificado.
+ 
+. INACTIVE - componente foi copiado de outro pacote, mas nao executou o
+             checkout.
+ 
+. INCOMPLETE - compilacao ou linkedicao com erro.
+ 
+. UNFREEZE - componente estava como Freeze e agora esta disponivel para
+             ser modificado.
+ 
+ 
+ 
+INCLUSAO DE INSTRUCOES
+ 
+ A criacao do Online Forms 210 e obrigatoria.
+ 
+ Os OFs devem ser submetidos e aprovados, antes de executar o Audit.
+ 
+ Executar o print do OF apos o Freeze do pacote.
+ 
+ 
+ 
+AUDIT (Verificacao do pacote)
+ 
+ 
+. No menu Primary Option, escolha a opcao 1 (Build).
+ 
+. No menu Build Options, escolha a opcao 7 (Audit).
+ 
+. No painel Audit Change Package :
+ 
+   Digite o numero do pacote.
+ 
+   Digite 'Y' para selecionar audit somente de bibliotecas stage.
+ 
+   Digite 'Y' para o Change Man compilar automaticamente as condicoes de
+   erro.
+ 
+   Digite 'Y' para incluir registros de historico.
+ 
+   Digite 'Y' para formatar relatorio de impressao.
+ 
+   Digite 'Y' para executar audit nos pacotes participativos, como
+   pacotes simples.
+ 
+   Digite 'Y' indica que o pacote participativo solicitado pelo usuario
+   sera designado como pacote primario.
+ 
+   Digite 'Y' indica que executara audit para os pacotes participativos
+   cujo numero de departamento forem iguais ao pacote solicitado pelo
+   usuario.
+ 
+   Digite 'Y' indica que sera executado audit cruzando relacionamento de
+   CPY/SRC com outras aplicacoes.
+ 
+   Digite os cartoes Jobname para executar o audit.
+ 
+. Digite Enter.
+ 
+. Digite 'Y' ou 'N' para indicar se executara o audit somente da
+  biblioteca Stage, processar um cruzamento entre aplicacoes e resolver
+  as condicoes out-of-synch automaticamente.
+ 
+. Digite os cartoes Jobname para executar o audit.
+ 
+. Digite Enter.
+ 
+ 
+ 
+PROMOTE / DEMOTE  (Promocao ou Democao do pacote)
+ 
+ 
+. No menu Primary Option, escolha a opcao 3 (Promote).
+ 
+. Selecione 1(Local) ou 2(Remoto).
+ 
+. Digite Enter.
+ 
+. Se for Local
+   Digite o numero do Pacote e P(Promote) ou D(Demote)
+ 
+. Se for Remoto
+   Digite o numero do Pacote para mostrar a lista de ambientes remotos.
+ 
+. Digite Enter.
+ 
+ 
+ 
+FREEZE (Congelamento do pacote)
+ 
+ 
+. No menu Primary Option, escolha a opcao 2 (Freeze).
+ 
+. Digite o numero do Pacote.
+ 
+. Digite o modo de execucao do freeze :
+ 
+   1 (Online)
+ 
+   2 (Batch)
+ 
+. Digite Enter.
+ 
+. Se ocorrer algum erro no processo de congelamento, digite a opcao 4
+ 
+ 
+ 
+APPROVE / REJECT (Aprovando ou Rejeitando o pacote)
+ 
+ 
+. No menu Primary Option, escolha a opcao 4 (Approve).
+ 
+. Digite o numero ou os parametros de selecao do pacote.
+ 
+. Digite Enter.
+ 
+. Escolha a opcao 1 (Approve)
+ 
+. Digite Enter.
+ 
+. Digite 'A', no comando de linha para executar aprovacao do pacote,
+  ou 'R' para rejeitar.
+ 
+. Digite Enter.
+ 
+ 
+ 
+LIST (Processar pacote via Comandos de Linha)
+ 
+ 
+. No menu Primary Option, escolha a opcao 5 (List).
+ 
+. Digite o numero do Pacote.
+ 
+. Digite Enter.
+ 
+. O Change Man mostra o painel 'CHANGE PACKAGE LIST'
+ 
+. Antes do numero do pacote, como comando de linha, poderao ser executas
+  as funcoes do Change Man, conforme a lista abaixo :
+ 
+ 
+   U1 - Informacoes de controle da atualizacao.
+ 
+   U2 - Informacoes gerais da atualizacao.
+ 
+   U3 - Informacoes de implementacao da atualizacao.
+ 
+   U4 - Informacoes de preparacao da atualizacao.
+ 
+   U5 - Informacoes que afetam uma aplicacao na atualizacao.
+ 
+   U6 - Informacoes de pacote participativo na atualizacao.
+ 
+   U7 - Informacoes de ambiente remoto na atualizacao.
+ 
+   U8 - Status de CLO (close) para pacote complexo/super alterado.
+ 
+   U9 - Status de OPN (open) para pacote complexo/super alterado.
+ 
+   UI - Informacoes de IMS de um pacote atualizado.
+ 
+   OF - Manuseio de online forms.
+ 
+   UA - Renomear ou Excluir componentes do pacote.
+ 
+   UB - Renomear ou Excluir componentes da Baseline.
+ 
+   C1 - Transferencia de componentes da Baseline ou Promotion (Checkout).
+ 
+   C2 - Transferencia de componentes do Pacote (Checkout).
+ 
+   S1 - Compilacao e Linkedicao de componentes da biblioteca de desenvolvimento
+        (Stage)
+ 
+   S2 - Compilacao e Linkedicao de compomemtes do Pacote (Stage)
+ 
+   S3 - Seleciona parametros do componente no Pacote
+ 
+   AP - Verificacao do Pacote (Audit).
+ 
+   RC - Recompila codigo fonte das bibliotecas Baseline ou Promotion
+        (Recompile)
+ 
+   RL - Relinkedita modulos objeto (Relink).
+ 
+   BB - Apresenta lista ou Imprime componente ou componentes das bibliotecas
+        Baseline ou Promotion.
+ 
+   BL - Apresenta lista comprimida.
+ 
+   CC - Compara manutencoes da Stage com a Baseline/Promotion.
+ 
+   ZP - Executa o compress do Pacote na Stage Library.
+ 
+   F1 - Executa congelamento do Pacote de modo online (Freeze).
+ 
+   F2 - Executa congelamento do Pacote de modo batch (Freeze).
+ 
+   F3 - Executa recongelamento ou descongelamento do componente ou dos
+        componentes de um Pacote (Freeze/Unfreeze).
+ 
+   F4 - Limpa o indicador de congelamento em andamento.
+ 
+   PD - Promove ou Demove um Pacote local (Promote/Demote).
+ 
+   A1 - Aprova ou Rejeita um Pacote (Approve/Reject).
+ 
+   A2 - Mostra as razoes descritas na rejeicao do Pacote.
+ 
+   A4 - Limpa o indicador de aprovacao em andamento.
+ 
+   D1 - Gera um memorando para exclusao de um pacote.
+ 
+   D2 - Gera um memorando para NAO exclusao de um pacote.
+ 
+   RV - Reverte um Pacote para a condicao de Desenvolvimento (status DES).
+ 
+   QP - Mostra um painel para informacoes do Pacote (Query).
+ 
+   SC - Pesquisa um conjunto de caracteres na Baseline (Scan).
+ 
+ 
+ 
+ERROS (Condicoes de Falta de Sincronismo)
+ 
+ 
+ DUPLIC!  - Componente existente na Baseline e Stage.
+ 
+ !COPY!   - Copy dentro de Copy - nao permitido.
+ 
+ SYNCH0!  - Componente desconhecido para o Change Man, nao existe
+            registro deste componente no Package Master.
+ 
+ SYNCH1!  - Estatistica do PDF nao disponivel. Nenhuma acao solicitada.
+ 
+ SYNCH2!  - Diferencas na procedure de compilacao ou apontamento.
+            Componentes da SRC ou equivalente, compilados sem indicar
+            procedure de compilacao no Package Master.
+ 
+ SYNCH3!  - IDRDATA na carga de componentes nao pode ser lido. Nenhuma
+            acao solicitada.
+ 
+ SYNCH4!  - Na Stage, data do componente, diferente entre SRC e CPY.
+            CPY ou equivalente possui componente com data mais recente
+            que SRC da Stage.
+ 
+ SYNCH5!  - Na Baseline, data do componente, diferente entre SRC e CPY. CPY ou
+            equivalente possui componente com data mais recente que SRC da
+            Baseline.
+ 
+ SYNCH6!  - Arquivo em atividade sem checkout. Componentes sem correspondencia
+            no arquivo de atividade (CAF).
+ 
+ SYNCH7!  - Na Stage, subrotinas linkeditadas possuem diferencas no setssi.
+            Componente da LOD ou equivalente tem um SETSSI mais recente que o
+            componente chamado na Stage.
+ 
+ SYNCH8!  - Na Baseline, subrotinas linkeditadas possuem diferencas no SETSSI.
+            Componente da LOD ou equivalente tem um SETSSI mais recente que o
+            componente chamado na Baseline.
+ 
+ SYNCH9!  - Divergencia entre modulo fonte (SRC) e objeto (LOD).
+ 
+ SYNCH10! - Problema na versao de regressao. Componente da Baseline que sofreu
+            alteracao apos o checkout.
+ 
+ SYNCH11! - Componente da Stage foi modificado fora do Change Man.
+ 
+ SYNCH12! - Modulo orfao na Stage. Componente desconhecido ou nao existe
+            registro do componenete na Stage.
+ 
+ SYNCH13! - Divergencias de versao na Baseline ou Stage. Componente da Baseline
+            foi alterado depois do Stage.
+ 
+ SYNCH14! - Componente nao esta com status de 'Active'. Nao executou Stage, ou
+            foi excluido do pacote.
+ 
+ SYNCH15! - Diferencas no relacionamente entre SRC e CPY. Refazer o Stage, para
+            atualizar a versao da manutencao na CPY.
+ 
+ SYNCH16! - Diferencas em componentes da Baseline em relacao a CPY. Recompilar
+            para atualizar a versao da manutencao na CPY.
+ 
+ 
+ 
+Para obter informacoes mais detalhadas de criacao de pacote, ver no
+manual 'Change Man User Guide'.
+ 

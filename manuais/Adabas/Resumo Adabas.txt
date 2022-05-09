@@ -1,0 +1,23 @@
+                 Comandos Adabas
+
+OP - Abre sessao 
+     RECBUF = 'ACC=files'
+     RECLEN = Tamanho do maior registro
+     FORLEN = posicao Inicial da Chave
+CL - Fecha Sessao
+     Nao usa outros parametros 
+L1 - Read Record
+L3 - Read Sequencia Logica
+S1 - Find  ( Volta a qtd de registros que atendem a condicao )
+     VALBUF = 
+     CMDID  = 
+     FILENU =  
+     SEALEN = 
+     FORLEN = 
+     VALLEN = 
+     SEABUF =  
+     FORBUF =  
+     ISNLEN = 
+  
+     
+ 

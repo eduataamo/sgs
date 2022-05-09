@@ -1,0 +1,63 @@
+//SGS04010 PROC MMDD=ESQUECEU,CPU=E,BLK1=1000,BLK2=2000,CYL1=100        00000000
+//*                                                                     00000010
+//* ******************************************************************* 00000020
+//* *          SGS04-0  CONVERSAO DE MOVIMENTOS SMD                   * 00000030
+//* ******************************************************************* 00000040
+//* ********************************************************* SGS04010 *00000050
+//SGS04010 EXEC PGM=SGS04010                                            00000060
+//* *------------------------------------------------------------------*00000070
+//* *  GERA ARQUIVO P/SMD COM ORDENS RETPRO, RETMUD, INSMUD E SUBNUM   *00000080
+//* *------------------------------------------------------------------*00000090
+//SYSOUT   DD SYSOUT=*                                                  00000100
+//SYSUDUMP DD SYSOUT=U                                                  00000110
+//SEQENT01 DD DSN=D.SGS062(0),DISP=SHR    *** (ORIGEM SGS03-1) ***      00000120
+//INDENT01 DD DSN=VPPRD100.SMD01A.KCMES01,DISP=SHR                      00000130
+//INDENT02 DD DSN=VPPRD100.SMD01A.KCMES02,DISP=SHR                      00000140
+//INDENT03 DD DSN=VPPRD300.SMD01A.KCMES03,DISP=SHR                      00000150
+//INDENT04 DD DSN=VPPRD100.SMD01A.KCMES04,DISP=SHR                      00000160
+//INDENT05 DD DSN=VPPRD100.SMD01A.KCMES05,DISP=SHR                      00000170
+//INDENT06 DD DSN=VPPRD300.SMD01A.KCMES06,DISP=SHR                      00000180
+//INDENT07 DD DSN=VPPRD100.SMD01A.KCMES07,DISP=SHR                      00000190
+//INDENT08 DD DSN=VPPRD100.SMD01A.KCMES08,DISP=SHR                      00000200
+//INDENT09 DD DSN=VPPRD300.SMD01A.KCMES09,DISP=SHR                      00000210
+//INDENT12 DD DSN=VPPRD300.SMD01A.KCMES12,DISP=SHR                      00000220
+//INDENT51 DD DSN=VPPRD300.SMD01A.KCMES51,DISP=SHR                      00000230
+//INDENT54 DD DSN=VPPRD100.SMD01A.KCMES54,DISP=SHR                      00000240
+//INDENT77 DD DSN=VPPRD100.SMD01A.KCMES77,DISP=SHR                      00000250
+//SEQSAI01 DD DSN=D.SGS04.A040&MMDD..TUDO,DISP=(,CATLG,DELETE),         00000260
+//            DCB=(LRECL=100,RECFM=FB),UNIT=PROD,                       00000270
+//            SPACE=(11476,(&BLK1,100),RLSE)        * DESTINO SMD01-S * 00000280
+//SEQSAI02 DD DSN=D.SGS04.A042&MMDD,DISP=(,CATLG,DELETE),UNIT=PROD,     00000290
+//            DCB=(LRECL=110,RECFM=FB),                                 00000300
+//            SPACE=(11476,(&BLK2,200),RLSE)                            00000310
+//SEQSAI03 DD DSN=D.SGS04.A043&MMDD,DISP=(,CATLG,DELETE),               00000320
+//            DCB=(LRECL=100,RECFM=FB),UNIT=PROD,                       00000330
+//            SPACE=(11476,(&BLK1,100),RLSE)        * DESTINO SGS05-5 * 00000340
+//DDREDE   DD SYSOUT=P                                                  00000350
+//* ********************************************************* SGS04020 *00000360
+//SGS04020 EXEC PGM=NAT2D,REGION=4M,PARM='SL=72,SYS=&CPU,ETID=X'        00000370
+//STEPLIB  DD DSN=NATURAL.BATCH.PRODUCAO,DISP=SHR                       00000380
+//         DD DSN=ADABAS.TELE.ADALOAD,DISP=SHR                          00000390
+//         DD DSN=CTB.LOADLIB,DISP=SHR                                  00000400
+//SORTLIB  DD DSN=CTB.SORTLIB,DISP=SHR                                  00000410
+//SYSUDUMP DD SYSOUT=U                                                  00000420
+//SYSOUT   DD SYSOUT=*                                                  00000430
+//SORTOUT  DD DUMMY,DCB=BLKSIZE=80                                      00000440
+//DDSORTIN DD DUMMY                                                     00000450
+//DDSORTUT DD DUMMY                                                     00000460
+//SORTWK01 DD UNIT=SYSDA,SPACE=(CYL,(&CYL1))                            00000470
+//SORTWK02 DD UNIT=SYSDA,SPACE=(CYL,(&CYL1))                            00000480
+//SORTWK03 DD UNIT=SYSDA,SPACE=(CYL,(&CYL1))                            00000490
+//SORTWK04 DD UNIT=SYSDA,SPACE=(CYL,(&CYL1))                            00000500
+//SORTMSG  DD SYSOUT=*                                                  00000510
+//DDCARD   DD DSN=ADABAS.TELE.INSTALL(RUNNUC00),DISP=SHR                00000520
+//         DD DSN=ADABAS.TELE.INSTALL(RUNUSR),DISP=SHR                  00000530
+//         DD DSN=ADABAS.TELE.INSTALL(RUNMTELE),DISP=SHR                00000540
+//         DD DSN=ADABAS.TELE.INSTALL(RUND),DISP=SHR                    00000550
+//DDPRINT  DD SYSOUT=*                                                  00000560
+//CMPRINT  DD SYSOUT=*                                                  00000570
+//CMWKF01  DD DSN=D.SGS04.A042&MMDD,DISP=SHR                            00000580
+//CMPRT01  DD SUBSYS=(CDAM,'SYSOUT=(C,,0001)'),                         00000590
+//            DCB=(BLKSIZE=11438,LRECL=133,RECFM=FBA)                   00000600
+//CMSYNIN  DD DSN=SYS4.NATURAL(SGS0300N),DISP=SHR                       00000610
+//         DD DSN=SYS4.DADOS(SGS0402P),DISP=SHR                         00000620

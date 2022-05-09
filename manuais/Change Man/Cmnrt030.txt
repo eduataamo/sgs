@@ -1,0 +1,36 @@
+      030. EDITAR PROGRAMA (CODIGO FONTE) NO DESENVOLVIMENTO :
+ 
+        . no painel 'PRIMARY OPTION MENU', digite opcao 5 e <enter>.
+        . no painel 'PACKAGE LIST PARAMETERS' :
+          . no campo 'PACKAGE ID', digite o numero do pacote e <enter>.
+        . no painel 'CHANGE PACKAGE LIST' :
+          . no campo antes do 'PACKAGE ID', digite S2 e <enter>.
+        . no painel 'STAGE: Numero do pacote COMPONENTS' :
+          . no campo antes do 'NAME', digite E, tecle <enter>.
+        . retorna o fonte do programa, para manutencao :
+          . para salvar as alteracoes tecle PF3 ou digite SAVE <enter>
+          . para sair sem salvar, digite CANCEL <enter>.
+        . retorna o painel 'OUTLIST', mostrando as manutencoes :
+          . tecle PF3.
+        . retorna o painel 'COMPARISON REPORT DISPOSITION' :
+          . tecle PF3 ou <enter>, para processar as manutencoes.
+          . para sair sem salvar, digite CANCEL <enter>.
+        . se vai processar as manutencoes :
+          . retorna o painel 'Nome do programa.Tipo de biblioteca',
+            quando houver outros pacotes acessando este programa.
+            . tecle <enter>.
+          . retorna o painel 'STAGE: COMPILE AND LINK EDIT' :
+            . tecle <enter>.
+          . retorna o painel 'STAGE: USER OPTIONS' :
+            . selecione as opcoes necessarias, com YES ou NO.
+            . tecle <enter>.
+          . retorna a mensagem :
+            fat012$$(job00453) submitted cn(internal)
+            ***
+            . tecle <enter>.
+          . retorna o painel 'STAGE: Numero do pacote COMPONENTS' :
+            . no campo 'COMMAND ===>', digite REFRESH <enter>.
+            . verifique se o campo status esta com conteudo 'ACTIVE'
+              . se sim, o processo de compilacao e linkedicao esta OK
+              . se o conteudo do status for 'INCOMP', utilize o acesso
+                a sysout, no tso, para verificar o job de compilacao.

@@ -1,0 +1,24 @@
+      060. COPIAR DA PRODUCAO PARA A LIBRARY.USER :
+ 
+        . no painel 'PRIMARY OPTION MENU', digite opcao 1 e <enter>.
+        . no painel 'BUILD OPTIONS', digite opcao B e <enter>.
+        . no painel 'BASELINE BROWSE/PRINT FACILITY' :
+          . no campo 'OPTION ===>', digite C.
+          . no campo 'APPLICATION', digite o codigo da aplicacao.
+          . no campo 'LIBRARY TYPE', digite o tipo da biblioteca ou
+            deixe em branco para apresentar a lista.
+          . no campo 'LIBRARY LEVEL', digite zero para copiar a versao
+            atual da Producao, ou digite -1 se deseja a versao anterior.
+          . no campo 'COMPONENT NAME', digite o nome do programa.
+          . tecle <enter>.
+        . no painel 'COPY TO DATASET/MEMBER NAME INFORMATION' :
+          . no campo 'TO DATASET', digite o nome da library.user, por
+            exemplo: 'c015002.library.user'.
+          . no campo 'LIBRARY ORG', digite PDS.
+          . no campo 'AS MEMBER NAME', digite o nome do programa.
+          . tecle <enter>.
+        . no painel 'PRINT/COPY JOB CARD INFORMATION' verifique se os
+          cartoes estao corretos e tecle <enter>.
+        . retorna o painel 'BASELINE BROWSE/PRINT FACILITY', indicando
+          que a copia foi efetuada com sucesso.
+          . tecle PF3 para retornar ao painel principal.

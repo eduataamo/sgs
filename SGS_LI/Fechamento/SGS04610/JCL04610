@@ -1,0 +1,47 @@
+//SGS04610  PROC  MMPP=ESQUECEU,BLK1=540                                00000000
+//*                                                                     00000010
+//* *-----------------------------------------------------------------* 00000020
+//* *  SGS04-6  - ATUALIZACAO DO CAX  (CAD. AUXILIAR DO FATURAMENTO)  * 00000030
+//* *-----------------------------------------------------------------* 00000040
+//*                                                                     00000050
+//* ******************************************************** SGS04080 * 00000060
+//SGS04080  EXEC  PGM=SGS04080                                          00000070
+//* *-----------------------------------------------------------------* 00000080
+//* * ESTE PROGRAMA ATUALIZA O FILE 17 (CAX) COM MOVIMENTOS  PROVENI- * 00000090
+//* * ENTES DO PGM DE SELECAO (SGS04030)                              * 00000100
+//* *-----------------------------------------------------------------* 00000110
+//STEPLIB   DD DSN=ADABAS.TELE.ADALOAD,DISP=SHR                         00000120
+//SYSOUT    DD SYSOUT=*                                                 00000130
+//MINTDUMP  DD SYSOUT=U                                                 00000140
+//TSTDMP    DD SYSOUT=U                                                 00000150
+//SYSUDUMP  DD SYSOUT=U                                                 00000160
+//DDASSO    DD DUMMY                                                    00000170
+//DDCARD    DD DSN=ADABAS.TELE.INSTALL(RUNPROD),DISP=SHR                00000180
+//SEQENT01  DD DSN=D.SGS04.A135&MMPP,DISP=OLD                           00000190
+//          DD DSN=D.SGS04.C053&MMPP,DISP=OLD     * SGS04-5             00000200
+//          DD DSN=D.STF04.A094&MMPP,DISP=OLD     * STF04-5             00000201
+//SEQENT02  DD DSN=D.SGS046(0),DISP=OLD                                 00000210
+//SEQSAI01  DD DSN=D.SGS04.A081&MMPP,UNIT=PROD,DISP=(,CATLG,DELETE),    00000220
+//             DCB=(LRECL=80,RECFM=FB),                                 00000230
+//             SPACE=(11440,(&BLK1,54),RLSE)                            00000240
+//DDREDE    DD SYSOUT=P                                                 00000250
+//* ******************************************************** SGS0461I * 00000260
+//SGS0461I  EXEC  PGM=IEFBR14,COND=(0,EQ,SGS04080)                      00000270
+//DD1       DD DSN=D.SGS04.A081&MMPP,DISP=(OLD,DELETE)                  00000280
+//* ******************************************************** PCP98210 * 00000290
+//PCP98210  EXEC  PGM=PCP98210,PARM='P1,263'                            00000300
+//SYSOUT    DD SYSOUT=*                                                 00000310
+//INDENT01  DD DSN=VPPRD004.PCP981.KCNROARQ,DISP=SHR                    00000320
+//* ******************************************************** SGS03440 * 00000330
+//SGS03440  EXEC  PGM=SGS03440                                          00000340
+//* *-----------------------------------------------------------------* 00000350
+//* * ESTE PGM ATUALIZA O ARQUIVO TOTCAX, UTILIZADO NA TRANSACAO F430 * 00000360
+//* *-----------------------------------------------------------------* 00000370
+//SYSOUT    DD SYSOUT=*                                                 00000380
+//SEQENT01  DD DSN=D.SGS04.A081&MMPP,DISP=OLD                           00000390
+//INDUPD01  DD DSN=VPTPR040.SGS032.KCTOTCAX,DISP=OLD                    00000400
+//DDREDE    DD SYSOUT=P                                                 00000410
+//* ******************************************************** PCP98211 * 00000420
+//PCP98211  EXEC  PGM=PCP98210,PARM='P2,263',COND=(0,NE,SGS03440)       00000430
+//INDENT01  DD DSN=VPPRD004.PCP981.KCNROARQ,DISP=SHR                    00000440
+//SYSOUT    DD SYSOUT=*                                                 00000450

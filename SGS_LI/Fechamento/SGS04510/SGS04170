@@ -1,0 +1,1081 @@
+000010******************************************************************00000001
+000020*     I D E N T I F I C A T I O N       D I V I S I O N          *00000002
+000030******************************************************************00000003
+000040 IDENTIFICATION  DIVISION.                                        00000004
+000050 PROGRAM-ID.     SGS04170.                                        00000005
+000060 AUTHOR.         JOSE I JUNIOR.                                   00000006
+000070 DATE-WRITTEN.   MAIO/99.                                         00000007
+000080******************************************************************00000008
+000090**** OBJETIVO: DESAGRUPAMENTO BLOCO DE SERVICO EQUIPAMENTO      **00000009
+000100******************************************************************00000010
+000110                                                                  00000011
+000120*          E N V I R O N M E T        D I V I S I O N            *00000012
+000130******************************************************************00000013
+000140 ENVIRONMENT     DIVISION.                                        00000014
+000150 CONFIGURATION   SECTION.                                         00000015
+000160 SPECIAL-NAMES.  DECIMAL-POINT IS COMMA.                          00000016
+000170 INPUT-OUTPUT    SECTION.                                         00000017
+000180 FILE-CONTROL.                                                    00000018
+000190     SELECT  SEQENT01  ASSIGN    TO    UT-S-SEQENT01.             00000019
+000200     SELECT  SEQSAI01  ASSIGN    TO    UT-S-SEQSAI01.             00000020
+000210     SELECT  SEQSAI02  ASSIGN    TO    UT-S-SEQSAI02.             00000020
+000220     SELECT  SEQSAI03  ASSIGN    TO    UT-S-SEQSAI03.             00000020
+000230/*****************************************************************00000021
+000240*                  D A T A    D I V I S I O N                    *00000022
+000250******************************************************************00000023
+000260 DATA        DIVISION.                                            00000024
+000270 FILE        SECTION.                                             00000025
+000280/**************************************************************** 00002390
+000290*            DESCRICAO DO SEQENT01 - ARQ. CAF CONDENSADO        * 00002400
+000300***************************************************************** 00002410
+000310 FD          SEQENT01                                             00002440
+000320             RECORDING   V                                        00002450
+000330             BLOCK       0                                        00002460
+000340             RECORD      184  TO  1744                            00002470
+000350             DATA RECORD IS E01-REGOUT.                           00002480
+000360                                                                  00002490
+000370 01          E01-REGOUT.                                          00002500
+000380   03        E01-PARTE-FIXA.                                      00002500
+000390     05      E01-TERTEL      PIC S9(015)     COMP-3.              00002510
+000400     05      E01-CORRES      PIC  X(001).                         00002520
+000410     05      E01-SITREG      PIC  9(002).                         00002530
+000420     05      E01-CLASRVL     PIC  X(004).                         00002540
+000430     05      E01-CPCC        PIC  9(002).                         00002550
+000440     05      E01-NOMASS      PIC  X(064).                         00002560
+000450     05      E01-TIPLOG      PIC  X(003).                         00002570
+000460     05      E01-NOMLOG      PIC  X(026).                         00002580
+000470     05      E01-NUMLOG      PIC  9(005).                         00002590
+000480     05      E01-COMPLE      PIC  X(018).                         00002600
+000490     05      E01-V           PIC  9(002).                         00002610
+000500     05      E01-CEP         PIC  9(005).                         00002620
+000510     05      E01-CLAASS      PIC  9(002).                         00002630
+000520     05      E01-FATB        PIC  9(002).                         00002640
+000530     05      E01-FATBEX      PIC  9(002).                         00002650
+000540     05      E01-ENDBCO      PIC S9(009)     COMP-3.              00002660
+000550     05      E01-OP          PIC  X(001).                         00002670
+000560     05      E01-TELANT      PIC S9(015)     COMP-3.              00002680
+000570     05      E01-DTINST      PIC S9(007)     COMP-3.              00002690
+000580     05      E01-DTUTAL      PIC S9(007)     COMP-3.              00002700
+000590     05      E01-DTRETI      PIC S9(007)     COMP-3.              00002710
+000600     05      E01-CONTOCO     PIC S9(003)     COMP-3.              00002720
+000610     05      E01-NRC         PIC S9(011)     COMP-3.              00002730
+000620     05      FILLER          PIC  X(004).                         00002740
+000630   03        E01-PARTE-VARIAVEL.                                  00002500
+000640     05      E01-OCORRE      OCCURS          0      TO  39        00002750
+000650                             DEPENDING  ON   E01-CONTOCO.         00002760
+000660      10     E01-SRVEQT.                                          00002770
+000670       15    E01-QUANTD      PIC  9(001).                         00002780
+000680       15    E01-CLASRVA     PIC  X(003).                         00002790
+000690       15    E01-TIPO        PIC  X(003).                         00002800
+000700       15    E01-COR         PIC  X(002).                         00002810
+000710       15    E01-PROP        PIC  X(001).                         00002820
+000720       15    FILLER          PIC  X(003).                         00002830
+000730       15    E01-MODELO      PIC  X(006).                         00002840
+000740       15    E01-DTGAR       PIC  X(004).                         00002840
+000750       15    E01-FNT         PIC S9(003)     COMP-3.              00002850
+000760       15    E01-CODFAT      PIC S9(005)     COMP-3.              00002860
+000770       15    E01-CODCON      PIC S9(009)     COMP-3.              00002870
+000780       15    E01-VALOR       PIC S9(009)V99  COMP-3.              00002880
+000790       15    E01-IND         PIC  9(001).                         00002890
+000800     EJECT                                                        00000078
+000810/**************************************************************** 00002390
+000820*            DESCRICAO DO SEQSAI01 - ARQ. CAF CONDENSADO - TELEF* 00002400
+000830***************************************************************** 00002410
+000840 FD          SEQSAI01                                             00002440
+000850             RECORDING   V                                        00002450
+000860             BLOCK       0                                        00002460
+000870             RECORD      184  TO  1744                            00002470
+000880             DATA RECORD IS S01-REGOUT.                           00002480
+000890                                                                  00002490
+000900 01          S01-REGOUT.                                          00002500
+000910   03        S01-PARTE-FIXA.                                      00002500
+000920     05      S01-TERTEL      PIC S9(015)     COMP-3.              00002510
+000930     05      S01-CORRES      PIC  X(001).                         00002520
+000940     05      S01-SITREG      PIC  9(002).                         00002530
+000950     05      S01-CLASRVL     PIC  X(004).                         00002540
+000960     05      S01-CPCC        PIC  9(002).                         00002550
+000970     05      S01-NOMASS      PIC  X(064).                         00002560
+000980     05      S01-TIPLOG      PIC  X(003).                         00002570
+000990     05      S01-NOMLOG      PIC  X(026).                         00002580
+001000     05      S01-NUMLOG      PIC  9(005).                         00002590
+001010     05      S01-COMPLE      PIC  X(018).                         00002600
+001020     05      S01-V           PIC  9(002).                         00002610
+001030     05      S01-CEP         PIC  9(005).                         00002620
+001040     05      S01-CLAASS      PIC  9(002).                         00002630
+001050     05      S01-FATB        PIC  9(002).                         00002640
+001060     05      S01-FATBEX      PIC  9(002).                         00002650
+001070     05      S01-ENDBCO      PIC S9(009)     COMP-3.              00002660
+001080     05      S01-OP          PIC  X(001).                         00002670
+001090     05      S01-TELANT      PIC S9(015)     COMP-3.              00002680
+001100     05      S01-DTINST      PIC S9(007)     COMP-3.              00002690
+001110     05      S01-DTUTAL      PIC S9(007)     COMP-3.              00002700
+001120     05      S01-DTRETI      PIC S9(007)     COMP-3.              00002710
+001130     05      S01-CONTOCO     PIC S9(003)     COMP-3.              00002720
+001140     05      S01-NRC         PIC S9(011)     COMP-3.              00002730
+001150     05      FILLER          PIC  X(004).                         00002740
+001160   03        S01-PARTE-VARIAVEL.                                  00002500
+001170     05      S01-OCORRE      OCCURS          0      TO  39        00002750
+001180                             DEPENDING  ON   S01-CONTOCO.         00002760
+001190      10     S01-SRVEQT.                                          00002770
+001200       15    S01-QUANTD      PIC  9(001).                         00002780
+001210       15    S01-CLASRVA     PIC  X(003).                         00002790
+001220       15    S01-TIPO        PIC  X(003).                         00002800
+001230       15    S01-COR         PIC  X(002).                         00002810
+001240       15    S01-PROP        PIC  X(001).                         00002820
+001250       15    FILLER          PIC  X(003).                         00002830
+001260       15    S01-MODELO      PIC  X(006).                         00002840
+001270       15    S01-DTGAR       PIC  X(004).                         00002840
+001280       15    S01-FNT         PIC S9(003)     COMP-3.              00002850
+001290       15    S01-CODFAT      PIC S9(005)     COMP-3.              00002860
+001300       15    S01-CODCON      PIC S9(009)     COMP-3.              00002870
+001310       15    S01-VALOR       PIC S9(009)V99  COMP-3.              00002880
+001320       15    S01-IND         PIC  9(001).                         00002890
+001330*                                                                 00002890
+001340/**************************************************************** 00002390
+001350*            DESCRICAO DO SEQSAI02 - ARQ. CAF CONDENSADO (CTBC) * 00002400
+001360***************************************************************** 00002410
+001370 FD          SEQSAI02                                             00002440
+001380             RECORDING   V                                        00002450
+001390             BLOCK       0                                        00002460
+001400             RECORD      184  TO  1744                            00002470
+001410             DATA RECORD IS S02-REGOUT.                           00002480
+001420                                                                  00002490
+001430 01          S02-REGOUT.                                          00002500
+001440   03        S02-PARTE-FIXA.                                      00002500
+001450     05      FILLER          PIC X(172).                          00002500
+001460     05      S02-CONTOCO     PIC S9(003)     COMP-3.              00002720
+001470     05      FILLER          PIC X(010).                          00002500
+001480   03        S02-PARTE-VARIAVEL.                                  00002500
+001490     05      S02-OCORRE      OCCURS          0      TO  39        00002750
+001500                             DEPENDING  ON   S02-CONTOCO.         00002760
+001510      10     S02-SRVEQT      PIC X(40).                           00002770
+001520     EJECT                                                        00000131
+001530*                                                                 00002890
+001540/**************************************************************** 00002390
+001550*            DESCRICAO DO SEQSAI03 - ARQ. CAF CONDENSADO-CETERP * 00002400
+001560***************************************************************** 00002410
+001570 FD          SEQSAI03                                             00002440
+001580             RECORDING   V                                        00002450
+001590             BLOCK       0                                        00002460
+001600             RECORD      184  TO  1744                            00002470
+001610             DATA RECORD IS S03-REGOUT.                           00002480
+001620                                                                  00002490
+001630 01          S03-REGOUT.                                          00002500
+001640   03        S03-PARTE-FIXA.                                      00002500
+001650     05      FILLER          PIC X(172).                          00002500
+001660     05      S03-CONTOCO     PIC S9(003)     COMP-3.              00002720
+001670     05      FILLER          PIC X(010).                          00002500
+001680   03        S03-PARTE-VARIAVEL.                                  00002500
+001690     05      S03-OCORRE      OCCURS          0      TO  39        00002750
+001700                             DEPENDING  ON   S03-CONTOCO.         00002760
+001710      10     S03-SRVEQT      PIC X(40).                           00002770
+001720/*****************************************************************00000132
+001730*         W O R K I N G    S T O R A G E    S E C T I O N        *00000133
+001740******************************************************************00000134
+001750 WORKING-STORAGE       SECTION.                                   00000135
+001760 01  WRK-AREAS.                                                   00000136
+001770     05      WRK-FIL         PIC X(048)              VALUE        00000137
+001780     '* SGS04170 - INICIO DA WORKING STORAGE SECTION *'.          00000138
+001790/*****************************************************************00000139
+001800*                 I N D E X A D O R E S                          *00000140
+001810******************************************************************00000141
+001820     05      WIN-INDE        PIC S9(009) COMP SYNC  VALUE +0.     00000142
+001830     05      WIN-INDS        PIC S9(009) COMP SYNC  VALUE +0.     00000143
+001840/*****************************************************************00000144
+001850*                     C H A V E S                                *00000145
+001860******************************************************************00000146
+001870     05      WCH-EOF         PIC X(001)             VALUE 'N'.    00000147
+001880     05      WCH-STA         PIC X(002)             VALUE '00'.   00000148
+001890     05      WCH-01          PIC X(001)             VALUE SPACES. 00000149
+001900*                                                                 00000150
+001910/*****************************************************************00000144
+001920*                   TABELA   DE  LOCALIDADES  DA   CTBC          *00000145
+001930******************************************************************00000146
+001940     05      WTB01.                                               00000147
+001950      10     FILLER          PIC 9(005)             VALUE 11048.  00000148
+001960      10     FILLER          PIC 9(005)             VALUE 11082.  00000148
+001970      10     FILLER          PIC 9(005)             VALUE 11185.  00000148
+001980      10     FILLER          PIC 9(005)             VALUE 11220.  00000148
+001990      10     FILLER          PIC 9(005)             VALUE 11251.  00000148
+002000      10     FILLER          PIC 9(005)             VALUE 11271.  00000148
+002010      10     FILLER          PIC 9(005)             VALUE 11300.  00000148
+002020      10     FILLER          PIC 9(005)             VALUE 11370.  00000148
+002030      10     FILLER          PIC 9(005)             VALUE 11381.  00000148
+002040      10     FILLER          PIC 9(005)             VALUE 11488.  00000148
+002050      10     FILLER          PIC 9(005)             VALUE 11528.  00000148
+002060      10     FILLER          PIC 9(005)             VALUE 11548.  00000148
+002070      10     FILLER          PIC 9(005)             VALUE 11550.  00000148
+002080      10     FILLER          PIC 9(005)             VALUE 11578.  00000148
+002090      10     FILLER          PIC 9(005)             VALUE 11582.  00000148
+002100      10     FILLER          PIC 9(005)             VALUE 11623.  00000148
+002110      10     FILLER          PIC 9(005)             VALUE 11633.  00000148
+002120      10     FILLER          PIC 9(005)             VALUE 11641.  00000148
+002130      10     FILLER          PIC 9(005)             VALUE 11870.  00000148
+002140      10     FILLER          PIC 9(005)             VALUE 11873.  00000148
+002150      10     FILLER          PIC 9(005)             VALUE 11882.  00000148
+002160      10     FILLER          PIC 9(005)             VALUE 11964.  00000148
+002170      10     FILLER          PIC 9(005)             VALUE 11968.  00000148
+002180      10     FILLER          PIC 9(005)             VALUE 11970.  00000148
+002190      10     FILLER          PIC 9(005)             VALUE 11972.  00000148
+002200      10     FILLER          PIC 9(005)             VALUE 11973.  00000148
+002210      10     FILLER          PIC 9(005)             VALUE 11977.  00000148
+002220     05      FILLER    REDEFINES   WTB01.                         00000149
+002230      10     WTB-LOCALID     OCCURS  27  INDEXED  BY  IND01.      00000149
+002240        15   WTB-LOCAL       PIC 9(005).                          00000149
+002250*                                                                 00000150
+002260/*****************************************************************00000151
+002270*                A R E A S      A U X I L I A R E S              *00000152
+002280******************************************************************00000153
+002290*                                                                 00000154
+002300     05      WAX-TERTEL      PIC 9(015).                          00000155
+002310     05      FILLER          REDEFINES   WAX-TERTEL.              00000156
+002320      10     WAX-LOCALID     PIC 9(005).                          00000157
+002330      10     FILLER          PIC 9(010).                          00000157
+002340*                                                                 00000154
+002350     05      WAX-FLAG-CTBC   PIC X(001)  VALUE  SPACES.           00000155
+002360*                                                                 00000154
+002370     05      WAX-ABENDA.                                          00000155
+002380      10     WAX-DUMP        PIC X(001)             VALUE    '0'. 00000156
+002390      10     WAX-ABEND       PIC S9(004)     COMP   VALUE  +0000. 00000157
+002400*                                                                 00000158
+002410     05      WAX-HORAS.                                           00000159
+002420      10     WAX-HHMMSS      PIC 9(006).                          00000160
+002430      10     FILLER          PIC X(002).                          00000161
+002440     05      WAX-CONTA       PIC 9(002).                          00000162
+002450     05      WAX-7010        PIC X(001).                          00000163
+002460*                                                                 00000164
+002470     05      WAX-MSGIND.                                          00000165
+002480      10     FILLER          PIC X(030)             VALUE         00000166
+002490             'ERRO NO ARQUIVO VSAM    '.                          00000167
+002500      10     FILLER          PIC X(014)             VALUE         00000168
+002510                             'FILE-STATUS = '.                    00000169
+002520      10     WAX-STA         PIC X(002).                          00000170
+002530*                                                                 00000171
+002540/*****************************************************************00000172
+002550*             R E D E    D E    C O N T R O L E                  *00000173
+002560******************************************************************00000174
+002570     05      WRC-REDE.                                            00000175
+002580      10     WRC-TAMANH      PIC S9(009)     COMP-3 VALUE +369.   00000176
+002590      10     WRC-NOMJOB      PIC X(008).                          00000177
+002600      10     WRC-NOMPRG      PIC X(008)             VALUE         00000178
+002610             'SGS04170'.                                          00000179
+002620      10     WRC-CODRED      PIC X(010)             VALUE         00000180
+002630             'SGS0417-R'.                                         00000181
+002640      10     WRC-DTPROC.                                          00000182
+002650       15    WRC-DDPROC      PIC X(002).                          00000183
+002660       15    FILLER          PIC X(001).                          00000184
+002670       15    WRC-MMPROC      PIC X(002).                          00000185
+002680       15    FILLER          PIC X(001).                          00000186
+002690       15    WRC-AAPROC      PIC X(002).                          00000187
+002700      10     WRC-HORAS       PIC 99.99.99.                        00000188
+002710      10     WRC-ETAPA       PIC X(004)             VALUE ALL '*'.00000189
+002720      10     WRC-PAG         PIC X(003)             VALUE ALL '*'.00000190
+002730      10     WRC-ENTRAD.                                          00000191
+002740       15    WRC-CODE1       PIC X(024)             VALUE SPACES. 00000192
+002750       15    WRC-NOME1       PIC X(019)             VALUE         00000193
+002760                                 'CAF. CONDENSADO   '.            00000194
+002770       15    WRC-SEQE1       PIC X(002)             VALUE SPACES. 00000195
+002780       15    WRC-VALE1       PIC S9(015)     COMP-3 VALUE +0.     00000196
+002790*                                                                 00000197
+002800      10     WRC-FIMENT      PIC X(001)             VALUE         00000198
+002810                                     LOW-VALUE.                   00000199
+002820*                                                                 00000200
+002830      10     WRC-SAIDA.                                           00000201
+002840       15    WRC-CODS1       PIC X(024)             VALUE SPACES. 00000202
+002850       15    WRC-NOMS1       PIC X(019)             VALUE         00000203
+002860                                 'CAF. CONDENSADO   '.            00000204
+002870       15    WRC-SEQS1       PIC X(002)             VALUE SPACES. 00000205
+002880       15    WRC-VALS1       PIC S9(015)     COMP-3 VALUE +0.     00000206
+002890*                                                                 00000201
+002900       15    WRC-CODS2       PIC X(024)             VALUE SPACES. 00000202
+002910       15    WRC-NOMS2       PIC X(019)             VALUE         00000203
+002920                                 'CAF. (CTBC)       '.            00000204
+002930       15    WRC-SEQS2       PIC X(002)             VALUE SPACES. 00000205
+002940       15    WRC-VALS2       PIC S9(015)     COMP-3 VALUE +0.     00000206
+002950*                                                                 00000207
+002960       15    WRC-CODS3       PIC X(024)             VALUE SPACES. 00000202
+002970       15    WRC-NOMS3       PIC X(019)             VALUE         00000203
+002980                                 'CAF. (CTBC)       '.            00000204
+002990       15    WRC-SEQS3       PIC X(002)             VALUE SPACES. 00000205
+003000       15    WRC-VALS3       PIC S9(015)     COMP-3 VALUE +0.     00000206
+003010*                                                                 00000201
+003020      10     WRC-FIMSAI      PIC X(001)             VALUE         00000208
+003030                                 LOW-VALUE.                       00000209
+003040*                                                                 00000210
+003050      10     WRC-OBS         PIC X(100)             VALUE SPACES. 00000211
+003060      10     WRC-FIM         PIC X(001)             VALUE         00000212
+003070                                 HIGH-VALUE.                      00000213
+003080/*****************************************************************00000214
+003090*                    T A B E L A S                               *00000215
+003100******************************************************************00000216
+003110*                                                                 00000217
+003120     05      WTB-DDNS.                                            00000218
+003130      10     FILLER          OCCURS  20 TIMES                     00000219
+003140                             INDEXED BY WIN-DDN.                  00000220
+003150       15    WTB-DDN         PIC X(008).                          00000221
+003160       15    WTB-DSN         PIC X(044).                          00000222
+003170/*****************************************************************00000223
+003180*                P R O C E D U R E    D I V I S I O N            *00000224
+003190******************************************************************00000225
+003200 PROCEDURE   DIVISION.                                            00000226
+003210 000-00-MODULO-DECISAO  SECTION.                                  00000227
+003220*                                                                 00000228
+003230     PERFORM 010-00-INICIALIZA.                                   00000229
+003240*                                                                 00000230
+003250     PERFORM 040-00-PROCESSA-REG                                  00000231
+003260         UNTIL  WCH-01  EQUAL  HIGH-VALUE.                        00000232
+003270*                                                                 00000233
+003280     PERFORM 170-00-FINALIZA.                                     00000234
+003290*                                                                 00000235
+003300     STOP    RUN.                                                 00000236
+003310*                                                                 00000237
+003320  000-99-MODULO-DECISAO.                                          00000238
+003330     EXIT.                                                        00000239
+003340/*****************************************************************00000240
+003350*                PROCEDIMENTOS INICIAIS DO PROGRAMA              *00000241
+003360******************************************************************00000242
+003370 010-00-INICIALIZA      SECTION.                                  00000243
+003380*                                                                 00000244
+003390     OPEN    INPUT  SEQENT01                                      00000245
+003400             OUTPUT SEQSAI01                                      00000246
+003410                    SEQSAI02                                      00000246
+003420                    SEQSAI03.                                     00000246
+003430*                                                                 00000247
+003440     MOVE    'N'           TO     WCH-EOF.                        00000248
+003450     CALL    'DATA'        USING  WRC-DTPROC.                     00000249
+003460     ACCEPT   WAX-HORAS    FROM   TIME.                           00000250
+003470     MOVE     WAX-HHMMSS   TO     WRC-HORAS.                      00000251
+003480     CALL    'CPD10170'    USING  WRC-NOMJOB.                     00000252
+003490     CALL    'CPD0003S'    USING  WTB-DDNS.                       00000253
+003500*                                                                 00000254
+003510     PERFORM  020-00-PROCURA-DSNAMES                              00000255
+003520              VARYING  WIN-DDN  FROM  1  BY  1                    00000256
+003530              UNTIL    WIN-DDN  GREATER  20  OR                   00000257
+003540              WTB-DDN (WIN-DDN)  EQUAL    HIGH-VALUE.             00000258
+003550*                                                                 00000259
+003560     IF  WCH-STA  NOT EQUAL   '00'                                00000260
+003570         MOVE  WCH-STA  TO  WAX-STA                               00000261
+003580         MOVE  WAX-MSGIND    TO WRC-OBS                           00000262
+003590         PERFORM  160-00-ABEND                                    00000263
+003600     END-IF                                                       00000264
+003610*                                                                 00000265
+003620     PERFORM 030-00-LER-SEQENT01.                                 00000266
+003630*                                                                 00000267
+003640 010-99-INICIALIZA.                                               00000268
+003650     EXIT.                                                        00000269
+003660/*****************************************************************00000270
+003670*                MONTAGEM  DA  TABELA  DE  DSN                   *00000271
+003680******************************************************************00000272
+003690 020-00-PROCURA-DSNAMES      SECTION.                             00000273
+003700*''                                                               00000274
+003710     IF  WTB-DDN (WIN-DDN) EQUAL 'SEQENT01'                       00000275
+003720         MOVE WTB-DSN (WIN-DDN) TO WRC-CODE1                      00000276
+003730      ELSE                                                        00000277
+003740       IF  WTB-DDN (WIN-DDN) EQUAL 'SEQSAI01'                     00000278
+003750           MOVE WTB-DSN (WIN-DDN) TO WRC-CODS1                    00000279
+003760        ELSE                                                      00000277
+003770         IF  WTB-DDN (WIN-DDN) EQUAL 'SEQSAI02'                   00000278
+003780             MOVE WTB-DSN (WIN-DDN) TO WRC-CODS2                  00000279
+003790          ELSE                                                    00000277
+003800           IF  WTB-DDN (WIN-DDN) EQUAL 'SEQSAI03'                 00000278
+003810               MOVE WTB-DSN (WIN-DDN) TO WRC-CODS3                00000279
+003820           END-IF                                                 00000280
+003830         END-IF                                                   00000280
+003840       END-IF                                                     00000280
+003850     END-IF.                                                      00000281
+003860*                                                                 00000282
+003870 020-99-PROCURA-DSNAMES.                                          00000283
+003880     EXIT.                                                        00000284
+003890/*****************************************************************00000285
+003900*       ROTINA DE LEITURA DO SEQENT01                            *00000286
+003910******************************************************************00000287
+003920 030-00-LER-SEQENT01   SECTION.                                   00000288
+003930*                                                                 00000289
+003940     READ   SEQENT01                                              00000290
+003950         AT END                                                   00000291
+003960            MOVE   HIGH-VALUE    TO  WCH-01                       00000292
+003970            GO                   TO  030-99-LER-SEQENT01.         00000293
+003980*                                                                 00000294
+003990     ADD    1                    TO  WRC-VALE1.                   00000295
+004000*                                                                 00000296
+004010 030-99-LER-SEQENT01.                                             00000297
+004020     EXIT.                                                        00000298
+004030/*****************************************************************00000299
+004040*     P R O C E S S A M E N T O     D E     R E G I S T R O S    *00000300
+004050******************************************************************00000301
+004060 040-00-PROCESSA-REG   SECTION.                                   00000302
+004070*                                                                 00000303
+004080     MOVE  E01-PARTE-FIXA       TO  S01-PARTE-FIXA.               00000304
+004090     MOVE  E01-PARTE-VARIAVEL   TO  S01-PARTE-VARIAVEL.           00000305
+004100*                                                                 00000306
+004110     IF  E01-CONTOCO  NOT EQUAL  ZEROS                            00000307
+004120         MOVE  1  TO  WIN-INDE                                    00000308
+004130         MOVE  0  TO  WIN-INDS                                    00000309
+004140         PERFORM  050-00-TRATA-COR                                00000310
+004150             UNTIL  WIN-INDE  GREATER  E01-CONTOCO                00000311
+004160         MOVE  WIN-INDS  TO  S01-CONTOCO.                         00000312
+004170*                                                                 00000313
+004180     MOVE  E01-TERTEL  TO  WAX-TERTEL.                            00000313
+004190     IF  WAX-LOCALID  EQUAL  11529  OR  11867  OR  11869          00000313
+004200         PERFORM  090-00-GRAVA-SEQSAI03                           00000313
+004210     ELSE                                                         00000314
+004220         MOVE  SPACES   TO  WAX-FLAG-CTBC                         00000313
+004230         PERFORM  065-00-PESQUISA-LOCALID                         00000313
+004240         IF   WAX-FLAG-CTBC       EQUAL  SPACES                   00000313
+004250              PERFORM  070-00-GRAVA-SEQSAI01                      00000314
+004260         ELSE                                                     00000314
+004270              PERFORM  080-00-GRAVA-SEQSAI02                      00000314
+004280         END-IF                                                   00000280
+004290     END-IF.                                                      00000281
+004300
+004310     PERFORM  030-00-LER-SEQENT01.                                00000315
+004320*                                                                 00000316
+004330 040-99-PROCESSA-REG.                                             00000317
+004340     EXIT.                                                        00000318
+004350/*****************************************************************00000319
+004360*            T R A T A    O C O R R E N C I A S                  *00000320
+004370******************************************************************00000321
+004380 050-00-TRATA-COR        SECTION.                                 00000322
+004390*                                                                 00000323
+004400     IF  (E01-CLASRVA (WIN-INDE)      EQUAL  'OFE'  OR            00000324
+004410         'OFF' OR 'OPB' OR 'OPC' OR 'SCF' OR 'STR'  OR            00000325
+004420         'CTF' OR 'OFH' OR 'SCT' OR 'OFI' OR 'OFJ'  OR            00000326
+004430         'OPA' OR 'OPD' OR 'OPF' OR 'OPG' OR 'OPH'  OR            00000327
+004440         'OPI' OR 'OPR' OR 'OPS' OR 'OPT' OR 'OPU'  OR            00000328
+004450         'OPL' OR 'OPM' OR 'OPN' OR 'OPJ' OR 'OPO'  OR            00000329
+004460         'OPP' OR 'OPQ' OR 'OPV' OR 'OPW' OR 'OPY'  OR            00000330
+004470         'OPK' OR 'OPX' OR 'OPZ' OR 'OFA' OR 'OFB'  OR            00000331
+004480         'OFC' OR 'OFD')                                    AND   00000332
+004490         (E01-COR     (WIN-INDE)   EQUAL  'VP')                   00000333
+004500         PERFORM  060-00-DESAGRUPA                                00000334
+004510     ELSE                                                         00000335
+004520         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000336
+004530         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE (WIN-INDS).  00000337
+004540*                                                                 00000338
+004550     COMPUTE  WIN-INDE  =  WIN-INDE  +  1.                        00000339
+004560*                                                                 00000340
+004570 050-99-TRATA-COR.                                                00000341
+004580     EXIT.                                                        00000342
+004590/*****************************************************************00000343
+004600*            D E S A G R U P A M E N T O                         *00000344
+004610******************************************************************00000345
+004620 060-00-DESAGRUPA        SECTION.                                 00000346
+004630*                                                                 00000347
+004640     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OFE'                     00000348
+004650         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000349
+004660         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000350
+004670         MOVE  'CTR'                  TO  S01-CLASRVA (WIN-INDS)  00000351
+004680         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000352
+004690         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000353
+004700         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000354
+004710         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000355
+004720         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000356
+004730         MOVE  'LDI'                  TO  S01-CLASRVA (WIN-INDS)  00000357
+004740         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000358
+004750         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000359
+004760         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000360
+004770         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000361
+004780         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000362
+004790         MOVE  'TRB'                  TO  S01-CLASRVA (WIN-INDS)  00000363
+004800         GO  TO  060-99-DESAGRUPA.                                00000364
+004810*                                                                 00000365
+004820     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OFF'                     00000366
+004830         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000367
+004840         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000368
+004850         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000369
+004860         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000370
+004870         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000371
+004880         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000372
+004890         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000373
+004900         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000374
+004910         MOVE  'TRB'                  TO  S01-CLASRVA (WIN-INDS)  00000375
+004920         GO  TO  060-99-DESAGRUPA.                                00000376
+004930*                                                                 00000377
+004940     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPB'                     00000378
+004950         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000379
+004960         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000380
+004970         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000381
+004980         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000382
+004990         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000383
+005000         MOVE  'NPE'                  TO  S01-CLASRVA (WIN-INDS)  00000384
+005010         GO  TO  060-99-DESAGRUPA.                                00000385
+005020*                                                                 00000386
+005030     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPC'                     00000387
+005040         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000388
+005050         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000389
+005060         MOVE  'CFR'                  TO  S01-CLASRVA (WIN-INDS)  00000390
+005070         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000391
+005080         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000392
+005090         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000393
+005100         GO  TO  060-99-DESAGRUPA.                                00000394
+005110*                                                                 00000395
+005120     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'SCF'                     00000396
+005130         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000397
+005140         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000398
+005150         MOVE  'CFR'                  TO  S01-CLASRVA (WIN-INDS)  00000399
+005160         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000400
+005170         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000401
+005180         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000402
+005190         GO  TO  060-99-DESAGRUPA.                                00000403
+005200*                                                                 00000404
+005210     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'STR'                     00000405
+005220         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000406
+005230         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000407
+005240         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000408
+005250         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000409
+005260         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000410
+005270         MOVE  'TRF'                  TO  S01-CLASRVA (WIN-INDS)  00000411
+005280         GO  TO  060-99-DESAGRUPA.                                00000412
+005290*                                                                 00000413
+005300     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'CTF'                     00000414
+005310         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000415
+005320         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000416
+005330         MOVE  'CFR'                  TO  S01-CLASRVA (WIN-INDS)  00000417
+005340         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000418
+005350         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000419
+005360         MOVE  'TRF'                  TO  S01-CLASRVA (WIN-INDS)  00000420
+005370         GO  TO  060-99-DESAGRUPA.                                00000421
+005380*                                                                 00000422
+005390     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OFH'                     00000423
+005400         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000424
+005410         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000425
+005420         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000426
+005430         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000427
+005440         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000428
+005450         MOVE  'LDI'                  TO  S01-CLASRVA (WIN-INDS)  00000429
+005460         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000430
+005470         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000431
+005480         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000432
+005490         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000433
+005500         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000434
+005510         MOVE  'TRB'                  TO  S01-CLASRVA (WIN-INDS)  00000435
+005520         GO  TO  060-99-DESAGRUPA.                                00000436
+005530*                                                                 00000437
+005540     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'SCT'                     00000438
+005550         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000439
+005560         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000440
+005570         MOVE  'CFR'                  TO  S01-CLASRVA (WIN-INDS)  00000441
+005580         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000442
+005590         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000443
+005600         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000444
+005610         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000445
+005620         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000446
+005630         MOVE  'TRF'                  TO  S01-CLASRVA (WIN-INDS)  00000447
+005640         GO  TO  060-99-DESAGRUPA.                                00000448
+005650*                                                                 00000449
+005660     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OFI'                     00000450
+005670         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000451
+005680         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000452
+005690         MOVE  'CFR'                  TO  S01-CLASRVA (WIN-INDS)  00000453
+005700         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000454
+005710         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000455
+005720         MOVE  'CTR'                  TO  S01-CLASRVA (WIN-INDS)  00000456
+005730         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000457
+005740         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000458
+005750         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000459
+005760         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000460
+005770         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000461
+005780         MOVE  'LDI'                  TO  S01-CLASRVA (WIN-INDS)  00000462
+005790         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000463
+005800         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000464
+005810         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000465
+005820         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000466
+005830         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000467
+005840         MOVE  'TRB'                  TO  S01-CLASRVA (WIN-INDS)  00000468
+005850         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000469
+005860         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000470
+005870         MOVE  'TRF'                  TO  S01-CLASRVA (WIN-INDS)  00000471
+005880         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000472
+005890         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000473
+005900         MOVE  'TRN'                  TO  S01-CLASRVA (WIN-INDS)  00000474
+005910         GO  TO  060-99-DESAGRUPA.                                00000475
+005920*                                                                 00000476
+005930     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OFJ'                     00000477
+005940         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000478
+005950         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000479
+005960         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000480
+005970         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000481
+005980         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000482
+005990         MOVE  'TRB'                  TO  S01-CLASRVA (WIN-INDS)  00000483
+006000         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000484
+006010         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000485
+006020         MOVE  'TRF'                  TO  S01-CLASRVA (WIN-INDS)  00000486
+006030         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000487
+006040         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000488
+006050         MOVE  'TRN'                  TO  S01-CLASRVA (WIN-INDS)  00000489
+006060         GO  TO  060-99-DESAGRUPA.                                00000490
+006070*                                                                 00000491
+006080     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPA'                     00000492
+006090         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000493
+006100         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000494
+006110         MOVE  'CFR'                  TO  S01-CLASRVA (WIN-INDS)  00000495
+006120         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000496
+006130         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000497
+006140         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000498
+006150         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000499
+006160         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000500
+006170         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000501
+006180         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000502
+006190         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000503
+006200         MOVE  'TRF'                  TO  S01-CLASRVA (WIN-INDS)  00000504
+006210         GO  TO  060-99-DESAGRUPA.                                00000505
+006220*                                                                 00000506
+006230     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPD'                     00000507
+006240         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000508
+006250         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000509
+006260         MOVE  'CFR'                  TO  S01-CLASRVA (WIN-INDS)  00000510
+006270         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000511
+006280         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000512
+006290         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000513
+006300         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000514
+006310         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000515
+006320         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000516
+006330         GO  TO  060-99-DESAGRUPA.                                00000517
+006340*                                                                 00000518
+006350     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPF'                     00000519
+006360         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000520
+006370         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000521
+006380         MOVE  'CFR'                  TO  S01-CLASRVA (WIN-INDS)  00000522
+006390         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000523
+006400         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000524
+006410         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000525
+006420         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000526
+006430         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000527
+006440         MOVE  'LDI'                  TO  S01-CLASRVA (WIN-INDS)  00000528
+006450         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000529
+006460         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000530
+006470         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000531
+006480         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000532
+006490         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000533
+006500         MOVE  'TRF'                  TO  S01-CLASRVA (WIN-INDS)  00000534
+006510         GO  TO  060-99-DESAGRUPA.                                00000535
+006520*                                                                 00000536
+006530     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPG'                     00000537
+006540         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000538
+006550         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000539
+006560         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000540
+006570         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000541
+006580         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000542
+006590         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000543
+006600         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000544
+006610         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000545
+006620         MOVE  'TRF'                  TO  S01-CLASRVA (WIN-INDS)  00000546
+006630         GO  TO  060-99-DESAGRUPA.                                00000547
+006640*                                                                 00000548
+006650     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPH'                     00000549
+006660         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000550
+006670         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000551
+006680         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000552
+006690         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000553
+006700         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000554
+006710         MOVE  'LDI'                  TO  S01-CLASRVA (WIN-INDS)  00000555
+006720         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000556
+006730         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000557
+006740         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000558
+006750         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000559
+006760         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000560
+006770         MOVE  'TRF'                  TO  S01-CLASRVA (WIN-INDS)  00000561
+006780         GO  TO  060-99-DESAGRUPA.                                00000562
+006790*                                                                 00000563
+006800     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPI'                     00000564
+006810         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000565
+006820         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000566
+006830         MOVE  'CFR'                  TO  S01-CLASRVA (WIN-INDS)  00000567
+006840         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000568
+006850         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000569
+006860         MOVE  'LDI'                  TO  S01-CLASRVA (WIN-INDS)  00000570
+006870         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000571
+006880         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000572
+006890         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000573
+006900         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000574
+006910         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000575
+006920         MOVE  'TRF'                  TO  S01-CLASRVA (WIN-INDS)  00000576
+006930         GO  TO  060-99-DESAGRUPA.                                00000577
+006940*                                                                 00000578
+006950     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPR'                     00000579
+006960         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000580
+006970         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000581
+006980         MOVE  'CFR'                  TO  S01-CLASRVA (WIN-INDS)  00000582
+006990         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000583
+007000         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000584
+007010         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000585
+007020         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000586
+007030         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000587
+007040         MOVE  'LDI'                  TO  S01-CLASRVA (WIN-INDS)  00000588
+007050         GO  TO  060-99-DESAGRUPA.                                00000589
+007060*                                                                 00000590
+007070     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPS'                     00000591
+007080         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000592
+007090         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000593
+007100         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000594
+007110         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000595
+007120         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000596
+007130         MOVE  'LDI'                  TO  S01-CLASRVA (WIN-INDS)  00000597
+007140         GO  TO  060-99-DESAGRUPA.                                00000598
+007150*                                                                 00000599
+007160     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPT'                     00000600
+007170         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000601
+007180         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000602
+007190         MOVE  'CFR'                  TO  S01-CLASRVA (WIN-INDS)  00000603
+007200         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000604
+007210         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000605
+007220         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000606
+007230         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000607
+007240         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000608
+007250         MOVE  'LDI'                  TO  S01-CLASRVA (WIN-INDS)  00000609
+007260         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000610
+007270         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000611
+007280         MOVE  'NPE'                  TO  S01-CLASRVA (WIN-INDS)  00000612
+007290         GO  TO  060-99-DESAGRUPA.                                00000613
+007300*                                                                 00000614
+007310     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPU'                     00000615
+007320         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000616
+007330         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000617
+007340         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000618
+007350         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000619
+007360         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000620
+007370         MOVE  'LDI'                  TO  S01-CLASRVA (WIN-INDS)  00000621
+007380         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000622
+007390         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000623
+007400         MOVE  'NPE'                  TO  S01-CLASRVA (WIN-INDS)  00000624
+007410         GO  TO  060-99-DESAGRUPA.                                00000625
+007420*                                                                 00000626
+007430     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPL'                     00000627
+007440         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000628
+007450         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000629
+007460         MOVE  'CFR'                  TO  S01-CLASRVA (WIN-INDS)  00000630
+007470         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000631
+007480         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000632
+007490         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000633
+007500         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000634
+007510         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000635
+007520         MOVE  'LDI'                  TO  S01-CLASRVA (WIN-INDS)  00000636
+007530         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000637
+007540         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000638
+007550         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000639
+007560         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000640
+007570         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000641
+007580         MOVE  'TRB'                  TO  S01-CLASRVA (WIN-INDS)  00000642
+007590         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000643
+007600         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000644
+007610         MOVE  'TRF'                  TO  S01-CLASRVA (WIN-INDS)  00000645
+007620         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000646
+007630         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000647
+007640         MOVE  'TRN'                  TO  S01-CLASRVA (WIN-INDS)  00000648
+007650         GO  TO  060-99-DESAGRUPA.                                00000649
+007660*                                                                 00000650
+007670     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPM'                     00000651
+007680         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000652
+007690         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000653
+007700         MOVE  'CTR'                  TO  S01-CLASRVA (WIN-INDS)  00000654
+007710         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000655
+007720         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000656
+007730         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000657
+007740         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000658
+007750         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000659
+007760         MOVE  'LDI'                  TO  S01-CLASRVA (WIN-INDS)  00000660
+007770         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000661
+007780         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000662
+007790         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000663
+007800         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000664
+007810         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000665
+007820         MOVE  'TRB'                  TO  S01-CLASRVA (WIN-INDS)  00000666
+007830         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000667
+007840         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000668
+007850         MOVE  'TRF'                  TO  S01-CLASRVA (WIN-INDS)  00000669
+007860         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000670
+007870         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000671
+007880         MOVE  'TRN'                  TO  S01-CLASRVA (WIN-INDS)  00000672
+007890         GO  TO  060-99-DESAGRUPA.                                00000673
+007900*                                                                 00000674
+007910     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPN'                     00000675
+007920         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000676
+007930         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000677
+007940         MOVE  'CTR'                  TO  S01-CLASRVA (WIN-INDS)  00000678
+007950         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000679
+007960         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000680
+007970         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000681
+007980         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000682
+007990         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000683
+008000         MOVE  'LDI'                  TO  S01-CLASRVA (WIN-INDS)  00000684
+008010         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000685
+008020         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000686
+008030         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000687
+008040         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000688
+008050         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000689
+008060         MOVE  'TRF'                  TO  S01-CLASRVA (WIN-INDS)  00000690
+008070         GO  TO  060-99-DESAGRUPA.                                00000691
+008080*                                                                 00000692
+008090     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPJ'                     00000693
+008100         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000694
+008110         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000695
+008120         MOVE  'CTR'                  TO  S01-CLASRVA (WIN-INDS)  00000696
+008130         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000697
+008140         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000698
+008150         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000699
+008160         GO  TO  060-99-DESAGRUPA.                                00000700
+008170*                                                                 00000701
+008180     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPO'                     00000702
+008190         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000703
+008200         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000704
+008210         MOVE  'CTR'                  TO  S01-CLASRVA (WIN-INDS)  00000705
+008220         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000706
+008230         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000707
+008240         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000708
+008250         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000709
+008260         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000710
+008270         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000711
+008280         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000712
+008290         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000713
+008300         MOVE  'TRF'                  TO  S01-CLASRVA (WIN-INDS)  00000714
+008310         GO  TO  060-99-DESAGRUPA.                                00000715
+008320*                                                                 00000716
+008330     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPP'                     00000717
+008340         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000718
+008350         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000719
+008360         MOVE  'CTR'                  TO  S01-CLASRVA (WIN-INDS)  00000720
+008370         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000721
+008380         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000722
+008390         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000723
+008400         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000724
+008410         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000725
+008420         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000726
+008430         GO  TO  060-99-DESAGRUPA.                                00000727
+008440*                                                                 00000728
+008450     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPQ'                     00000729
+008460         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000730
+008470         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000731
+008480         MOVE  'CTR'                  TO  S01-CLASRVA (WIN-INDS)  00000732
+008490         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000733
+008500         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000734
+008510         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000735
+008520         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000736
+008530         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000737
+008540         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000738
+008550         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000739
+008560         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000740
+008570         MOVE  'TRN'                  TO  S01-CLASRVA (WIN-INDS)  00000741
+008580         GO  TO  060-99-DESAGRUPA.                                00000742
+008590*                                                                 00000743
+008600     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPV'                     00000744
+008610         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000745
+008620         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000746
+008630         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000747
+008640         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000748
+008650         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000749
+008660         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000750
+008670         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000751
+008680         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000752
+008690         MOVE  'TRN'                  TO  S01-CLASRVA (WIN-INDS)  00000753
+008700         GO  TO  060-99-DESAGRUPA.                                00000754
+008710*                                                                 00000755
+008720     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPW'                     00000756
+008730         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000757
+008740         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000758
+008750         MOVE  'CTR'                  TO  S01-CLASRVA (WIN-INDS)  00000759
+008760         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000760
+008770         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000761
+008780         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000762
+008790         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000763
+008800         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000764
+008810         MOVE  'LDI'                  TO  S01-CLASRVA (WIN-INDS)  00000765
+008820         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000766
+008830         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000767
+008840         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000768
+008850         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000769
+008860         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000770
+008870         MOVE  'TRN'                  TO  S01-CLASRVA (WIN-INDS)  00000771
+008880         GO  TO  060-99-DESAGRUPA.                                00000772
+008890*                                                                 00000773
+008900     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPY'                     00000774
+008910         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000775
+008920         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000776
+008930         MOVE  'CTR'                  TO  S01-CLASRVA (WIN-INDS)  00000777
+008940         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000778
+008950         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000779
+008960         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000780
+008970         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000781
+008980         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000782
+008990         MOVE  'LDI'                  TO  S01-CLASRVA (WIN-INDS)  00000783
+009000         GO  TO  060-99-DESAGRUPA.                                00000784
+009010*                                                                 00000785
+009020     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPK'                     00000786
+009030         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000787
+009040         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000788
+009050         MOVE  'CTR'                  TO  S01-CLASRVA (WIN-INDS)  00000789
+009060         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000790
+009070         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000791
+009080         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000792
+009090         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000793
+009100         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000794
+009110         MOVE  'LDI'                  TO  S01-CLASRVA (WIN-INDS)  00000795
+009120         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000796
+009130         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000797
+009140         MOVE  'NPE'                  TO  S01-CLASRVA (WIN-INDS)  00000798
+009150         GO  TO  060-99-DESAGRUPA.                                00000799
+009160*                                                                 00000800
+009170     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPX'                     00000801
+009180         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000802
+009190         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000803
+009200         MOVE  'CTR'                  TO  S01-CLASRVA (WIN-INDS)  00000804
+009210         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000805
+009220         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000806
+009230         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000807
+009240         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000808
+009250         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000809
+009260         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000810
+009270         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000811
+009280         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000812
+009290         MOVE  'TRN'                  TO  S01-CLASRVA (WIN-INDS)  00000813
+009300         GO  TO  060-99-DESAGRUPA.                                00000814
+009310*                                                                 00000815
+009320     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OPZ'                     00000816
+009330         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000817
+009340         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000818
+009350         MOVE  'CFR'                  TO  S01-CLASRVA (WIN-INDS)  00000819
+009360         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000820
+009370         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000821
+009380         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000822
+009390         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000823
+009400         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000824
+009410         MOVE  'LDI'                  TO  S01-CLASRVA (WIN-INDS)  00000825
+009420         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000826
+009430         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000827
+009440         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000828
+009450         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000829
+009460         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000830
+009470         MOVE  'TRN'                  TO  S01-CLASRVA (WIN-INDS)  00000831
+009480         GO  TO  060-99-DESAGRUPA.                                00000832
+009490*                                                                 00000833
+009500     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OFA'                     00000834
+009510         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000835
+009520         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000836
+009530         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000837
+009540         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000838
+009550         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000839
+009560         MOVE  'LDI'                  TO  S01-CLASRVA (WIN-INDS)  00000840
+009570         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000841
+009580         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000842
+009590         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000843
+009600         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000844
+009610         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000845
+009620         MOVE  'TRN'                  TO  S01-CLASRVA (WIN-INDS)  00000846
+009630         GO  TO  060-99-DESAGRUPA.                                00000847
+009640*                                                                 00000848
+009650     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OFB'                     00000849
+009660         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000850
+009670         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000851
+009680         MOVE  'CFR'                  TO  S01-CLASRVA (WIN-INDS)  00000852
+009690         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000853
+009700         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000854
+009710         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000855
+009720         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000856
+009730         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000857
+009740         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000858
+009750         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000859
+009760         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000860
+009770         MOVE  'TRB'                  TO  S01-CLASRVA (WIN-INDS)  00000861
+009780         GO  TO  060-99-DESAGRUPA.                                00000862
+009790*                                                                 00000863
+009800     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OFC'                     00000864
+009810         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000865
+009820         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000866
+009830         MOVE  'CTR'                  TO  S01-CLASRVA (WIN-INDS)  00000867
+009840         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000868
+009850         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000869
+009860         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000870
+009870         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000871
+009880         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000872
+009890         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000873
+009900         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000874
+009910         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000875
+009920         MOVE  'TRB'                  TO  S01-CLASRVA (WIN-INDS)  00000876
+009930         GO  TO  060-99-DESAGRUPA.                                00000877
+009940*                                                                 00000878
+009950     IF  E01-CLASRVA (WIN-INDE)  EQUAL  'OFD'                     00000879
+009960         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000880
+009970         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000881
+009980         MOVE  'CFR'                  TO  S01-CLASRVA (WIN-INDS)  00000882
+009990         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000883
+010000         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000884
+010010         MOVE  'DCG'                  TO  S01-CLASRVA (WIN-INDS)  00000885
+010020         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000886
+010030         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000887
+010040         MOVE  'LDI'                  TO  S01-CLASRVA (WIN-INDS)  00000888
+010050         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000889
+010060         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000890
+010070         MOVE  'SIM'                  TO  S01-CLASRVA (WIN-INDS)  00000891
+010080         COMPUTE  WIN-INDS  =  WIN-INDS  +  1                     00000892
+010090         MOVE  E01-OCORRE (WIN-INDE)  TO  S01-OCORRE  (WIN-INDS)  00000893
+010100         MOVE  'TRB'                  TO  S01-CLASRVA (WIN-INDS). 00000894
+010110*                                                                 00000895
+010120 060-99-DESAGRUPA.                                                00000896
+010130     EXIT.                                                        00000897
+010140/*****************************************************************00000898
+010150*            PESQUISA  TABELA  D E  LOCALIDADES                  *00000899
+010160******************************************************************00000900
+010170 065-00-PESQUISA-LOCALID  SECTION.                                00000901
+010180                                                                  00000313
+010190     MOVE   E01-TERTEL  TO  WAX-TERTEL                            00000313
+010200     SET  IND01   TO  1                                           00000313
+010210     SEARCH   WTB-LOCALID
+010220              WHEN   WTB-LOCAL (IND01)  EQUAL  WAX-LOCALID
+010230                     MOVE  'S'   TO    WAX-FLAG-CTBC.
+010240
+010250 065-99-PESQUISA.                                                 00000896
+010260     EXIT.                                                        00000897
+010270/*****************************************************************00000898
+010280*            G R A V A C A O    D O    S E Q S A I 0 1           *00000899
+010290******************************************************************00000900
+010300 070-00-GRAVA-SEQSAI01   SECTION.                                 00000901
+010310*                                                                 00000902
+010320     WRITE S01-REGOUT.                                            00000903
+010330     ADD   1   TO   WRC-VALS1.                                    00000904
+010340*                                                                 00000905
+010350 070-99-GRAVA-SEQSAI01.                                           00000906
+010360     EXIT.                                                        00000907
+010370/*****************************************************************00000898
+010380*            G R A V A C A O    D O    S E Q S A I 0 2           *00000899
+010390******************************************************************00000900
+010400 080-00-GRAVA-SEQSAI02   SECTION.                                 00000901
+010410*                                                                 00000902
+010420     MOVE  S01-REGOUT   TO  S02-REGOUT.                           00000903
+010430     WRITE S02-REGOUT.                                            00000903
+010440     ADD   1   TO   WRC-VALS2.                                    00000904
+010450*                                                                 00000905
+010460 080-99-GRAVA-SEQSAI02.                                           00000906
+010470     EXIT.                                                        00000907
+010480/*****************************************************************00000898
+010490*            G R A V A C A O    D O    S E Q S A I 0 3           *00000899
+010500******************************************************************00000900
+010510 090-00-GRAVA-SEQSAI03   SECTION.                                 00000901
+010520*                                                                 00000902
+010530     MOVE  S01-REGOUT   TO  S03-REGOUT.                           00000903
+010540     WRITE S03-REGOUT.                                            00000903
+010550     ADD   1   TO   WRC-VALS3.                                    00000904
+010560*                                                                 00000905
+010570 090-99-GRAVA-SEQSAI03.                                           00000906
+010580     EXIT.                                                        00000907
+010590/*****************************************************************00000908
+010600*               M O D U L O    D E    A B E N D                  *00000909
+010610******************************************************************00000910
+010620 160-00-ABEND    SECTION.                                         00000911
+010630     CALL 'CPD10740'    USING WRC-REDE.                           00000912
+010640     CALL 'ABENDAR'     USING WAX-ABENDA.                         00000913
+010650 160-99-ABEND.                                                    00000914
+010660     EXIT.                                                        00000915
+010670/*****************************************************************00000916
+010680*                 F I N A L I Z A                                *00000917
+010690******************************************************************00000918
+010700 170-00-FINALIZA      SECTION.                                    00000919
+010710*                                                                 00000920
+010720     CLOSE   SEQENT01                                             00000921
+010730             SEQSAI01                                             00000922
+010740             SEQSAI02                                             00000922
+010750             SEQSAI03.                                            00000922
+010760*                                                                 00000923
+010770     CALL 'CPD10740' USING WRC-REDE.                              00000924
+010780*                                                                 00000925
+010790 170-99-FINALIZA.                                                 00000926
+010800     EXIT.                                                        00000927
+010810     EJECT                                                        00000928

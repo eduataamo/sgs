@@ -1,0 +1,60 @@
+ 
+      120. LISTA  DAS  CONDICOES  DE  ERROS  NO  AUDIT :
+ 
+ 
+ DUPLIC!  - Componente existente na Baseline e Stage Library.
+ 
+ !COPY!   - Copy dentro de Copy - nao permitido.
+ 
+ SYNCH0!  - Componente desconhecido para o Change Man, isto e', nao
+            existe registro deste componente no Package Master.
+ 
+ SYNCH1!  - Estatistica do PDF nao disponivel. Nenhuma acao solicitada.
+ 
+ SYNCH2!  - Diferencas na procedure de compilacao. Componentes da SRC -
+            Biblioteca de Codigo Fonte Online, compilados sem indicar a
+            procedure de compilacao no Package Master.
+ 
+ SYNCH3!  - IDRDATA nao pode ser lido na carga de componentes. Nenhuma
+            acao solicitada.
+ 
+ SYNCH4!  - Na Stage Library, a data do componente esta diferente entre
+            as bibliotecas tipo SRC e CPY, isto e', a CPY possui
+            componente com data mais recente que a SRC.
+ 
+ SYNCH5!  - Na Baseline, a data do componente esta diferente entre as
+            bibliotecas tipo SRC e CPY, isto e', a CPY possui componente
+            com data mais recente que a SRC.
+ 
+ SYNCH6!  - Arquivo SRH sem checkout. Nao existe o componente com tipo
+            SRH na Baseline.
+ 
+ SYNCH7!  - Na Stage Library existe subrotina chamada de modo estatico,
+            com diferenca entre a LOD da subrotina e do componente
+            chamador.
+ 
+ SYNCH8!  - Na Baseline existe subrotina chamada de modo estatico, com
+            diferenca entre a LOD da subrotina e do componente chamador.
+ 
+ SYNCH9!  - Divergencia entre modulo fonte (SRC) e objeto (LOD).
+ 
+ SYNCH10! - Problema na versao de regressao. Componente alterado na
+            Baseline, apos o checkout.
+ 
+ SYNCH11! - Componente da Stage foi modificado fora do Change Man.
+ 
+ SYNCH12! - Modulo orfao na Stage. Componente desconhecido ou nao existe
+            registro do componente na Stage.
+ 
+ SYNCH13! - Divergencias de versao na Baseline ou Stage. Componente
+            alterado na Baseline apos a alteracao da Stage.
+ 
+ SYNCH14! - Componente nao esta com status de 'Active'. Nao executou
+            stage (compilacao e linkedicao) ou foi excluido do pacote.
+ 
+ SYNCH15! - Diferencas entre as bibliotecas SRC e CPY. Refazer o stage
+            para autalizar a versao da CPY.
+ 
+ SYNCH16! - Diferencas entre as bibliotecas Baseline e CPY. Recompilar o
+            componente para atualizar a versao da CPY.
+ 
